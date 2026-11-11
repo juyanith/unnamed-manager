@@ -324,25 +324,24 @@ Later families follow the same shape: `audio.volume`, `display.resolution`.
 
 ### Other proposals
 
+- **One config per platform** (decided 2026-11-11). Both apps share the
+  format and the validation rules, not the file. Each platform's actions
+  and contexts name apps its own way: `bundleId` on the Mac, a Windows
+  identifier still to choose (open question 2).
 - **New location:** `~/.config/unnamed-manager/config.json` on both
   platforms (`%USERPROFILE%\.config\unnamed-manager\config.json` on
-  Windows), so one dotfiles repo can carry one config for both. On first
-  run, the Mac app offers to copy the Unnamed Launcher config.
+  Windows). On first run, the Mac app offers to copy the Unnamed Launcher
+  config.
 - **`Win` and `Super`** as modifier names, the same as `Cmd` on both
   platforms.
-- **Actions a platform doesn't support** load with a warning
-  (`unsupported-action`) and show as unavailable, rather than rejecting a
-  config shared between platforms.
+- **Actions a platform doesn't support** are an error on that platform
+  (`unsupported-action`). With one config per platform, a file never needs
+  the other platform's actions.
 
 ### Open questions
 
-1. **How does a config name an app on both platforms?** Options:
-   (a) per-platform fields on one action,
-   `{ "type": "application", "bundleId": "dev.zed.Zed", "windows": { "exe": "Zed.exe" } }`;
-   (b) separate actions picked by platform, like a Context Aware action
-   whose variants are `mac` and `windows`;
-   (c) one config file per platform. Contexts' `apps` lists have the same
-   question.
+1. ~~How does a config name an app on both platforms?~~ Decided: one
+   config file per platform (see Other proposals).
 2. **Windows app identity:** exe name, full path, or AppUserModelID
    (Store and packaged apps have no plain exe path).
 3. **Windows reserved chords.** `Win+L` and `Ctrl+Alt+Delete` can't be
