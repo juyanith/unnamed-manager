@@ -1,0 +1,418 @@
+{
+  "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
+  "spec": "v1",
+  "fixtures": [
+    {
+      "file": "valid/minimal.json",
+      "valid": true
+    },
+    {
+      "file": "valid/spec-example.json",
+      "valid": true
+    },
+    {
+      "file": "valid/all-actions.json",
+      "valid": true
+    },
+    {
+      "file": "valid/key-syntax.json",
+      "valid": true
+    },
+    {
+      "file": "valid/mac-symbols.json",
+      "valid": true,
+      "platforms": [
+        "mac"
+      ]
+    },
+    {
+      "file": "valid/warnings.json",
+      "valid": true,
+      "warnings": [
+        {
+          "rule": "unused-action",
+          "subject": "spare"
+        },
+        {
+          "rule": "unused-context",
+          "subject": "lonely"
+        }
+      ]
+    },
+    {
+      "file": "valid/mac-missing-key.json",
+      "valid": true,
+      "platforms": [
+        "mac"
+      ],
+      "warnings": [
+        {
+          "rule": "key-not-on-platform",
+          "subject": "Hyper+F24"
+        }
+      ]
+    },
+    {
+      "file": "invalid/invalid-json.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "invalid-json"
+        }
+      ]
+    },
+    {
+      "file": "invalid/version-unsupported.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "version"
+        }
+      ]
+    },
+    {
+      "file": "invalid/version-missing.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "missing-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/version-wrong-type.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "wrong-type"
+        }
+      ]
+    },
+    {
+      "file": "invalid/unknown-top-level-field.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "unknown-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/unknown-entry-field.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "unknown-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/unknown-action-field.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "unknown-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/unknown-runtime-field.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "unknown-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/entries-missing.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "missing-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/title-missing.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "missing-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/bundle-id-missing.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "missing-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/context-apps-missing.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "missing-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/no-entries.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "no-entries"
+        }
+      ]
+    },
+    {
+      "file": "invalid/empty-title.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "empty-title",
+          "subject": "Hyper+Space F"
+        }
+      ]
+    },
+    {
+      "file": "invalid/bad-key-name.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-keys",
+          "subject": "Hyper+Space Fx"
+        }
+      ]
+    },
+    {
+      "file": "invalid/bad-modifier-name.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-keys",
+          "subject": "Hypr+T"
+        }
+      ]
+    },
+    {
+      "file": "invalid/duplicate-path.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "duplicate-path",
+          "subject": "Hyper+Space A T"
+        }
+      ]
+    },
+    {
+      "file": "invalid/no-parent.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "no-parent",
+          "subject": "Hyper+Space B T"
+        }
+      ]
+    },
+    {
+      "file": "invalid/parent-is-binding.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "parent-is-binding",
+          "subject": "Hyper+Space F G"
+        }
+      ]
+    },
+    {
+      "file": "invalid/empty-menu.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "empty-menu",
+          "subject": "Hyper+Space M"
+        }
+      ]
+    },
+    {
+      "file": "invalid/empty-leader.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "empty-menu",
+          "subject": "Meh+Space"
+        }
+      ]
+    },
+    {
+      "file": "invalid/step-modifiers.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "step-modifiers",
+          "subject": "Hyper+Space Shift+G"
+        }
+      ]
+    },
+    {
+      "file": "invalid/step-is-cancel-key.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "step-is-runtime-key",
+          "subject": "Hyper+Space Escape"
+        }
+      ]
+    },
+    {
+      "file": "invalid/step-is-back-key.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "step-is-runtime-key",
+          "subject": "Hyper+Space Backspace"
+        }
+      ]
+    },
+    {
+      "file": "invalid/bad-cancel-key.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-runtime-key"
+        }
+      ]
+    },
+    {
+      "file": "invalid/same-cancel-back.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "same-cancel-back"
+        }
+      ]
+    },
+    {
+      "file": "invalid/negative-delay.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "negative-delay"
+        }
+      ]
+    },
+    {
+      "file": "invalid/negative-timeout.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "negative-delay"
+        }
+      ]
+    },
+    {
+      "file": "invalid/bad-theme.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-ui-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/bad-position.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-ui-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/reserved-chord-mac.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "reserved-chord",
+          "subject": "Hyper+Comma"
+        }
+      ],
+      "platforms": [
+        "mac"
+      ]
+    },
+    {
+      "file": "invalid/undefined-action.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "undefined-action",
+          "subject": "Hyper+Space F"
+        }
+      ]
+    },
+    {
+      "file": "invalid/unknown-action-type.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "unknown-action-type"
+        }
+      ]
+    },
+    {
+      "file": "invalid/bad-app-mode.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-app-mode"
+        }
+      ]
+    },
+    {
+      "file": "invalid/undefined-context.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "undefined-context",
+          "subject": "find"
+        }
+      ]
+    },
+    {
+      "file": "invalid/nested-contextual-variant.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "nested-contextual",
+          "subject": "find"
+        }
+      ]
+    },
+    {
+      "file": "invalid/nested-contextual-fallback.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "nested-contextual",
+          "subject": "find"
+        }
+      ]
+    },
+    {
+      "file": "invalid/duplicate-context.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "duplicate-context",
+          "subject": "browser"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "actions": {
+    "terminal": {
+      "type": "application",
+      "bundleId": "com.apple.Terminal"
+    },
+    "find": {
+      "type": "send",
+      "keys": "Primary+F"
+    }
+  }
+}

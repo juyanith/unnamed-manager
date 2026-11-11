@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "Hyper+Space",
+      "title": "Commands"
+    },
+    {
+      "keys": "Hyper+Space A",
+      "title": "Apps"
+    },
+    {
+      "keys": "Hyper+Space A T",
+      "title": "Terminal",
+      "action": "terminal"
+    },
+    {
+      "keys": "Hyper+Space F",
+      "title": "Find",
+      "action": "find"
+    }
+  ],
+  "actions": {
+    "terminal": {
+      "type": "application"
+    },
+    "find": {
+      "type": "send",
+      "keys": "Primary+F"
+    }
+  }
+}

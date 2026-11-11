@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "Hyper+Space",
+      "title": "Commands"
+    },
+    {
+      "keys": "Hyper+Space A",
+      "title": "Apps"
+    },
+    {
+      "keys": "Hyper+Space A T",
+      "title": "Terminal",
+      "action": "terminal"
+    },
+    {
+      "keys": "Hyper+Space F",
+      "title": "Find",
+      "action": "find"
+    },
+    {
+      "keys": "Hyper+Space Backspace",
+      "title": "Back",
+      "action": "find"
+    }
+  ],
+  "actions": {
+    "terminal": {
+      "type": "application",
+      "bundleId": "com.apple.Terminal"
+    },
+    "find": {
+      "type": "send",
+      "keys": "Primary+F"
+    }
+  }
+}
