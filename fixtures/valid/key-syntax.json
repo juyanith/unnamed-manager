@@ -10,7 +10,7 @@
     { "keys": "Meh+Cmd+J", "title": "Group plus modifier", "action": "x" },
     { "keys": "Primary+Shift+F12", "title": "Primary", "action": "x" },
     { "keys": "F13", "title": "Bare key", "action": "x" },
-    { "keys": "CAG+Grave", "title": "Punctuation", "action": "x" },
+    { "keys": "CAG+Grave", "title": "Punctuation menu" },
     { "keys": "CAG+Grave LeftBracket", "title": "Punctuation step", "action": "x" },
     { "keys": "CAG+Grave PageDown", "title": "Navigation step", "action": "x" }
   ],
