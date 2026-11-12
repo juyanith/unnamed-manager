@@ -45,3 +45,7 @@ To change the config format:
 2. In each app repo, move the submodule to the tag:
    `git -C spec fetch --tags && git -C spec checkout spec-vN`, then commit.
    The fixture tests fail until the app supports the change.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
