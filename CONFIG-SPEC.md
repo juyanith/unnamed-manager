@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v2, tagged `spec-v2`. [CHANGELOG.md](CHANGELOG.md) lists what changed since `spec-v1`.
+**Status:** spec v3, tagged `spec-v3`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -10,7 +10,8 @@ one, for the rule the manifest names.
 
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
-what happens to an action a platform can't do. What's still open, mostly
+what happens to an action a platform can't do. Spec v3 adds the gap that
+Place Window leaves around windows. What's still open, mostly
 for the Windows app, is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -68,9 +69,10 @@ up into the spec.
 | Field | Type | Required | Default | Meaning |
 | --- | --- | --- | --- | --- |
 | `$schema` | string | no | none | Path to the schema, for editors. Kept as written. |
-| `version` | integer | yes | | Format version. Only `1`, in spec v1 and v2: see [Versions](#versions). |
+| `version` | integer | yes | | Format version. Only `1`, in every spec so far: see [Versions](#versions). |
 | `runtime` | object | no | see below | Sequence keys and timing. |
 | `ui` | object | no | see below | How the Guide looks. |
+| `windows` | object | no | see below | Settings the window actions share (spec v3). |
 | `entries` | array | yes | | Menus and bindings, in order. At least one. |
 | `actions` | object | no | `{}` | Action id to action. |
 | `contexts` | array | no | `[]` | Named sets of apps for Context Aware actions. |
@@ -93,6 +95,14 @@ up into the spec.
 | `position` | `center`, `top`, `bottom` | `center` | Where the Guide sits on the display of the app in front. Case-insensitive. |
 | `errorFlash` | boolean | `true` | Flash the Guide on a key that isn't bound. |
 | `errorBell` | boolean | `true` | Play the alert sound on a key that isn't bound. |
+
+### `windows`
+
+Spec v3.
+
+| Field | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `gap` | number ≥ 0 | `8` | Points that [Place Window](#windowplace) leaves between a window and the usable area's edges, and between windows placed side by side. `0` places windows edge to edge. |
 
 ## Keys
 
@@ -249,10 +259,18 @@ families follow the same shape, such as `audio.volume` and
   size, into whole points: left is `round(x × W)` and right is
   `round((x + width) × W)`. So the left half and the right half share an
   edge, with no gap and no overlap.
+- **The gap** (spec v3, `windows.gap`, rounded to whole points) applies
+  to Place Window only. After rounding its frame's edges, each edge on
+  the usable area's edge moves in by the whole gap, and each edge inside
+  it moves in by half: a left or top edge by the larger half, a right or
+  bottom edge by the smaller, so neighbours end exactly one gap apart.
+  With a gap of 8, the left half's right edge and the right half's left
+  edge are 8 points apart, and each half is 8 points from the screen's
+  edges. A window always keeps at least 1 point of width and height.
 - **A window that won't take a size** (a minimum, a maximum, a fixed
   size) ends as close as it allows, and the action doesn't fail. It keeps
-  the edge that touches the usable area's edge, or its center for a
-  centered frame.
+  the edge that's on the usable area's edge (with Place Window, one gap
+  in from it), or its center for a centered frame.
 - **A window never ends off screen.** After a move or a resize, at least
   40 points of its title bar stay on the screen it's on.
 
@@ -292,7 +310,8 @@ Exactly one of:
 | `center` | 1/6 | 1/6 | 2/3 | 2/3 |
 
 Presets are exact fractions, so thirds line up. A `frame` that adds up to
-1 within 0.001 counts as 1.
+1 within 0.001 counts as 1. Every placement leaves the gap from
+[`windows`](#windows) around the window (spec v3).
 
 #### `window.move`
 
@@ -381,6 +400,7 @@ stop a config from loading.
 | `bad-runtime-key` | `cancelKey` or `backKey` isn't a key name. |
 | `same-cancel-back` | The cancel and back keys are the same. |
 | `negative-delay` | `hudDelayMs` or `timeoutMs` is negative. |
+| `negative-gap` | `windows.gap` is negative. |
 | `bad-ui-value` | `theme` or `position` isn't one of its values. |
 | `reserved-chord` | A leader or direct binding uses a chord this platform reserves. |
 | `undefined-action` | A binding names an action that isn't in `actions`. |
@@ -433,8 +453,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2. Spec v2 only adds: new action types and
-new rules. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 and v3. They only add: new action types,
+the optional `windows` object, and new rules. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.

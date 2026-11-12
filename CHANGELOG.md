@@ -2,6 +2,21 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v3
+
+- **Gap:** a new optional top-level object, `windows`, with `gap` (points,
+  default 8). Place Window leaves it between a window and the usable
+  area's edges, and between windows placed side by side. Move, Resize and
+  Maximize don't use it.
+- **New rule:** `negative-gap`.
+- `config.schema.json` has the `windows` object.
+- 69 fixtures (10 valid, 59 invalid): two valid ones with a gap of 12 and
+  of 0, and invalid ones for a negative gap, an unknown field in
+  `windows` and a gap that isn't a number.
+
+Support: the Mac app from the commit that moves its `spec/` to
+`spec-v3`. The Windows app doesn't exist yet.
+
 ## spec-v2
 
 - **Window actions:** `window.maximize`, `window.minimize`, `window.place`,
