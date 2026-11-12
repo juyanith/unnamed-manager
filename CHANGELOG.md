@@ -27,11 +27,11 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 - 80 fixtures (12 valid, 68 invalid), 11 new and Windows only
   (`win-*` and `reserved-chord-win-*`).
 
-Support: the Windows app from the commit that pins `spec/` to `spec-v4`.
-Not yet run by the Mac app: it pins `spec-v3`. When it moves, its
-`SpecSchemaTests` needs the two new `application` variants, and its
-fixture tests should pass unchanged (the edited fixtures break the same
-rules, and the new ones are Windows only).
+Support: the Windows app from the commit that pins `spec/` to `spec-v4`,
+and the Mac app from 25a0017, which moves its `spec/` to `spec-v4`. Its
+generated schema has the `exe` and `appId` variants (the Mac still reads
+only `bundleId`), and its rule-id and writer tests skip the Windows-only
+rules and fixtures. Its `swift test` run on a Mac is still to do.
 
 ## spec-v3
 
