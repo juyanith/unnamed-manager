@@ -2,6 +2,35 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v4
+
+- **Windows app names:** Use Application and contexts name an app on
+  Windows by `exe` (a file name such as `Code.exe`, or a full path) or
+  `appId` (an AppUserModelID), exactly one per action.
+- **Windows reserved chords:** `Cmd+L` (Win+L), and `Delete` with Ctrl
+  and Alt held. The Office shortcuts (Hyper with W, X, P, O, T, D, N, Y,
+  L) are a warning, not reserved.
+- **Windows icons:** a Segoe Fluent Icons code point (`U+E756`) or a
+  file path.
+- **New rules, Windows only:** `other-platform-field` (`bundleId` on
+  Windows), `bad-app-id`, `bad-icon`, and the warning `office-shortcut`.
+  `conflicting-fields` and `missing-field` now cover `exe` and `appId`.
+- `config.schema.json` has an `exe` and an `appId` variant of
+  `application`.
+- **Shared fixtures are now platform-neutral:** the fixtures that used
+  `bundleId` only to have an action (35 of them) use `exec` instead, and
+  break the same rule as before. `valid/spec-example.json`,
+  `valid/all-actions.json` and `invalid/bad-app-mode.json` are Mac only;
+  `invalid/win-bad-app-mode.json` covers `bad-app-mode` on Windows.
+- 80 fixtures (12 valid, 68 invalid), 11 new and Windows only
+  (`win-*` and `reserved-chord-win-*`).
+
+Support: the Windows app from the commit that pins `spec/` to `spec-v4`.
+Not yet run by the Mac app: it pins `spec-v3`. When it moves, its
+`SpecSchemaTests` needs the two new `application` variants, and its
+fixture tests should pass unchanged (the edited fixtures break the same
+rules, and the new ones are Windows only).
+
 ## spec-v3
 
 - **Gap:** a new optional top-level object, `windows`, with `gap` (points,

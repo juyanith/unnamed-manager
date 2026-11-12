@@ -1,0 +1,35 @@
+{
+  "$schema": "./config.schema.json",
+  "version": 1,
+  "entries": [
+    { "keys": "Hyper+Space", "title": "Commands" },
+    { "keys": "Hyper+Space A", "title": "Apps", "icon": "U+E71D" },
+    { "keys": "Hyper+Space A E", "title": "Explorer", "action": "explorer" },
+    { "keys": "Hyper+Space A C", "title": "VS Code", "action": "code", "icon": "~\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe" },
+    { "keys": "Hyper+Space A T", "title": "Terminal", "action": "terminal", "icon": "u+e756" },
+    { "keys": "Hyper+Space A N", "title": "New terminal", "action": "terminal-new", "icon": "C:\\Windows\\System32\\cmd.exe" },
+    { "keys": "Hyper+Space A F", "title": "Files", "action": "files-focus", "icon": "" },
+    { "keys": "Hyper+Space P", "title": "Command palette", "action": "palette", "icon": "~/Pictures/palette.png" },
+    { "keys": "Ctrl+Alt+L", "title": "Not the lock key", "action": "terminal" },
+    { "keys": "Cmd+Shift+L", "title": "Not the lock key either", "action": "terminal" },
+    { "keys": "Ctrl+Shift+Delete", "title": "Not Ctrl+Alt+Delete", "action": "palette" }
+  ],
+  "actions": {
+    "explorer": { "type": "application", "exe": "explorer.exe" },
+    "code": { "type": "application", "exe": "C:\\Program Files\\Microsoft VS Code\\Code.exe" },
+    "terminal": { "type": "application", "appId": "Microsoft.WindowsTerminal_8wekyb3d8bbwe!App" },
+    "terminal-new": { "type": "application", "appId": "Microsoft.WindowsTerminal_8wekyb3d8bbwe!App", "mode": "start" },
+    "files-focus": { "type": "application", "exe": "explorer.exe", "mode": "focus" },
+    "palette": {
+      "type": "contextual",
+      "variants": {
+        "editors": { "type": "send", "keys": "Primary+Shift+P" },
+        "terminals": { "type": "noop" }
+      }
+    }
+  },
+  "contexts": [
+    { "id": "editors", "apps": ["Code.exe", "C:\\Program Files\\Notepad++\\notepad++.exe"] },
+    { "id": "terminals", "apps": ["Microsoft.WindowsTerminal_8wekyb3d8bbwe!App"] }
+  ]
+}

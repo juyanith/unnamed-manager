@@ -1,6 +1,6 @@
 {
   "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
-  "spec": "v3",
+  "spec": "v4",
   "fixtures": [
     {
       "file": "valid/minimal.json",
@@ -8,11 +8,37 @@
     },
     {
       "file": "valid/spec-example.json",
-      "valid": true
+      "valid": true,
+      "platforms": [
+        "mac"
+      ]
     },
     {
       "file": "valid/all-actions.json",
-      "valid": true
+      "valid": true,
+      "platforms": [
+        "mac"
+      ]
+    },
+    {
+      "file": "valid/win-all-fields.json",
+      "valid": true,
+      "platforms": [
+        "windows"
+      ]
+    },
+    {
+      "file": "valid/win-office-shortcut.json",
+      "valid": true,
+      "warnings": [
+        {
+          "rule": "office-shortcut",
+          "subject": "Hyper+W"
+        }
+      ],
+      "platforms": [
+        "windows"
+      ]
     },
     {
       "file": "valid/key-syntax.json",
@@ -372,6 +398,125 @@
         {
           "rule": "bad-app-mode"
         }
+      ],
+      "platforms": [
+        "mac"
+      ]
+    },
+    {
+      "file": "invalid/win-bad-app-mode.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-app-mode"
+        }
+      ],
+      "platforms": [
+        "windows"
+      ]
+    },
+    {
+      "file": "invalid/win-bundle-id.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "other-platform-field",
+          "subject": "terminal"
+        }
+      ],
+      "platforms": [
+        "windows"
+      ]
+    },
+    {
+      "file": "invalid/win-exe-and-app-id.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "conflicting-fields",
+          "subject": "terminal"
+        }
+      ],
+      "platforms": [
+        "windows"
+      ]
+    },
+    {
+      "file": "invalid/win-bad-exe.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-app-id",
+          "subject": "terminal"
+        }
+      ],
+      "platforms": [
+        "windows"
+      ]
+    },
+    {
+      "file": "invalid/win-blank-app-id.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-app-id",
+          "subject": "terminal"
+        }
+      ],
+      "platforms": [
+        "windows"
+      ]
+    },
+    {
+      "file": "invalid/win-bad-context-app.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-app-id",
+          "subject": "editors"
+        }
+      ],
+      "platforms": [
+        "windows"
+      ]
+    },
+    {
+      "file": "invalid/win-bad-icon.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-icon",
+          "subject": "Hyper+Space A T"
+        }
+      ],
+      "platforms": [
+        "windows"
+      ]
+    },
+    {
+      "file": "invalid/reserved-chord-win-lock.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "reserved-chord",
+          "subject": "Cmd+L"
+        }
+      ],
+      "platforms": [
+        "windows"
+      ]
+    },
+    {
+      "file": "invalid/reserved-chord-win-sas.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "reserved-chord",
+          "subject": "Ctrl+Alt+Delete"
+        }
+      ],
+      "platforms": [
+        "windows"
       ]
     },
     {

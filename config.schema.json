@@ -31,6 +31,62 @@
         {
           "additionalProperties" : false,
           "properties" : {
+            "exe" : {
+              "description" : "Windows: the program's file name, such as Code.exe, or its full path.",
+              "pattern" : "\\.[Ee][Xx][Ee]$",
+              "type" : "string"
+            },
+            "mode" : {
+              "description" : "focusOrStart (default): bring it forward, starting it if needed. focus: only if running. start: a new copy.",
+              "enum" : [
+                "focusOrStart",
+                "focus",
+                "start"
+              ]
+            },
+            "type" : {
+              "enum" : [
+                "application"
+              ]
+            }
+          },
+          "required" : [
+            "type",
+            "exe"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
+            "appId" : {
+              "description" : "Windows: an AppUserModelID, for Store and packaged apps.",
+              "minLength" : 1,
+              "type" : "string"
+            },
+            "mode" : {
+              "description" : "focusOrStart (default): bring it forward, starting it if needed. focus: only if running. start: a new copy.",
+              "enum" : [
+                "focusOrStart",
+                "focus",
+                "start"
+              ]
+            },
+            "type" : {
+              "enum" : [
+                "application"
+              ]
+            }
+          },
+          "required" : [
+            "type",
+            "appId"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
             "target" : {
               "type" : "string"
             },
@@ -427,6 +483,62 @@
         {
           "additionalProperties" : false,
           "properties" : {
+            "exe" : {
+              "description" : "Windows: the program's file name, such as Code.exe, or its full path.",
+              "pattern" : "\\.[Ee][Xx][Ee]$",
+              "type" : "string"
+            },
+            "mode" : {
+              "description" : "focusOrStart (default): bring it forward, starting it if needed. focus: only if running. start: a new copy.",
+              "enum" : [
+                "focusOrStart",
+                "focus",
+                "start"
+              ]
+            },
+            "type" : {
+              "enum" : [
+                "application"
+              ]
+            }
+          },
+          "required" : [
+            "type",
+            "exe"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
+            "appId" : {
+              "description" : "Windows: an AppUserModelID, for Store and packaged apps.",
+              "minLength" : 1,
+              "type" : "string"
+            },
+            "mode" : {
+              "description" : "focusOrStart (default): bring it forward, starting it if needed. focus: only if running. start: a new copy.",
+              "enum" : [
+                "focusOrStart",
+                "focus",
+                "start"
+              ]
+            },
+            "type" : {
+              "enum" : [
+                "application"
+              ]
+            }
+          },
+          "required" : [
+            "type",
+            "appId"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
             "target" : {
               "type" : "string"
             },
@@ -787,7 +899,7 @@
         "additionalProperties" : false,
         "properties" : {
           "apps" : {
-            "description" : "Bundle ids.",
+            "description" : "Mac: bundle ids. Windows: an exe (ends in .exe) or an AppUserModelID.",
             "items" : {
               "type" : "string"
             },
@@ -815,7 +927,7 @@
             "type" : "string"
           },
           "icon" : {
-            "description" : "Its icon in the Guide: an SF Symbol name such as \"terminal\", or a path starting with / or ~ for that file's icon. Without one, apps and Open targets show their own icon.",
+            "description" : "Its icon in the Guide: an SF Symbol name such as \"terminal\", or a path starting with / or ~ for that file's icon. Windows: a Segoe Fluent Icons code point such as U+E756, or a file path. Without one, apps and Open targets show their own icon.",
             "minLength" : 1,
             "type" : "string"
           },
@@ -910,6 +1022,6 @@
     "version",
     "entries"
   ],
-  "title" : "Unnamed Manager config (spec v3)",
+  "title" : "Unnamed Manager config (spec v4)",
   "type" : "object"
 }

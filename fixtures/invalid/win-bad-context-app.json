@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "entries": [
+    { "keys": "Hyper+Space", "title": "Commands" },
+    { "keys": "Hyper+Space P", "title": "Command palette", "action": "palette" }
+  ],
+  "actions": {
+    "palette": {
+      "type": "contextual",
+      "variants": { "editors": { "type": "send", "keys": "Primary+Shift+P" } }
+    }
+  },
+  "contexts": [
+    { "id": "editors", "apps": ["Code.exe", ""] }
+  ]
+}

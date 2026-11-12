@@ -23,8 +23,8 @@
   ],
   "actions": {
     "terminal": {
-      "type": "application",
-      "bundleId": "com.apple.Terminal"
+      "type": "exec",
+      "command": ["terminal"]
     },
     "find": {
       "type": "send",

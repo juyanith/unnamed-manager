@@ -4,6 +4,6 @@
     { "keys": "Hyper+T", "title": "Terminal", "action": "terminal" }
   ],
   "actions": {
-    "terminal": { "type": "application", "bundleId": "com.apple.Terminal" }
+    "terminal": { "type": "exec", "command": ["terminal"] }
   }
 }

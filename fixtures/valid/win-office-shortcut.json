@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "entries": [
+    { "keys": "Hyper+W", "title": "Word", "action": "word" }
+  ],
+  "actions": {
+    "word": { "type": "application", "exe": "WINWORD.EXE" }
+  }
+}

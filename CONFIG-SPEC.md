@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v3, tagged `spec-v3`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v4, tagged `spec-v4`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,8 +11,8 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. What's still open, mostly
-for the Windows app, is in [Planned](#planned) until it's settled and moved
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. What's still open
+is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
 ## The file
@@ -136,7 +136,7 @@ always write names, never symbols.
 - Groups can combine with other modifiers: `Meh+Cmd` is `Hyper`.
 - When an app writes a chord, a set of modifiers that exactly equals a
   group is written as the group's name: `Ctrl+Alt+Shift+T` becomes `Meh+T`.
-- The Windows column is the v1 reading for the Windows app. `Win` and
+- The Windows column is how the Windows app reads each name. `Win` and
   `Super` as names are a proposal (see [Planned](#planned)).
 
 ### Key names
@@ -161,7 +161,18 @@ binding on one is an error **on that platform only**:
 | Platform | Reserved |
 | --- | --- |
 | Mac | `Hyper+Comma`, `Hyper+Period`, `Hyper+Slash` (sysdiagnose) |
-| Windows | Not decided yet. `Cmd+L` (Win+L, lock) is reserved for certain; see [Planned](#planned). |
+| Windows | `Cmd+L` (Win+L locks the PC), and `Delete` with both Ctrl and Alt held, whatever else is held (`Ctrl+Alt+Delete`, `Meh+Delete`, `CAG+Delete`, `Hyper+Delete`). Spec v4. |
+
+**Office shortcuts on Windows** (spec v4). Windows gives some chords to
+Microsoft 365: Hyper alone opens the Microsoft 365 app, and Hyper with
+`W`, `X`, `P`, `O`, `T`, `D`, `N`, `Y` or `L` opens an Office app or
+site. These aren't reserved. The app's keyboard hook sees them first, so
+a leader or direct binding on one works while the app runs. It's an
+`office-shortcut` warning, because Windows still opens Office on that
+chord while the app is off, and the app offers to turn the Office
+shortcuts off for the user (it sets the `ms-officeapp` handler to do
+nothing). Hyper alone is never a chord in a config; the app makes sure
+letting go of Hyper after a sequence opens neither Start nor Office.
 
 ## Entries
 
@@ -172,7 +183,7 @@ Every entry is a **menu** (no `action`) or a **binding** (an `action`).
 | `keys` | key path | yes | Where it sits in the tree. |
 | `title` | string, not blank | yes | What the Guide and the Bindings window show. |
 | `action` | action id | no | Makes it a binding. |
-| `icon` | string | no | Its icon. Mac: an SF Symbol name, or a path starting with `/` or `~` for that file's icon. Windows: an open question (see [Planned](#planned)). `""` is the same as leaving it out. |
+| `icon` | string | no | Its icon. Mac: an SF Symbol name, or a path starting with `/` or `~` for that file's icon. Windows (spec v4): a Segoe Fluent Icons code point written `U+E756` (4 to 6 hex digits, any case), or a path for that file's icon (an `.exe`, `.ico`, `.png` or any file), starting with a drive (`C:\`), `\\` or `~`. Anything else is `bad-icon` on Windows. `""` is the same as leaving it out. |
 
 - **Entries are a flat, ordered list keyed by their full path.** The tree
   is built from the paths, and children keep file order.
@@ -211,7 +222,7 @@ fields depend on it. Unknown fields are errors.
 
 | `type` | UI name | Fields | Behavior |
 | --- | --- | --- | --- |
-| `application` | Use Application | `bundleId` (required), `mode` | `focusOrStart` (default): bring the app forward, starting it if needed. `focus`: only if it's running. `start`: start a new copy even if one is running. Focusing returns to the app's last focused window. |
+| `application` | Use Application | Mac: `bundleId` (required). Windows: `exe` or `appId`, exactly one. `mode` | `focusOrStart` (default): bring the app forward, starting it if needed. `focus`: only if it's running. `start`: start a new copy even if one is running. Focusing returns to the app's last focused window. |
 | `open` | Open | `target` (required) | Opens a file, folder or URL with its default app. A leading `~` is the home folder. |
 | `exec` | Run Command | `command` (required, array, at least one item), `cwd`, `env` | Starts a process directly: no shell, no expansion except a leading `~`. `cwd` defaults to the home folder. Doesn't wait, but reports a failure to start. |
 | `send` | Send Shortcut | `keys` (required, key path) | Presses one or more chords in the app that was in front. |
@@ -219,8 +230,19 @@ fields depend on it. Unknown fields are errors.
 | `noop` | Do Nothing | none | Does nothing. |
 | `help` | Show Help | none | Opens the Help page of the Bindings window. |
 
-- `bundleId` is a macOS identifier. How the Windows app names apps is
-  still open (see [Planned](#planned)).
+- **How each platform names an app.** Mac: `bundleId`, a bundle
+  identifier such as `dev.zed.Zed`. Windows (spec v4), exactly one of:
+  - `exe`: the program's file name, such as `Code.exe`, or its full
+    path. It must end in `.exe`, compared case-insensitively. A file name
+    matches a running program with that file name in any folder; a path
+    matches only that file. To start it, a file name is looked up in App
+    Paths and then `PATH`.
+  - `appId`: an AppUserModelID, such as
+    `Microsoft.WindowsTerminal_8wekyb3d8bbwe!App`, for Store and packaged
+    apps, which have no plain exe to start. Not blank. It starts through
+    `shell:AppsFolder\<appId>`.
+- `bundleId` on Windows is `other-platform-field`: each platform has its
+  own config file, so a Mac field there is a mistake, not a fallback.
 - When an action fails (app not installed, command can't start), the
   sequence ends and the failure shows in the Guide and the log.
 
@@ -368,7 +390,7 @@ Exactly one of `to`, `by` and `step`:
 | Field | Type | Required | Meaning |
 | --- | --- | --- | --- |
 | `id` | string | yes | Name used as a key in a Context Aware action's `variants`. Unique. |
-| `apps` | array of strings | yes | App identifiers. v1: macOS bundle ids. |
+| `apps` | array of strings | yes | App identifiers. Mac: bundle ids. Windows (spec v4): a string ending in `.exe` is an `exe` (file name or full path), and any other is an `appId`, matched as Use Application matches them. A blank string is `bad-app-id` on Windows. |
 
 ## Validation
 
@@ -386,7 +408,7 @@ stop a config from loading.
 | `invalid-json` | The file isn't valid JSON. |
 | `version` | `version` isn't `1`. |
 | `unknown-field` | An object has a field the format doesn't have. |
-| `missing-field` | A required field is missing (`version`, `entries`, an entry's `keys` or `title`, a context's `id` or `apps`, an action's `type` or a field its type requires, or both fields of a pair where a window action needs one). |
+| `missing-field` | A required field is missing (`version`, `entries`, an entry's `keys` or `title`, a context's `id` or `apps`, an action's `type` or a field its type requires, both fields of a pair where a window action needs one, or both `exe` and `appId` on Windows). |
 | `wrong-type` | A field has the wrong kind of value, such as `"version": "1"`. |
 | `no-entries` | `entries` is empty. |
 | `empty-title` | An entry's title is blank. |
@@ -409,7 +431,10 @@ stop a config from loading.
 | `undefined-context` | A Context Aware variant names a context that isn't in `contexts`. |
 | `nested-contextual` | A Context Aware variant or fallback is itself `contextual`. |
 | `duplicate-context` | Two contexts share an `id`. |
-| `conflicting-fields` | A window action has fields that don't go together: both `preset` and `frame`; two of `to`, `by` and `step`; `anchor` with `step`; or `widths` without `step`. (Neither of a required pair is `missing-field`.) |
+| `conflicting-fields` | An action has fields that don't go together: both `preset` and `frame`; two of `to`, `by` and `step`; `anchor` with `step`; `widths` without `step`; or, on Windows, both `exe` and `appId`. (Neither of a required pair is `missing-field`.) |
+| `other-platform-field` | Windows only: an `application` action has `bundleId`, which only the Mac uses. (On the Mac, `exe` and `appId` are `unknown-field`.) |
+| `bad-app-id` | Windows only: an `exe` doesn't end in `.exe`, an `appId` is blank, or a context's `apps` has a blank string. |
+| `bad-icon` | Windows only: an entry's `icon` is neither a `U+` code point nor a path. |
 | `bad-fraction` | A fraction is out of its range, a `frame` runs past the usable area, or `widths` is empty. |
 | `bad-window-value` | A window action's `preset`, `direction`, `step` or `anchor` isn't one of its values. |
 | `unsupported-action` | An action's `type` is in the spec, but this platform's app can't do it yet. |
@@ -421,6 +446,7 @@ stop a config from loading.
 | `unused-action` | No binding uses an action. |
 | `unused-context` | No action uses a context. |
 | `key-not-on-platform` | An entry uses a key this platform's keyboards don't have. |
+| `office-shortcut` | Windows only: a leader or direct binding uses one of the [Office shortcuts](#reserved-chords), such as `Hyper+W`. |
 
 ## Fixtures
 
@@ -453,7 +479,7 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 and v3. They only add: new action types,
+`version` stays `1` in spec v2 to v4. They only add: new action types, new fields,
 the optional `windows` object, and new rules. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
@@ -479,14 +505,16 @@ when it's decided.
    platform, `unsupported-action`. With one config per platform, a file
    never needs the other platform's actions.
 
+### Decided in spec v4
+
+1. ~~Windows app identity?~~ `exe` (a file name or full path) or `appId`
+   (an AppUserModelID), exactly one. See [Actions](#actions).
+2. ~~Windows reserved chords?~~ `Cmd+L` and Ctrl+Alt+Delete are reserved.
+   The Office shortcuts are a warning, `office-shortcut`, since the app
+   catches them first while it runs. See [Reserved chords](#reserved-chords).
+3. ~~Windows icons?~~ A Segoe Fluent Icons code point (`U+E756`) or a file
+   path. Names would need a table both apps ship; code points don't.
+
 ### Open questions
 
-1. **Windows app identity:** exe name, full path, or AppUserModelID
-   (Store and packaged apps have no plain exe path).
-2. **Windows reserved chords.** `Win+L` and `Ctrl+Alt+Delete` can't be
-   intercepted. On Windows, `Ctrl+Alt+Shift+Win` (Hyper) alone opens
-   Office, and Hyper+W, T, X, D, O, P, L, N, Y and others open Office apps.
-   Should Hyper+those letters be reserved, or a warning that points to the
-   registry fix?
-3. **Windows icons:** what `icon` names when SF Symbols don't exist
-   (Segoe Fluent Icons code points, a file path, or both).
+None.
