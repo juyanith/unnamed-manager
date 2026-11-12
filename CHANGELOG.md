@@ -19,7 +19,9 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
   `application`.
 - **Shared fixtures are now platform-neutral:** the fixtures that used
   `bundleId` only to have an action (35 of them) use `exec` instead, and
-  break the same rule as before. `valid/spec-example.json`,
+  break the same rule as before. `minimal.json` and `warnings.json` bind
+  `Meh+T` and `Meh+W` instead of `Hyper+T` and `Hyper+W`, which are Office
+  shortcuts on Windows. `valid/spec-example.json`,
   `valid/all-actions.json` and `invalid/bad-app-mode.json` are Mac only;
   `invalid/win-bad-app-mode.json` covers `bad-app-mode` on Windows.
 - 80 fixtures (12 valid, 68 invalid), 11 new and Windows only

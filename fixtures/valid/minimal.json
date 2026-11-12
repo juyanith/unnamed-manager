@@ -1,7 +1,7 @@
 {
   "version": 1,
   "entries": [
-    { "keys": "Hyper+T", "title": "Terminal", "action": "terminal" }
+    { "keys": "Meh+T", "title": "Terminal", "action": "terminal" }
   ],
   "actions": {
     "terminal": { "type": "exec", "command": ["terminal"] }
