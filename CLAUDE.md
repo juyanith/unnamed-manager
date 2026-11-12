@@ -16,7 +16,7 @@ README.md says what each file is.
   names for exact groups, canonical key names.
 - Keep `fixtures/manifest.json` valid JSON and its `file` paths real:
   `python3 -c "import json; json.load(open('fixtures/manifest.json'))"`.
-- Proposals go under "Planned for v2" until decided. Only settled rules
+- Proposals go under "Planned" until decided. Only settled rules
   move up into the spec, with fixtures.
 - A spec change is done when both apps' fixture tests are run against it,
   or the change is noted as not yet supported in CHANGELOG.md.

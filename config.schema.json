@@ -127,6 +127,253 @@
         {
           "additionalProperties" : false,
           "properties" : {
+            "toggle" : {
+              "description" : "true (default): a window that already fills the usable area goes back to where it was.",
+              "type" : "boolean"
+            },
+            "type" : {
+              "enum" : [
+                "window.maximize"
+              ]
+            }
+          },
+          "required" : [
+            "type"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
+            "type" : {
+              "enum" : [
+                "window.minimize"
+              ]
+            }
+          },
+          "required" : [
+            "type"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
+            "frame" : {
+              "additionalProperties" : false,
+              "properties" : {
+                "height" : {
+                  "exclusiveMinimum" : 0,
+                  "maximum" : 1,
+                  "type" : "number"
+                },
+                "width" : {
+                  "exclusiveMinimum" : 0,
+                  "maximum" : 1,
+                  "type" : "number"
+                },
+                "x" : {
+                  "maximum" : 1,
+                  "minimum" : 0,
+                  "type" : "number"
+                },
+                "y" : {
+                  "maximum" : 1,
+                  "minimum" : 0,
+                  "type" : "number"
+                }
+              },
+              "required" : [
+                "x",
+                "y",
+                "width",
+                "height"
+              ],
+              "type" : "object"
+            },
+            "preset" : {
+              "enum" : [
+                "leftHalf",
+                "rightHalf",
+                "topHalf",
+                "bottomHalf",
+                "leftThird",
+                "centerThird",
+                "rightThird",
+                "leftTwoThirds",
+                "rightTwoThirds",
+                "topLeft",
+                "topRight",
+                "bottomLeft",
+                "bottomRight",
+                "center"
+              ]
+            },
+            "type" : {
+              "enum" : [
+                "window.place"
+              ]
+            }
+          },
+          "required" : [
+            "type"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
+            "by" : {
+              "additionalProperties" : false,
+              "description" : "Points. Positive dy moves down.",
+              "properties" : {
+                "dx" : {
+                  "type" : "number"
+                },
+                "dy" : {
+                  "type" : "number"
+                }
+              },
+              "required" : [],
+              "type" : "object"
+            },
+            "to" : {
+              "additionalProperties" : false,
+              "description" : "Fractions of the free space: 0 is the left or top edge, 0.5 centered, 1 the right or bottom edge.",
+              "properties" : {
+                "x" : {
+                  "maximum" : 1,
+                  "minimum" : 0,
+                  "type" : "number"
+                },
+                "y" : {
+                  "maximum" : 1,
+                  "minimum" : 0,
+                  "type" : "number"
+                }
+              },
+              "required" : [
+                "x",
+                "y"
+              ],
+              "type" : "object"
+            },
+            "type" : {
+              "enum" : [
+                "window.move"
+              ]
+            }
+          },
+          "required" : [
+            "type"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
+            "anchor" : {
+              "description" : "The point that stays put with to and by. Default topLeft.",
+              "enum" : [
+                "topLeft",
+                "top",
+                "topRight",
+                "left",
+                "center",
+                "right",
+                "bottomLeft",
+                "bottom",
+                "bottomRight"
+              ]
+            },
+            "by" : {
+              "additionalProperties" : false,
+              "properties" : {
+                "dh" : {
+                  "type" : "number"
+                },
+                "dw" : {
+                  "type" : "number"
+                }
+              },
+              "required" : [],
+              "type" : "object"
+            },
+            "step" : {
+              "enum" : [
+                "grow",
+                "shrink"
+              ]
+            },
+            "to" : {
+              "additionalProperties" : false,
+              "properties" : {
+                "height" : {
+                  "exclusiveMinimum" : 0,
+                  "maximum" : 1,
+                  "type" : "number"
+                },
+                "width" : {
+                  "exclusiveMinimum" : 0,
+                  "maximum" : 1,
+                  "type" : "number"
+                }
+              },
+              "required" : [
+                "width",
+                "height"
+              ],
+              "type" : "object"
+            },
+            "type" : {
+              "enum" : [
+                "window.resize"
+              ]
+            },
+            "widths" : {
+              "description" : "The widths step goes through. Default 1/4, 1/3, 1/2, 2/3, 3/4.",
+              "items" : {
+                "exclusiveMinimum" : 0,
+                "maximum" : 1,
+                "type" : "number"
+              },
+              "minItems" : 1,
+              "type" : "array"
+            }
+          },
+          "required" : [
+            "type"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
+            "direction" : {
+              "enum" : [
+                "left",
+                "right",
+                "up",
+                "down",
+                "next",
+                "previous"
+              ]
+            },
+            "type" : {
+              "enum" : [
+                "window.focus"
+              ]
+            }
+          },
+          "required" : [
+            "type",
+            "direction"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
             "fallback" : {
               "$ref" : "#/$defs/plainAction"
             },
@@ -272,6 +519,253 @@
             "type"
           ],
           "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
+            "toggle" : {
+              "description" : "true (default): a window that already fills the usable area goes back to where it was.",
+              "type" : "boolean"
+            },
+            "type" : {
+              "enum" : [
+                "window.maximize"
+              ]
+            }
+          },
+          "required" : [
+            "type"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
+            "type" : {
+              "enum" : [
+                "window.minimize"
+              ]
+            }
+          },
+          "required" : [
+            "type"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
+            "frame" : {
+              "additionalProperties" : false,
+              "properties" : {
+                "height" : {
+                  "exclusiveMinimum" : 0,
+                  "maximum" : 1,
+                  "type" : "number"
+                },
+                "width" : {
+                  "exclusiveMinimum" : 0,
+                  "maximum" : 1,
+                  "type" : "number"
+                },
+                "x" : {
+                  "maximum" : 1,
+                  "minimum" : 0,
+                  "type" : "number"
+                },
+                "y" : {
+                  "maximum" : 1,
+                  "minimum" : 0,
+                  "type" : "number"
+                }
+              },
+              "required" : [
+                "x",
+                "y",
+                "width",
+                "height"
+              ],
+              "type" : "object"
+            },
+            "preset" : {
+              "enum" : [
+                "leftHalf",
+                "rightHalf",
+                "topHalf",
+                "bottomHalf",
+                "leftThird",
+                "centerThird",
+                "rightThird",
+                "leftTwoThirds",
+                "rightTwoThirds",
+                "topLeft",
+                "topRight",
+                "bottomLeft",
+                "bottomRight",
+                "center"
+              ]
+            },
+            "type" : {
+              "enum" : [
+                "window.place"
+              ]
+            }
+          },
+          "required" : [
+            "type"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
+            "by" : {
+              "additionalProperties" : false,
+              "description" : "Points. Positive dy moves down.",
+              "properties" : {
+                "dx" : {
+                  "type" : "number"
+                },
+                "dy" : {
+                  "type" : "number"
+                }
+              },
+              "required" : [],
+              "type" : "object"
+            },
+            "to" : {
+              "additionalProperties" : false,
+              "description" : "Fractions of the free space: 0 is the left or top edge, 0.5 centered, 1 the right or bottom edge.",
+              "properties" : {
+                "x" : {
+                  "maximum" : 1,
+                  "minimum" : 0,
+                  "type" : "number"
+                },
+                "y" : {
+                  "maximum" : 1,
+                  "minimum" : 0,
+                  "type" : "number"
+                }
+              },
+              "required" : [
+                "x",
+                "y"
+              ],
+              "type" : "object"
+            },
+            "type" : {
+              "enum" : [
+                "window.move"
+              ]
+            }
+          },
+          "required" : [
+            "type"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
+            "anchor" : {
+              "description" : "The point that stays put with to and by. Default topLeft.",
+              "enum" : [
+                "topLeft",
+                "top",
+                "topRight",
+                "left",
+                "center",
+                "right",
+                "bottomLeft",
+                "bottom",
+                "bottomRight"
+              ]
+            },
+            "by" : {
+              "additionalProperties" : false,
+              "properties" : {
+                "dh" : {
+                  "type" : "number"
+                },
+                "dw" : {
+                  "type" : "number"
+                }
+              },
+              "required" : [],
+              "type" : "object"
+            },
+            "step" : {
+              "enum" : [
+                "grow",
+                "shrink"
+              ]
+            },
+            "to" : {
+              "additionalProperties" : false,
+              "properties" : {
+                "height" : {
+                  "exclusiveMinimum" : 0,
+                  "maximum" : 1,
+                  "type" : "number"
+                },
+                "width" : {
+                  "exclusiveMinimum" : 0,
+                  "maximum" : 1,
+                  "type" : "number"
+                }
+              },
+              "required" : [
+                "width",
+                "height"
+              ],
+              "type" : "object"
+            },
+            "type" : {
+              "enum" : [
+                "window.resize"
+              ]
+            },
+            "widths" : {
+              "description" : "The widths step goes through. Default 1/4, 1/3, 1/2, 2/3, 3/4.",
+              "items" : {
+                "exclusiveMinimum" : 0,
+                "maximum" : 1,
+                "type" : "number"
+              },
+              "minItems" : 1,
+              "type" : "array"
+            }
+          },
+          "required" : [
+            "type"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
+            "direction" : {
+              "enum" : [
+                "left",
+                "right",
+                "up",
+                "down",
+                "next",
+                "previous"
+              ]
+            },
+            "type" : {
+              "enum" : [
+                "window.focus"
+              ]
+            }
+          },
+          "required" : [
+            "type",
+            "direction"
+          ],
+          "type" : "object"
         }
       ]
     }
@@ -405,6 +899,6 @@
     "version",
     "entries"
   ],
-  "title" : "Unnamed Manager config (spec v1)",
+  "title" : "Unnamed Manager config (spec v2)",
   "type" : "object"
 }

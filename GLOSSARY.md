@@ -40,16 +40,19 @@ Shortcuts below are the Mac's. On Windows, ⌘ is Ctrl. Words in a platform's ow
 | Help page | The Help page of the Bindings window: your leaders and direct bindings, the keys that work in every sequence, and links. | manual, documentation, cheat sheet |
 | Settings | The Settings window (Settings… ⌘,): Guide, keys, feedback, Open at Login. | Preferences, options |
 
-## Planned (v2)
+## Window actions (spec v2)
 
-Proposed names for the window actions. Settle them with the `ux-design` skill before they ship.
+The UI names below are settled in the spec. The words in each app's forms get their final check with the `ux-design` skill when they ship.
 
 | Term | Means | Not |
 | --- | --- | --- |
-| Focus Window | The `window.focus` action: focus the nearest window in a direction, or the next one. | switch, activate |
-| Maximize | The `window.maximize` action: fill the screen's usable area. Not full screen. | zoom, full screen, fill |
+| Focus Window | The `window.focus` action: focus the nearest window in a direction, or the next or previous one. | switch, activate |
+| Maximize | The `window.maximize` action: fill the screen's usable area, and press again to restore. Not full screen. | zoom, full screen, fill |
 | Minimize | The `window.minimize` action. | hide, dock |
-| Move Window | The `window.move` action. | position, drag |
-| Resize Window | The `window.resize` action. | size, scale |
-| Place Window | The `window.place` action: move and resize in one step, such as left half. | snap, tile, layout |
+| Move Window | The `window.move` action: move by points, or to a spot such as centered. | position, drag |
+| Resize Window | The `window.resize` action: resize by points, to a fraction, or step through widths. | size, scale |
+| Place Window | The `window.place` action: move and resize in one step, such as Left Half. | snap, tile, layout |
+| Preset | A named part of the screen for Place Window, such as Left Half or Top Right. | layout, zone, snap area |
 | Usable area | The screen without the menu bar and Dock, or the taskbar. Window sizes are fractions of it. | visible frame, work area |
+| Anchor | The point of a window that stays put while it resizes, such as its top left corner. | origin, pin, gravity |
+| Grow, Shrink | Step a window's width to the next wider or narrower of its widths. | expand, cycle |

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "Meh+W",
+      "title": "Windows"
+    },
+    {
+      "keys": "Meh+W W",
+      "title": "Window",
+      "action": "window"
+    }
+  ],
+  "actions": {
+    "window": {
+      "type": "window.resize",
+      "to": {
+        "width": 0.5,
+        "height": 0.5
+      },
+      "anchor": "middle"
+    }
+  }
+}
