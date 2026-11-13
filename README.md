@@ -16,6 +16,9 @@ The Mac app grew out of
 [Unnamed Launcher](https://github.com/juyanith/unnamed-launcher) and keeps
 its history.
 
+> [!WARNING]
+> **Work in progress.** Both apps and this config format are still being built. Features, fields and rules can change or break between versions. If you choose to use the apps, you do so at your own risk: they come as is, with no warranty of any kind (see the [license](LICENSE)).
+
 ## This repo
 
 This repo holds what both apps share. It has no app code.
