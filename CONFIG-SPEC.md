@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v8, tagged `spec-v8`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v9, tagged `spec-v9`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -388,8 +388,8 @@ Exactly one of `to`, `by` and `step`:
 
 #### `window.arrange`
 
-Spec v8. Arrange Windows lays out the windows used last, on one display,
-in a grid of **cells**. It has no toggle and keeps no memory. Focus
+Spec v8, with the focused window's cell from spec v9. Arrange Windows
+lays out the windows used last, on one display, in a grid of **cells**. It has no toggle and keeps no memory. Focus
 doesn't change.
 
 | Field | Type | Default | Meaning |
@@ -413,33 +413,53 @@ doesn't change.
   There are never more groups than cells. A `groups` in the action may be
   more than the setting, which only limits what the app picks.
 - **The grid:** the groups split the usable area equally, by width for
-  columns and by height for rows. Each group gets the same number of
-  cells. When they don't divide evenly, the extra cells go one each to
-  the leftmost columns, or to the bottom rows, so the roomiest cells are
-  on the right and at the top. A group's cells split it equally. Edges
+  columns and by height for rows. Every group splits into the same
+  number of equal parts: the cells divided by the groups, rounded up. A
+  cell is one part, or several in a row for the focused window. Edges
   round as for every frame, and each cell gets the gap, as with Place
   Window.
-- **The best cells first:** cells rank by room, the ones in a group with
-  fewer cells first, then further right, then further up. With fewer
-  windows than cells, the windows use the best cells and the others stay
-  empty.
-- **Which window goes where,** when the cells in use are all the same
-  size: the windows keep the order they're in. For columns, they sort by
-  center from left to right and fill the columns in that order, and each
-  column's windows sort from top to bottom. For rows, the same with top
-  to bottom first. Two centers within 2 points on an axis count as the
-  same there, and the other axis decides. Windows still tied go by when
-  they were used: the one used more recently goes further right, or
-  further up, so the focused window ends on the right or at the top.
-- **When the cells in use differ in size,** the focused window takes the
-  best cell, and the others keep their order in the rest.
+- **Spare parts:** when the cells don't divide evenly, the grid has more
+  parts than cells. The parts left over are the spare parts, and the
+  focused window's cell gets them (spec v9; before, the focused window
+  moved to a roomier cell on the right or at the top).
+- **Order:** windows keep the order they're in. For columns, they sort
+  by center from left to right and fill the columns in that order, and
+  each column's windows sort from top to bottom. For rows, the same with
+  top to bottom first. Two centers within 2 points on an axis count as
+  the same there, and the other axis decides. Windows still tied go by
+  when they were used: the one used more recently goes further right, or
+  further up.
+- **With no spare parts,** every window goes by that order, so with
+  windows in the same spot the focused one ends on the right or at the
+  top.
+- **With spare parts,** the focused window stays in the group its center
+  is in: the column that holds its center, or the row. A center on the
+  line between two groups counts for the one further right, or further
+  down, and a center outside the usable area for the nearest group. The
+  focused window's cell there is one part and the spare parts, up to
+  the whole group. The other windows fill the other parts in order, and
+  the windows of the focused window's group sort across it with the
+  focused one, so each stays on its side of it.
+- **More spare parts than the focused window's group has:** the focused
+  window takes its whole group. The other windows go in the other
+  groups, in order, and each of those groups splits equally between its
+  cells. When they don't divide evenly, the extra cells go one each to
+  the leftmost of those columns, or to the bottom rows, so the groups
+  with fewer cells are on the right and at the top.
+- **Fewer windows than cells:** a missing window counts as furthest left
+  and furthest down, so the empty cells end on the left or at the
+  bottom.
 - Windows that are in their cells already don't move, so the action can
   be repeated. A window that won't take its cell's size ends as with
   Place Window.
 
 With the default settings, on a wide display: `{ "type": "window.arrange" }`
-puts the two windows used last in halves. `"count": 3` gives a left
-column with two cells and the right half for the focused window.
+puts the two windows used last in halves. `"count": 3` gives the
+focused window the half it's in, and the two others stack in the other
+half. With `windows.maxColumns` at 3, `"count": 5` makes three columns:
+the focused window fills the column it's in, and the others stand two
+to a column. `"count": 8, "groups": 3` gives the focused window two
+thirds of its column, with one window in the other third.
 `"count": 3, "groups": 3` gives three equal columns. `"layout": "rows"`
 stacks the two. `"count": "all"` arranges up to four windows.
 

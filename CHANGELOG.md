@@ -2,6 +2,27 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v9
+
+- **Arrange Windows keeps the focused window where it is.** When the
+  cells don't divide evenly over the groups, the focused window stays in
+  the column or row its center is in and takes the spare room there, up
+  to the whole group. Before, it moved to a roomier cell on the right or
+  at the top. With five windows in three columns, it now fills its own
+  column.
+- **The other windows** keep their order in the rest of the grid. With
+  more spare room than the focused window's group has, other groups
+  with a single window are on the right or at the top.
+- **A group with the focused window** may hold cells of two sizes: with
+  eight windows in three columns, the focused window has two thirds of
+  its column.
+- No change to the file format: the fields, the schema's rules and the
+  90 fixtures are the same. `config.schema.json` says spec v9 in its
+  title.
+
+Support: the Mac app from the commit that pins `spec/` to `spec-v9`. Not
+yet in the Windows app: it pins `spec-v4`.
+
 ## spec-v8
 
 - **Arrange Windows:** a new action, `window.arrange`, lays out the
