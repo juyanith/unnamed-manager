@@ -46,7 +46,7 @@ The UI names below are settled in the spec. The words in each app's forms get th
 
 | Term | Means | Not |
 | --- | --- | --- |
-| Focus Window | The `window.focus` action: focus the nearest window in a direction, or the next or previous one. | switch, activate |
+| Focus Window | The `window.focus` action: focus the nearest window in a direction, the next or previous one, or the first or last one. | switch, activate |
 | Maximize | The `window.maximize` action: fill the screen's usable area, and press again to restore. Not full screen. | zoom, full screen, fill |
 | Minimize | The `window.minimize` action. | hide, dock |
 | Move Window | The `window.move` action: move by points, or to a spot such as centered. | position, drag |

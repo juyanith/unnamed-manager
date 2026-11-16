@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v5, tagged `spec-v5`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v6, tagged `spec-v6`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -260,7 +260,7 @@ Window is the exception (spec v5): see [`window.focus`](#windowfocus).
 | `window.place` | Place Window | `preset` or `frame` | Moves and resizes the window to a part of the usable area. |
 | `window.move` | Move Window | `to` or `by` | Moves the window. Its size stays the same. |
 | `window.resize` | Resize Window | `to`, `by` or `step`; `anchor`; `widths` | Resizes the window. |
-| `window.focus` | Focus Window | `direction` (required) | Focuses the nearest window in a direction, or the next or previous one. |
+| `window.focus` | Focus Window | `direction` (required) | Focuses the nearest window in a direction, the next or previous one, or the first or last one. |
 
 Window families use a dotted `type`, one family per module. Later
 families follow the same shape, such as `audio.volume` and
@@ -372,7 +372,7 @@ Exactly one of `to`, `by` and `step`:
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| `direction` | `left`, `right`, `up`, `down`, `next`, `previous` | Which window to focus. |
+| `direction` | `left`, `right`, `up`, `down`, `next`, `previous`, `first`, `last` (the last two from spec v6) | Which window to focus. |
 
 - **Candidates** are the standard, visible windows that aren't minimized,
   on the current Space or desktop of every display. Panels, the Guide and
@@ -381,13 +381,19 @@ Exactly one of `to`, `by` and `step`:
   window's center, among those within 45° of that direction. A tie goes to
   the one that overlaps more on the other axis. With none, the action fails
   ("No window to the left.").
-- **`next` and `previous`** go through the candidates in a fixed order:
-  by display, left to right, then by window center, top to bottom and then
-  left to right. They wrap at the ends. The same windows always give the
+- **The order** of the candidates is fixed: by display, left to right,
+  then by window center, left to right and then top to bottom (spec v6;
+  before, top to bottom came first). The same windows always give the
   same order, whatever was focused last.
-- **With no focused window** (spec v5), or no app in front, every
-  `direction` focuses the candidate in front of the others. With no
-  candidate, the action fails ("No window to focus.").
+- **`next` and `previous`** go through the candidates in that order. They
+  wrap at the ends.
+- **`first` and `last`** (spec v6) focus the first and the last candidate
+  in that order: the leftmost and the rightmost window. On a window that
+  is already there, nothing happens, and that isn't a failure.
+- **With no focused window** (spec v5), or no app in front, `first` and
+  `last` work as always, and every other `direction` focuses the
+  candidate in front of the others. With no candidate, the action fails
+  ("No window to focus.").
 
 ## Contexts
 
@@ -483,8 +489,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v5. They only add: new action types, new fields,
-the optional `windows` object, new rules, and what Focus Window does with no focused window. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 to v6. They only add: new action types, new fields,
+the optional `windows` object, new rules, new values for `direction`, and what Focus Window does with no focused window. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.

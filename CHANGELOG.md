@@ -2,6 +2,23 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v6
+
+- **First and Last:** `window.focus` takes two new values for
+  `direction`, `first` and `last`: the leftmost and the rightmost window.
+  They don't need a focused window, and on a window that's already there
+  nothing happens.
+- **Order changed:** the order `next`, `previous`, `first` and `last`
+  share is now by display, left to right, then by window center, left to
+  right and then top to bottom. Before, top to bottom came before left to
+  right, so stacked windows now come in a different order.
+- `config.schema.json` lists `first` and `last`.
+- 81 fixtures (13 valid, 68 invalid): `valid/window-focus-ends.json` is
+  new.
+
+Support: the Mac app from the commit that pins `spec/` to `spec-v6`. Not
+yet in the Windows app: it pins `spec-v4`.
+
 ## spec-v5
 
 - **Focus Window with no focused window:** `window.focus` no longer fails

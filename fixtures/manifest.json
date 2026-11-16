@@ -1,6 +1,6 @@
 {
   "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
-  "spec": "v4",
+  "spec": "v6",
   "fixtures": [
     {
       "file": "valid/minimal.json",
@@ -561,6 +561,10 @@
     },
     {
       "file": "valid/window-actions.json",
+      "valid": true
+    },
+    {
+      "file": "valid/window-focus-ends.json",
       "valid": true
     },
     {
