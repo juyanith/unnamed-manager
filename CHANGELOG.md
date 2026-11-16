@@ -2,6 +2,23 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v8
+
+- **Arrange Windows:** a new action, `window.arrange`, lays out the
+  windows used last, on the focused window's display, in a grid of
+  columns or rows, with the gap. Its fields are `count` (2 to 8, or
+  `"all"`), `groups` and `layout` (`auto`, `columns`, `rows`).
+- **Two settings:** `windows.maxColumns` and `windows.maxRows`, from 1 to
+  8, both 2 by default. They limit the grid the action picks by itself.
+- **A new rule,** `bad-window-limit`, for a setting out of that range.
+  `bad-window-value` now also covers `layout`, `count` and `groups`.
+- `config.schema.json` lists the action and the settings.
+- 90 fixtures (15 valid, 75 invalid): `valid/window-arrange.json`, five
+  `invalid/window-arrange-*.json` and `invalid/window-limit.json` are new.
+
+Support: the Mac app from the commit that pins `spec/` to `spec-v8`. Not
+yet in the Windows app: it pins `spec-v4`.
+
 ## spec-v7
 
 - **Fill:** `window.maximize` is now `window.fill`, with the UI name

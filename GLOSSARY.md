@@ -46,6 +46,9 @@ The UI names below are settled in the spec. The words in each app's forms get th
 
 | Term | Means | Not |
 | --- | --- | --- |
+| Arrange Windows | The `window.arrange` action: lay out the windows used last, on one display, in a grid of columns or rows. | tile, pair, snap |
+| Cell | One part of the grid Arrange Windows makes, for one window. | slot, tile, pane |
+| Group | A column or a row of cells in that grid. | stack, split |
 | Fill | The `window.fill` action: fill the screen's usable area, less the gap, and press again to restore. Not full screen. `window.maximize` is its old name. | maximize, zoom, full screen |
 | Focus Window | The `window.focus` action: focus the nearest window in a direction, the next or previous one, or the first or last one. | switch, activate |
 | Minimize | The `window.minimize` action. | hide, dock |

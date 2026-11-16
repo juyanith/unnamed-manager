@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v7, tagged `spec-v7`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v8, tagged `spec-v8`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -103,6 +103,8 @@ Spec v3.
 | Field | Type | Default | Meaning |
 | --- | --- | --- | --- |
 | `gap` | number ≥ 0 | `8` | Points that [Place Window](#windowplace) and [Fill](#windowfill) leave between a window and the usable area's edges, and between windows placed side by side. `0` places windows edge to edge. |
+| `maxColumns` | integer from 1 to 8 | `2` | The most columns [Arrange Windows](#windowarrange) picks when its action doesn't give `groups` (spec v8). |
+| `maxRows` | integer from 1 to 8 | `2` | The most rows it picks. With `"count": "all"`, it arranges at most `maxColumns` times `maxRows` windows. |
 
 ## Keys
 
@@ -261,6 +263,7 @@ Window is the exception (spec v5): see [`window.focus`](#windowfocus).
 | `window.place` | Place Window | `preset` or `frame` | Moves and resizes the window to a part of the usable area. |
 | `window.move` | Move Window | `to` or `by` | Moves the window. Its size stays the same. |
 | `window.resize` | Resize Window | `to`, `by` or `step`; `anchor`; `widths` | Resizes the window. |
+| `window.arrange` | Arrange Windows | `count`, `groups`, `layout` | Lays out the windows used last, on the focused window's display, in a grid (spec v8). |
 | `window.focus` | Focus Window | `direction` (required) | Focuses the nearest window in a direction, the next or previous one, or the first or last one. |
 
 Window families use a dotted `type`, one family per module. Later
@@ -284,8 +287,8 @@ families follow the same shape, such as `audio.volume` and
   `round((x + width) × W)`. So the left half and the right half share an
   edge, with no gap and no overlap.
 - **The gap** (spec v3, `windows.gap`, rounded to whole points) applies
-  to Place Window and, from spec v7, to Fill. Fill's frame is the whole
-  usable area. After rounding a frame's edges, each edge on
+  to Place Window and, from spec v7, to Fill, and to each cell of Arrange
+  Windows (spec v8). Fill's frame is the whole usable area. After rounding a frame's edges, each edge on
   the usable area's edge moves in by the whole gap, and each edge inside
   it moves in by half: a left or top edge by the larger half, a right or
   bottom edge by the smaller, so neighbours end exactly one gap apart.
@@ -383,6 +386,63 @@ Exactly one of `to`, `by` and `step`:
   area's right edge, when it keeps its right edge.
 - `anchor` goes only with `to` and `by`, and `widths` only with `step`.
 
+#### `window.arrange`
+
+Spec v8. Arrange Windows lays out the windows used last, on one display,
+in a grid of **cells**. It has no toggle and keeps no memory. Focus
+doesn't change.
+
+| Field | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `count` | integer from 2 to 8, or `"all"` | `2` | How many cells the grid has: one for the focused window and one for each window used before it. `"all"` makes a cell for every window on the display, up to the limit below. |
+| `groups` | integer from 1 to 8 | the app picks | How many columns, or rows, the grid has. With a number for `count`, at most that number. |
+| `layout` | `auto`, `columns`, `rows` | `auto` | Whether the groups are columns or rows. `auto` is `columns` on a usable area at least as wide as it is tall, and `rows` on a taller one. |
+
+- **The windows** are Focus Window's candidates on the display of the
+  focused window: the display that holds the largest part of it. Windows
+  on other displays are never counted or moved. They're taken from the
+  front: the focused window, then the others, front to back, which is
+  the order they were used in. With no focused window, the candidate in
+  front of the others counts as the focused one. With no candidate, the
+  action fails ("No window to arrange.").
+- **How many cells:** `count`. With `"all"`, the number of windows on the
+  display, at most `windows.maxColumns` times `windows.maxRows`, and never
+  more than 8. Windows past that stay as they are.
+- **How many groups:** `groups`. Without it, as many groups as cells, at
+  most `windows.maxColumns` for columns or `windows.maxRows` for rows.
+  There are never more groups than cells. A `groups` in the action may be
+  more than the setting, which only limits what the app picks.
+- **The grid:** the groups split the usable area equally, by width for
+  columns and by height for rows. Each group gets the same number of
+  cells. When they don't divide evenly, the extra cells go one each to
+  the leftmost columns, or to the bottom rows, so the roomiest cells are
+  on the right and at the top. A group's cells split it equally. Edges
+  round as for every frame, and each cell gets the gap, as with Place
+  Window.
+- **The best cells first:** cells rank by room, the ones in a group with
+  fewer cells first, then further right, then further up. With fewer
+  windows than cells, the windows use the best cells and the others stay
+  empty.
+- **Which window goes where,** when the cells in use are all the same
+  size: the windows keep the order they're in. For columns, they sort by
+  center from left to right and fill the columns in that order, and each
+  column's windows sort from top to bottom. For rows, the same with top
+  to bottom first. Two centers within 2 points on an axis count as the
+  same there, and the other axis decides. Windows still tied go by when
+  they were used: the one used more recently goes further right, or
+  further up, so the focused window ends on the right or at the top.
+- **When the cells in use differ in size,** the focused window takes the
+  best cell, and the others keep their order in the rest.
+- Windows that are in their cells already don't move, so the action can
+  be repeated. A window that won't take its cell's size ends as with
+  Place Window.
+
+With the default settings, on a wide display: `{ "type": "window.arrange" }`
+puts the two windows used last in halves. `"count": 3` gives a left
+column with two cells and the right half for the focused window.
+`"count": 3, "groups": 3` gives three equal columns. `"layout": "rows"`
+stacks the two. `"count": "all"` arranges up to four windows.
+
 #### `window.focus`
 
 | Field | Type | Meaning |
@@ -448,6 +508,7 @@ stop a config from loading.
 | `same-cancel-back` | The cancel and back keys are the same. |
 | `negative-delay` | `hudDelayMs` or `timeoutMs` is negative. |
 | `negative-gap` | `windows.gap` is negative. |
+| `bad-window-limit` | `windows.maxColumns` or `windows.maxRows` isn't from 1 to 8. |
 | `bad-ui-value` | `theme` or `position` isn't one of its values. |
 | `reserved-chord` | A leader or direct binding uses a chord this platform reserves. |
 | `undefined-action` | A binding names an action that isn't in `actions`. |
@@ -461,7 +522,7 @@ stop a config from loading.
 | `bad-app-id` | Windows only: an `exe` doesn't end in `.exe`, an `appId` is blank, or a context's `apps` has a blank string. |
 | `bad-icon` | Windows only: an entry's `icon` is neither a `U+` code point nor a path. |
 | `bad-fraction` | A fraction is out of its range, a `frame` runs past the usable area, or `widths` is empty. |
-| `bad-window-value` | A window action's `preset`, `direction`, `step` or `anchor` isn't one of its values. |
+| `bad-window-value` | A window action's `preset`, `direction`, `step`, `anchor` or `layout` isn't one of its values. Or Arrange Windows' `count` isn't `"all"` or from 2 to 8, or its `groups` isn't from 1 to 8, or is more than a `count` that's a number. |
 | `unsupported-action` | An action's `type` is in the spec, but this platform's app can't do it yet. |
 
 ### Warnings
@@ -504,8 +565,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v7. They only add: new action types, new fields,
-the optional `windows` object, new rules, new values for `direction`, what Focus Window does with no focused window, and a new name for a type whose old name still loads. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 to v8. They only add: new action types, new fields,
+the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, and a new name for a type whose old name still loads. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.

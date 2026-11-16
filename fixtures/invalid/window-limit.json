@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "windows": {
+    "maxColumns": 0
+  },
+  "entries": [
+    {
+      "keys": "Meh+W",
+      "title": "Windows"
+    },
+    {
+      "keys": "Meh+W A",
+      "title": "Arrange",
+      "action": "arrange"
+    }
+  ],
+  "actions": {
+    "arrange": {
+      "type": "window.arrange"
+    }
+  }
+}

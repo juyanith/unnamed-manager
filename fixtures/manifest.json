@@ -1,6 +1,6 @@
 {
   "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
-  "spec": "v7",
+  "spec": "v8",
   "fixtures": [
     {
       "file": "valid/minimal.json",
@@ -739,6 +739,64 @@
       "errors": [
         {
           "rule": "wrong-type"
+        }
+      ]
+    },
+    {
+      "file": "valid/window-arrange.json",
+      "valid": true
+    },
+    {
+      "file": "invalid/window-arrange-count.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-arrange-count-word.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-arrange-count-type.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "wrong-type"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-arrange-groups.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-arrange-layout.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-limit.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-limit"
         }
       ]
     },

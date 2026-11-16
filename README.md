@@ -2,7 +2,7 @@
 
 A keyboard-first manager for your desktop: press a hotkey or a leader
 sequence to start an app, send a shortcut, or move, resize, focus,
-fill and minimize windows. Actions are modules, so more can come
+fill, arrange and minimize windows. Actions are modules, so more can come
 later (volume, display resolution).
 
 There are two native apps, one per platform, with one config format:
