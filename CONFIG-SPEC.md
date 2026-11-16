@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v4, tagged `spec-v4`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v5, tagged `spec-v5`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -250,7 +250,8 @@ fields depend on it. Unknown fields are errors.
 
 Spec v2. Every window action works on the **focused window of the app in
 front**, the same app the Guide leaves in front. With no focused window,
-the action fails, and the failure shows as for any other action.
+the action fails, and the failure shows as for any other action. Focus
+Window is the exception (spec v5): see [`window.focus`](#windowfocus).
 
 | `type` | UI name | Fields | Does |
 | --- | --- | --- | --- |
@@ -384,6 +385,9 @@ Exactly one of `to`, `by` and `step`:
   by display, left to right, then by window center, top to bottom and then
   left to right. They wrap at the ends. The same windows always give the
   same order, whatever was focused last.
+- **With no focused window** (spec v5), or no app in front, every
+  `direction` focuses the candidate in front of the others. With no
+  candidate, the action fails ("No window to focus.").
 
 ## Contexts
 
@@ -479,8 +483,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v4. They only add: new action types, new fields,
-the optional `windows` object, and new rules. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 to v5. They only add: new action types, new fields,
+the optional `windows` object, new rules, and what Focus Window does with no focused window. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.

@@ -2,6 +2,17 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v5
+
+- **Focus Window with no focused window:** `window.focus` no longer fails
+  when the app in front has no focused window, or no app is in front.
+  Every `direction` then focuses the candidate window in front of the
+  others. With no candidate it fails with "No window to focus."
+- No change to the format, the schema or the fixtures.
+
+Support: the Mac app from the commit that pins `spec/` to `spec-v5`. Not
+yet in the Windows app: it pins `spec-v4`.
+
 ## spec-v4
 
 - **Windows app names:** Use Application and contexts name an app on
