@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v6, tagged `spec-v6`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v7, tagged `spec-v7`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -102,7 +102,7 @@ Spec v3.
 
 | Field | Type | Default | Meaning |
 | --- | --- | --- | --- |
-| `gap` | number ≥ 0 | `8` | Points that [Place Window](#windowplace) leaves between a window and the usable area's edges, and between windows placed side by side. `0` places windows edge to edge. |
+| `gap` | number ≥ 0 | `8` | Points that [Place Window](#windowplace) and [Fill](#windowfill) leave between a window and the usable area's edges, and between windows placed side by side. `0` places windows edge to edge. |
 
 ## Keys
 
@@ -255,7 +255,8 @@ Window is the exception (spec v5): see [`window.focus`](#windowfocus).
 
 | `type` | UI name | Fields | Does |
 | --- | --- | --- | --- |
-| `window.maximize` | Maximize | `toggle` (default `true`) | Fills the usable area. Not full screen. With `toggle`, a window that already fills it goes back to the frame it had before. |
+| `window.fill` | Fill | `toggle` (default `true`) | Fills the usable area, less the gap. Not full screen. With `toggle`, a window that already fills it goes back to the frame it had before. |
+| `window.maximize` | Fill | `toggle` (default `true`) | The old name of `window.fill`, from before spec v7. The same action. |
 | `window.minimize` | Minimize | none | Minimizes the window, as the platform's own shortcut does (⌘M, Win+Down). Focus moves the same way. |
 | `window.place` | Place Window | `preset` or `frame` | Moves and resizes the window to a part of the usable area. |
 | `window.move` | Move Window | `to` or `by` | Moves the window. Its size stays the same. |
@@ -283,7 +284,8 @@ families follow the same shape, such as `audio.volume` and
   `round((x + width) × W)`. So the left half and the right half share an
   edge, with no gap and no overlap.
 - **The gap** (spec v3, `windows.gap`, rounded to whole points) applies
-  to Place Window only. After rounding its frame's edges, each edge on
+  to Place Window and, from spec v7, to Fill. Fill's frame is the whole
+  usable area. After rounding a frame's edges, each edge on
   the usable area's edge moves in by the whole gap, and each edge inside
   it moves in by half: a left or top edge by the larger half, a right or
   bottom edge by the smaller, so neighbours end exactly one gap apart.
@@ -292,19 +294,32 @@ families follow the same shape, such as `audio.volume` and
   edges. A window always keeps at least 1 point of width and height.
 - **A window that won't take a size** (a minimum, a maximum, a fixed
   size) ends as close as it allows, and the action doesn't fail. It keeps
-  the edge that's on the usable area's edge (with Place Window, one gap
-  in from it), or its center for a centered frame.
+  the edge that's on the usable area's edge (with Place Window and Fill,
+  one gap in from it), or its center for a centered frame.
 - **A window never ends off screen.** After a move or a resize, at least
   40 points of its title bar stay on the screen it's on.
 
-#### `window.maximize`
+#### `window.fill`
+
+Spec v7. Before, this type was `window.maximize`, with the UI name
+Maximize, and it left no gap.
 
 | Field | Type | Default | Meaning |
 | --- | --- | --- | --- |
-| `toggle` | boolean | `true` | When the window fills the usable area already (within 2 points on every edge), put it back where it was before Maximize. |
+| `toggle` | boolean | `true` | When the window fills the usable area already (within 2 points of the frame Fill gives it, on every edge), put it back where it was before Fill. |
 
-The frame before Maximize is kept per window, in memory only. A window
-moved or resized since then forgets it, and Maximize leaves it as it is.
+Fill leaves the gap from [`windows`](#windows) on every side of the
+window, as Place Window does for a frame that covers the whole usable
+area. With a gap of `0`, the window goes edge to edge.
+
+The frame before Fill is kept per window, in memory only. A window
+moved or resized since then forgets it, and Fill leaves it as it is.
+
+**`window.maximize`** is the old name of this type and still loads. An
+app reads it as `window.fill`: the same field, the same rules, the same
+gap. When an app saves a file, it keeps the name the file uses, so an app
+on an older spec can still read the file. A new action gets
+`window.fill`. The old name stays until a later spec says otherwise.
 
 #### `window.place`
 
@@ -489,8 +504,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v6. They only add: new action types, new fields,
-the optional `windows` object, new rules, new values for `direction`, and what Focus Window does with no focused window. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 to v7. They only add: new action types, new fields,
+the optional `windows` object, new rules, new values for `direction`, what Focus Window does with no focused window, and a new name for a type whose old name still loads. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.

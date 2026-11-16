@@ -1,6 +1,6 @@
 {
   "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
-  "spec": "v6",
+  "spec": "v7",
   "fixtures": [
     {
       "file": "valid/minimal.json",
@@ -722,6 +722,19 @@
     },
     {
       "file": "invalid/window-toggle-type.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "wrong-type"
+        }
+      ]
+    },
+    {
+      "file": "valid/window-fill.json",
+      "valid": true
+    },
+    {
+      "file": "invalid/window-fill-toggle-type.json",
       "valid": false,
       "errors": [
         {

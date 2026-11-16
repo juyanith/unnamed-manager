@@ -2,6 +2,24 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v7
+
+- **Fill:** `window.maximize` is now `window.fill`, with the UI name
+  Fill. Its `toggle` field is the same.
+- **Fill leaves the gap:** the window ends one `windows.gap` in from
+  every edge of the usable area, as with Place Window. Before, it went
+  edge to edge. With a gap of `0` it still does.
+- **The old name still loads:** `window.maximize` is read as
+  `window.fill`, gap included. An app keeps the name a file uses when it
+  saves, and writes `window.fill` for a new action.
+- `config.schema.json` lists `window.fill`, and `window.maximize` as its
+  old name.
+- 83 fixtures (14 valid, 69 invalid): `valid/window-fill.json` and
+  `invalid/window-fill-toggle-type.json` are new.
+
+Support: the Mac app from the commit that pins `spec/` to `spec-v7`. Not
+yet in the Windows app: it pins `spec-v4`.
+
 ## spec-v6
 
 - **First and Last:** `window.focus` takes two new values for
