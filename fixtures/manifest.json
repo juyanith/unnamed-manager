@@ -1,6 +1,6 @@
 {
   "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
-  "spec": "v11",
+  "spec": "v12",
   "fixtures": [
     {
       "file": "valid/minimal.json",
@@ -801,6 +801,10 @@
       ]
     },
     {
+      "file": "valid/window-focus-distances.json",
+      "valid": true
+    },
+    {
       "file": "valid/window-gap.json",
       "valid": true
     },
@@ -981,6 +985,15 @@
       "errors": [
         {
           "rule": "negative-gap"
+        }
+      ]
+    },
+    {
+      "file": "invalid/negative-window-distance.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "negative-window-distance"
         }
       ]
     },

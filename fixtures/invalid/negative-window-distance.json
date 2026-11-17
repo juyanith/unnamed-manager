@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "Meh+W",
+      "title": "Windows"
+    },
+    {
+      "keys": "Meh+W L",
+      "title": "Focus right",
+      "action": "window-focus-right"
+    }
+  ],
+  "windows": {
+    "rowTolerance": -1
+  }
+}

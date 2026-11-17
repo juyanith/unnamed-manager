@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v11, tagged `spec-v11`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v12, tagged `spec-v12`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -105,6 +105,9 @@ Spec v3.
 | `gap` | number ≥ 0 | `8` | Points that [Place Window](#windowplace) and [Fill](#windowfill) leave between a window and the usable area's edges, and between windows placed side by side. `0` places windows edge to edge. |
 | `maxColumns` | integer from 1 to 8 | `2` | The most columns [Arrange Windows](#windowarrange) picks when its action doesn't give `groups` (spec v8). |
 | `maxRows` | integer from 1 to 8 | `2` | The most rows it picks. With `"count": "all"`, it arranges at most `maxColumns` times `maxRows` windows. |
+| `minVisible` | number ≥ 0 | `20` | Spec v12. Points on a side of the square a window's visible part must hold for [Focus Window](#windowfocus) and [Swap Window](#windowswap) to count it, and points it must share with the focused window to be in line. `0` counts any window with some part showing. |
+| `rowTolerance` | number ≥ 0 | `20` | Spec v12. Windows whose tops are within this many points share a row in Focus Window's order. |
+| `tieTolerance` | number ≥ 0 | `2` | Spec v12. Gaps within this many points count as the same when Focus Window picks a window in a direction. |
 
 ## Keys
 
@@ -537,26 +540,55 @@ stacks the two. `"count": "all"` arranges up to four windows.
 - **Candidates** are the standard, visible windows that aren't minimized,
   on the current Space or desktop of every display. Panels, the Guide and
   the app's own windows are skipped.
+- **Only windows you can see count** (spec v12). A candidate's visible
+  part is its frame minus every candidate in front of it, on any display.
+  A candidate counts only when its visible part holds a square
+  `windows.minVisible` points on a side (20 by default). A window hidden
+  behind others, or showing only a thin strip, is skipped by every
+  `target`. The focused window always counts.
 - **With `"scope": "display"`** (spec v10), the candidates are only those
   on the focused window's display: the display that holds the largest
   part of it. With no focused window, the display of the candidate in
   front of the others. Every `target` then stays on that display, and
-  the order below is that display's.
-- **A direction** picks the window whose center is nearest the focused
-  window's center, among those within 45° of that direction. A tie goes to
-  the one that overlaps more on the other axis. With none, the action fails
-  ("No window to the left.").
-- **The order** of the candidates is fixed: by display, left to right,
-  then by window center, left to right and then top to bottom (spec v6;
-  before, top to bottom came first). The same windows always give the
-  same order, whatever was focused last.
+  the order below is that display's. Windows on other displays still
+  hide the ones behind them.
+- **A direction** (spec v12) looks at the part of each candidate's
+  visible part that lies past the focused window's center in that
+  direction. A candidate with no such part isn't there. Of the rest:
+  - A candidate is **in line** when that part shares at least
+    `windows.minVisible` points with the focused window across the
+    direction: some of the same height for `left` and `right`, some of
+    the same width for `up` and `down`. Candidates in line come first.
+  - Of those in line, the nearest wins: the smallest gap from the
+    focused window's edge on that side to the near edge of that part, or
+    no gap when they overlap. Gaps within `windows.tieTolerance` points
+    (2 by default) count as the same. Then the one that shares more,
+    then the one whose center is nearest the focused window's center
+    across the direction, then the one in front.
+  - With none in line, the window whose center is nearest the focused
+    window's center wins, among those within 45° of that direction,
+    measured to the center of that part. A tie goes to the one in front.
+  - With none, the action fails ("No window to the left.").
+  - So a window inside a larger one goes to the larger one in every
+    direction, and a window directly below a wide one is found even when
+    its center is far to the side.
+- **The order** of the candidates is fixed (spec v12; before, by center,
+  left to right first): by display, left to right, then in rows, as text
+  reads. Each window's place is the top left corner of the box around
+  its visible part. The highest window starts a row, and every window
+  whose top is within `windows.rowTolerance` points of that one's (20 by
+  default) joins it. Rows go top to bottom, and each row goes left to
+  right. The same windows in the same places always give the same
+  order, whatever was focused last. A window that becomes hidden leaves
+  the order, and the ones after it move up.
 - **`next` and `previous`** go through the candidates in that order. They
   wrap at the ends.
 - **`first` and `last`** (spec v6) focus the first and the last candidate
-  in that order: the leftmost and the rightmost window. On a window that
-  is already there, nothing happens, and that isn't a failure.
+  in that order: the top left and the bottom right window. On a window
+  that is already there, nothing happens, and that isn't a failure.
 - **A number** (spec v11) focuses the candidate at that place in the
-  order, counting from 1, so `1` is `first`. It works as `first` and
+  order, counting from 1, so `1` is `first`. In a grid of three columns
+  and two rows, `2` is the top middle window. It works as `first` and
   `last` do. Past the last candidate, the action fails ("No window 5.
   There are 3.").
 - **With no focused window** (spec v5), or no app in front, `first`,
@@ -576,7 +608,8 @@ on in the same direction.
 | `scope` | `all`, `display` | `all` | As for Focus Window: windows on every display, or only on the focused window's display. |
 
 - **Candidates and their order** are Focus Window's, for the same
-  `scope`. Its `target` takes the same values, and from spec v11 so does
+  `scope`, so a window you can't see is never swapped with (spec v12).
+  Its `target` takes the same values, and from spec v11 so does
   Focus Window's.
 - **A direction** picks the window Focus Window would focus. With none,
   the action fails ("No window to the left.").
@@ -636,6 +669,7 @@ stop a config from loading.
 | `negative-delay` | `hudDelayMs` or `timeoutMs` is negative. |
 | `negative-gap` | `windows.gap` is negative. |
 | `bad-window-limit` | `windows.maxColumns` or `windows.maxRows` isn't from 1 to 8. |
+| `negative-window-distance` | `windows.minVisible`, `windows.rowTolerance` or `windows.tieTolerance` is negative (spec v12). |
 | `bad-ui-value` | `theme` or `position` isn't one of its values. |
 | `reserved-chord` | A leader or direct binding uses a chord this platform reserves. |
 | `undefined-action` | A binding names an action that isn't in `actions` and isn't a [built-in action](#built-in-actions). |
@@ -692,8 +726,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v11. They only add: new action types, new fields,
-the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, and a new name for a type or a field whose old name still loads. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 to v12. They only add: new action types, new fields,
+the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, and which windows Focus Window and Swap Window see and their order (spec v6 and v12). Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.

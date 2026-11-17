@@ -2,6 +2,35 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v12
+
+- **Only windows you can see:** Focus Window and Swap Window skip a
+  window whose visible part, its frame minus the windows in front of it,
+  doesn't hold a square `windows.minVisible` points on a side. That goes
+  for every `target`: directions, `next`, `previous`, `first`, `last`
+  and numbers.
+- **Directions use edges:** a direction looks at the visible part past
+  the focused window's center. Windows in line with the focused window
+  come first, nearest edge first, with gaps within
+  `windows.tieTolerance` points counting as the same. The 45° rule on
+  centers is now the fallback for windows not in line. A window inside a
+  larger one goes to the larger one in every direction.
+- **Order changed:** by display, then in rows as text reads, by the top
+  left of each visible part, with tops within `windows.rowTolerance`
+  points in one row. Before, by center, left to right and then top to
+  bottom, so in a grid `2` was the window below the first one and is now
+  the one beside it.
+- **Three settings** in `windows`: `minVisible` (default 20),
+  `rowTolerance` (default 20) and `tieTolerance` (default 2), each a
+  number from 0. A negative one is `negative-window-distance`.
+- No field changed meaning, so `version` stays `1`.
+- `config.schema.json` lists the three settings. The title says spec v12.
+- 112 fixtures (20 valid, 92 invalid): `valid/window-focus-distances.json`
+  and `invalid/negative-window-distance.json` are new.
+
+Support: the Mac app from the commit that pins `spec/` to `spec-v12`. Not
+yet in the Windows app: it pins `spec-v4`.
+
 ## spec-v11
 
 - **Built-in actions:** a binding can name an action that isn't in
