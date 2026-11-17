@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v12, tagged `spec-v12`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v13, tagged `spec-v13`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps, and `windows.exclude`, apps whose windows Focus Window and Swap Window leave out. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -108,6 +108,7 @@ Spec v3.
 | `minVisible` | number ≥ 0 | `20` | Spec v12. Points on a side of the square a window's visible part must hold for [Focus Window](#windowfocus) and [Swap Window](#windowswap) to count it, and points it must share with the focused window to be in line. `0` counts any window with some part showing. |
 | `rowTolerance` | number ≥ 0 | `20` | Spec v12. Windows whose tops are within this many points share a row in Focus Window's order. |
 | `tieTolerance` | number ≥ 0 | `2` | Spec v12. Gaps within this many points count as the same when Focus Window picks a window in a direction. |
+| `exclude` | array of strings | `[]` | Spec v13. Apps whose windows [Focus Window](#windowfocus) and [Swap Window](#windowswap) never pick, for any `target`. Written as a context's [`apps`](#contexts) are: bundle ids on the Mac, an `exe` or an `appId` on Windows. |
 
 ## Keys
 
@@ -275,8 +276,8 @@ default. Names are case-sensitive, like ids.
 | `window.place` | `preset` | `window-place-` and a preset | `window-place-left-half`, `window-place-top-right` |
 | `window.resize` | `step` | `window-resize-grow`, `window-resize-shrink` | the default widths, as `step` uses them |
 | `window.arrange` | `count` | `window-arrange`, and `window-arrange-` and a count from 2 to 8 or `all` | `window-arrange-3`, `window-arrange-all` |
-| `window.focus` | `target` | `window-focus-` and a target: a word, or a number from 1 | `window-focus-left`, `window-focus-next`, `window-focus-2` |
-| `window.swap` | `target` | `window-swap-` and a target | `window-swap-left`, `window-swap-first`, `window-swap-3` |
+| `window.focus` | `target` | `window-focus-` and a target: a word, or a number from 1 | `window-focus-left`, `window-focus-next`, `window-focus-recent`, `window-focus-2` |
+| `window.swap` | `target` | `window-swap-` and a target | `window-swap-left`, `window-swap-first`, `window-swap-recent`, `window-swap-3` |
 | `help` | none | `help` | Show Help |
 | `noop` | none | `noop` | Do Nothing |
 
@@ -317,6 +318,14 @@ the screen when that's turned on in Accessibility settings, and
 `MessageBeep(MB_OK)` on Windows. Other failures, such as no focused
 window, don't play it.
 
+**The focus history** (spec v13): while it runs, the app keeps the
+windows that had focus, the most recent first, each window once. A
+window goes first each time it gets focus, however it got it: a click,
+the platform's app switcher, or an action. The history isn't in the
+config, and it starts empty when the app starts. An app may keep only
+the last few windows, but at least 10. Focus Window's and Swap Window's
+`recent` target reads it.
+
 | `type` | UI name | Fields | Does |
 | --- | --- | --- | --- |
 | `window.fill` | Fill | `toggle` (default `true`) | Fills the usable area, less the gap. Not full screen. With `toggle`, a window that already fills it goes back to the frame it had before. |
@@ -326,8 +335,8 @@ window, don't play it.
 | `window.move` | Move Window | `to` or `by` | Moves the window. Its size stays the same. |
 | `window.resize` | Resize Window | `to`, `by` or `step`; `anchor`; `widths` | Resizes the window. |
 | `window.arrange` | Arrange Windows | `count`, `groups`, `layout` | Lays out the windows used last, on the focused window's display, in a grid (spec v8). |
-| `window.focus` | Focus Window | `target` (required; `direction` before spec v11), `scope` | Focuses the nearest window in a direction, the next or previous one, the first or last one, or one by number. |
-| `window.swap` | Swap Window | `target` (required), `scope` | Trades place and size with the window in a direction, the next or previous one, the first or last one, or one by number (spec v10). |
+| `window.focus` | Focus Window | `target` (required; `direction` before spec v11), `scope` | Focuses the nearest window in a direction, the next or previous one, the first or last one, one by number, or the window used before (spec v13). |
+| `window.swap` | Swap Window | `target` (required), `scope` | Trades place and size with the window in a direction, the next or previous one, the first or last one, one by number (spec v10), or the window used before (spec v13). |
 
 Window families use a dotted `type`, one family per module. Later
 families follow the same shape, such as `audio.volume` and
@@ -530,7 +539,7 @@ stacks the two. `"count": "all"` arranges up to four windows.
 
 | Field | Type | Default | Meaning |
 | --- | --- | --- | --- |
-| `target` | `left`, `right`, `up`, `down`, `next`, `previous`, `first`, `last` (the last two from spec v6), or an integer from 1 (spec v11) | required | Which window to focus. |
+| `target` | `left`, `right`, `up`, `down`, `next`, `previous`, `first`, `last` (the last two from spec v6), `recent` (spec v13), or an integer from 1 (spec v11) | required | Which window to focus. |
 | `scope` | `all`, `display` | `all` | Spec v10. `all`: windows on every display. `display`: only the windows on the focused window's display. |
 
 - **`direction`** is the old name of `target`, from before spec v11. It
@@ -539,13 +548,16 @@ stacks the two. `"count": "all"` arranges up to four windows.
   file uses, as with `window.maximize`, and a new action gets `target`.
 - **Candidates** are the standard, visible windows that aren't minimized,
   on the current Space or desktop of every display. Panels, the Guide and
-  the app's own windows are skipped.
+  the app's own windows are skipped, and so are the windows of apps in
+  `windows.exclude` (spec v13). The focused window is still where a
+  direction or `next` starts when its app is excluded, but it isn't in
+  the order.
 - **Only windows you can see count** (spec v12). A candidate's visible
   part is its frame minus every candidate in front of it, on any display.
   A candidate counts only when its visible part holds a square
   `windows.minVisible` points on a side (20 by default). A window hidden
   behind others, or showing only a thin strip, is skipped by every
-  `target`. The focused window always counts.
+  `target` but `recent`. The focused window always counts.
 - **With `"scope": "display"`** (spec v10), the candidates are only those
   on the focused window's display: the display that holds the largest
   part of it. With no focused window, the display of the candidate in
@@ -591,8 +603,23 @@ stacks the two. `"count": "all"` arranges up to four windows.
   and two rows, `2` is the top middle window. It works as `first` and
   `last` do. Past the last candidate, the action fails ("No window 5.
   There are 3.").
+- **`recent`** (spec v13) focuses the window used before: the first
+  window in the [focus history](#window-actions) that is a candidate and
+  isn't the focused window. Whether you can see it doesn't matter, so it
+  can be behind other windows; `scope` still applies. The window that
+  had focus becomes the one used before, so pressing again goes back.
+  When the window used before was closed or minimized, it's the one used
+  before that. With an empty history, as right after the app starts, it's
+  the candidate in front of the others, after the focused window. With
+  none, the action fails ("No window used before.").
+- **On another Space** (spec v13): on the Mac, the window used before
+  can also be on another Space. Focusing it moves to that Space, as the
+  app switcher does. On Windows, a window on another virtual desktop
+  counts when the app can bring it forward. Every other `target` only
+  sees the current Space or desktop.
 - **With no focused window** (spec v5), or no app in front, `first`,
-  `last` and numbers work as always, and every other `target` focuses the
+  `last` and numbers work as always, `recent` focuses the first
+  candidate in the history, and every other `target` focuses the
   candidate in front of the others. With no candidate, the action fails
   ("No window to focus.").
 
@@ -604,11 +631,13 @@ on in the same direction.
 
 | Field | Type | Default | Meaning |
 | --- | --- | --- | --- |
-| `target` | `left`, `right`, `up`, `down`, `next`, `previous`, `first`, `last`, or an integer from 1 | required | Which window to swap with. |
+| `target` | `left`, `right`, `up`, `down`, `next`, `previous`, `first`, `last`, `recent` (spec v13), or an integer from 1 | required | Which window to swap with. |
 | `scope` | `all`, `display` | `all` | As for Focus Window: windows on every display, or only on the focused window's display. |
 
 - **Candidates and their order** are Focus Window's, for the same
-  `scope`, so a window you can't see is never swapped with (spec v12).
+  `scope`, so a window you can't see is never swapped with (spec v12),
+  except by `recent`, and a window of an app in `windows.exclude` never
+  is (spec v13).
   Its `target` takes the same values, and from spec v11 so does
   Focus Window's.
 - **A direction** picks the window Focus Window would focus. With none,
@@ -621,6 +650,12 @@ on in the same direction.
   `2` the focused window is the second. Past the last window, the action
   fails ("No window 5. There are 3."). A target that is the focused
   window does nothing, and that isn't a failure.
+- **`recent`** (spec v13) is the window Focus Window's `recent` would
+  focus, which can be behind other windows, but only on the current
+  Space or desktop, since trading frames doesn't bring a window over
+  from another one. Since the focused window
+  keeps focus, pressing again swaps them back. With none, the action
+  fails ("No window used before.").
 - **The swap:** each window takes the other's frame as it is, with no
   gap added, across displays too. A window that won't take the size ends
   as close as it allows, as with Place Window, and the action doesn't
@@ -680,7 +715,7 @@ stop a config from loading.
 | `duplicate-context` | Two contexts share an `id`. |
 | `conflicting-fields` | An action has fields that don't go together: both `preset` and `frame`; two of `to`, `by` and `step`; `anchor` with `step`; `widths` without `step`; both `target` and `direction` (spec v11); or, on Windows, both `exe` and `appId`. (Neither of a required pair is `missing-field`.) |
 | `other-platform-field` | Windows only: an `application` action has `bundleId`, which only the Mac uses. (On the Mac, `exe` and `appId` are `unknown-field`.) |
-| `bad-app-id` | Windows only: an `exe` doesn't end in `.exe`, an `appId` is blank, or a context's `apps` has a blank string. |
+| `bad-app-id` | Windows only: an `exe` doesn't end in `.exe`, an `appId` is blank, or a context's `apps` or `windows.exclude` (spec v13) has a blank string. |
 | `bad-icon` | Windows only: an entry's `icon` is neither a `U+` code point nor a path. |
 | `bad-fraction` | A fraction is out of its range, a `frame` runs past the usable area, or `widths` is empty. |
 | `bad-window-value` | A window action's `preset`, `direction`, `step`, `anchor`, `layout` or `scope` isn't one of its values, or a `target` (or `direction`) is neither one of its words nor an integer from 1, such as `0` or the string `"2"`. Or Arrange Windows' `count` isn't `"all"` or from 2 to 8, or its `groups` isn't from 1 to 8, or is more than a `count` that's a number. |
@@ -726,8 +761,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v12. They only add: new action types, new fields,
-the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, and which windows Focus Window and Swap Window see and their order (spec v6 and v12). Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 to v13. They only add: new action types, new fields,
+the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), and a history of focused windows that the app keeps (spec v13). Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.

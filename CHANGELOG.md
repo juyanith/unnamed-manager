@@ -2,6 +2,32 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v13
+
+- **`recent`**, a new `target` for Focus Window and Swap Window: the
+  window used before the focused one, so two presses go back and forth
+  between two windows. It reads a focus history the app keeps while it
+  runs, so when the window used before was closed or minimized, it's the
+  one before that. Unlike the other targets, it can pick a window you
+  can't see. `scope` still applies. With none, the action fails ("No
+  window used before.").
+- **Across Spaces:** on the Mac, Focus Window's `recent` can go to a
+  window on another Space, and the screen moves there. On Windows, to a
+  window on another virtual desktop when the app can bring it forward.
+  Swap Window's `recent` stays on the current Space or desktop.
+- **Built-in actions** `window-focus-recent` and `window-swap-recent`,
+  from the naming rule, with no new rule.
+- **`windows.exclude`:** app ids whose windows Focus Window and Swap
+  Window never pick, for any `target`. Empty by default, so nothing
+  changes for a config without it. A value that isn't an array of
+  strings is `wrong-type`; on Windows, a blank one is `bad-app-id`.
+- No field changed meaning, so `version` stays `1`.
+- `config.schema.json` lists `recent` for `target` and `direction`, and
+  the setting. The title says spec v13.
+- 114 fixtures (21 valid, 93 invalid): `valid/window-recent.json` and
+  `invalid/windows-exclude-type.json` are new.
+- Not yet supported by the Windows app, which pins spec-v4.
+
 ## spec-v12
 
 - **Only windows you can see:** Focus Window and Swap Window skip a

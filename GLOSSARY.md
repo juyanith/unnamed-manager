@@ -52,13 +52,14 @@ The UI names below are settled in the spec. The words in each app's forms get th
 | Cell | One part of the grid Arrange Windows makes, for one window. | slot, tile, pane |
 | Group | A column or a row of cells in that grid. | stack, split |
 | Fill | The `window.fill` action: fill the screen's usable area, less the gap, and press again to restore. Not full screen. `window.maximize` is its old name. | maximize, zoom, full screen |
-| Focus Window | The `window.focus` action: focus the nearest window in a direction, the next or previous one, or the first or last one. | switch, activate |
+| Focus Window | The `window.focus` action: focus the nearest window in a direction, the next or previous one, the first or last one, one by number, or the window used before. | switch, activate |
 | Minimize | The `window.minimize` action. | hide, dock |
 | Move Window | The `window.move` action: move by points, or to a spot such as centered. | position, drag |
 | Resize Window | The `window.resize` action: resize by points, to a fraction, or step through widths. | size, scale |
 | Place Window | The `window.place` action: move and resize in one step, such as Left Half. | snap, tile, layout |
 | Preset | A named part of the screen for Place Window, such as Left Half or Top Right. | layout, zone, snap area |
-| Swap Window | The `window.swap` action: trade place and size with the window in a direction, the next or previous one, the first or last one, or one by number. | exchange, switch, flip |
+| Swap Window | The `window.swap` action: trade place and size with the window in a direction, the next or previous one, the first or last one, one by number, or the window used before. | exchange, switch, flip |
+| Window used before | The window that had focus before the focused one, from the focus history the app keeps while it runs. The `recent` target. | previous window, last window, switch |
 | Usable area | The screen without the menu bar and Dock, or the taskbar. Window sizes are fractions of it. | visible frame, work area |
 | Anchor | The point of a window that stays put while it resizes, such as its top left corner. | origin, pin, gravity |
 | Grow, Shrink | Step a window's width to the next wider or narrower of its widths. | expand, cycle |
