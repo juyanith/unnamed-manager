@@ -1,6 +1,6 @@
 {
   "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
-  "spec": "v13",
+  "spec": "v14",
   "fixtures": [
     {
       "file": "valid/minimal.json",
@@ -896,6 +896,10 @@
       "valid": true
     },
     {
+      "file": "valid/window-exclude.json",
+      "valid": true
+    },
+    {
       "file": "invalid/builtin-misspelled.json",
       "valid": false,
       "errors": [
@@ -1025,6 +1029,24 @@
       "errors": [
         {
           "rule": "wrong-type"
+        }
+      ]
+    },
+    {
+      "file": "invalid/windows-exclude-arrange-type.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "wrong-type"
+        }
+      ]
+    },
+    {
+      "file": "invalid/windows-exclude-unknown-field.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "unknown-field"
         }
       ]
     }

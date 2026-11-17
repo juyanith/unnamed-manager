@@ -2,6 +2,32 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v14
+
+- **`windows.exclude` is an object with two lists.** `focus` holds the
+  apps Focus Window and Swap Window never pick, as the v13 list did.
+  `arrange`, new, holds the apps whose windows Arrange Windows never
+  counts or moves, so an app such as Calculator can still be focused
+  without being arranged. The lists are separate. An array, the v13
+  form, still loads as `focus`, and an app writes it back that way.
+  `exclude` with another field is `unknown-field`.
+- **Arrange Windows** leaves out only `exclude.arrange`. Under v13 its
+  windows were Focus Window's candidates, which left out `exclude`. When
+  the focused window's app is left out, its display is still the one
+  arranged, and the window in front there counts as focused.
+- **Clearer wording, same behavior:** `recent` falls back to the window
+  in front whenever the history has no window that counts, not only when
+  it's empty. With focus on an excluded app's window, `next` and
+  `previous` go to the first and the last candidate.
+- No field changed meaning for a file that loads under v13, so `version`
+  stays `1`.
+- `config.schema.json` takes either form for `exclude`. The title says
+  spec v14.
+- 117 fixtures (22 valid, 95 invalid): `valid/window-exclude.json`,
+  `invalid/windows-exclude-arrange-type.json` and
+  `invalid/windows-exclude-unknown-field.json` are new.
+- Not yet supported by the Windows app, which pins spec-v4.
+
 ## spec-v13
 
 - **`recent`**, a new `target` for Focus Window and Swap Window: the
