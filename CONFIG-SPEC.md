@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v9, tagged `spec-v9`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v10, tagged `spec-v10`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -94,7 +94,7 @@ up into the spec.
 | `theme` | `system`, `light`, `dark` | `system` | The Guide's appearance. Case-insensitive. |
 | `position` | `center`, `top`, `bottom` | `center` | Where the Guide sits on the display of the app in front. Case-insensitive. |
 | `errorFlash` | boolean | `true` | Flash the Guide on a key that isn't bound. |
-| `errorBell` | boolean | `true` | Play the alert sound on a key that isn't bound. |
+| `errorBell` | boolean | `true` | Play the alert sound on a key that isn't bound, and when Focus Window or Swap Window finds no window (spec v10). |
 
 ### `windows`
 
@@ -255,6 +255,14 @@ front**, the same app the Guide leaves in front. With no focused window,
 the action fails, and the failure shows as for any other action. Focus
 Window is the exception (spec v5): see [`window.focus`](#windowfocus).
 
+**No window there** (spec v10): when Focus Window or Swap Window finds no
+window to go to or swap with, nothing moves and the action fails, as
+any action does. The app also plays the platform's alert sound, when
+`ui.errorBell` is on: the system alert on the Mac, which also flashes
+the screen when that's turned on in Accessibility settings, and
+`MessageBeep(MB_OK)` on Windows. Other failures, such as no focused
+window, don't play it.
+
 | `type` | UI name | Fields | Does |
 | --- | --- | --- | --- |
 | `window.fill` | Fill | `toggle` (default `true`) | Fills the usable area, less the gap. Not full screen. With `toggle`, a window that already fills it goes back to the frame it had before. |
@@ -264,7 +272,8 @@ Window is the exception (spec v5): see [`window.focus`](#windowfocus).
 | `window.move` | Move Window | `to` or `by` | Moves the window. Its size stays the same. |
 | `window.resize` | Resize Window | `to`, `by` or `step`; `anchor`; `widths` | Resizes the window. |
 | `window.arrange` | Arrange Windows | `count`, `groups`, `layout` | Lays out the windows used last, on the focused window's display, in a grid (spec v8). |
-| `window.focus` | Focus Window | `direction` (required) | Focuses the nearest window in a direction, the next or previous one, or the first or last one. |
+| `window.focus` | Focus Window | `direction` (required), `scope` | Focuses the nearest window in a direction, the next or previous one, or the first or last one. |
+| `window.swap` | Swap Window | `target` (required), `scope` | Trades place and size with the window in a direction, the next or previous one, the first or last one, or one by number (spec v10). |
 
 Window families use a dotted `type`, one family per module. Later
 families follow the same shape, such as `audio.volume` and
@@ -465,13 +474,19 @@ stacks the two. `"count": "all"` arranges up to four windows.
 
 #### `window.focus`
 
-| Field | Type | Meaning |
-| --- | --- | --- |
-| `direction` | `left`, `right`, `up`, `down`, `next`, `previous`, `first`, `last` (the last two from spec v6) | Which window to focus. |
+| Field | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `direction` | `left`, `right`, `up`, `down`, `next`, `previous`, `first`, `last` (the last two from spec v6) | required | Which window to focus. |
+| `scope` | `all`, `display` | `all` | Spec v10. `all`: windows on every display. `display`: only the windows on the focused window's display. |
 
 - **Candidates** are the standard, visible windows that aren't minimized,
   on the current Space or desktop of every display. Panels, the Guide and
   the app's own windows are skipped.
+- **With `"scope": "display"`** (spec v10), the candidates are only those
+  on the focused window's display: the display that holds the largest
+  part of it. With no focused window, the display of the candidate in
+  front of the others. Every `direction` then stays on that display, and
+  the order below is that display's.
 - **A direction** picks the window whose center is nearest the focused
   window's center, among those within 45° of that direction. A tie goes to
   the one that overlaps more on the other axis. With none, the action fails
@@ -489,6 +504,38 @@ stacks the two. `"count": "all"` arranges up to four windows.
   `last` work as always, and every other `direction` focuses the
   candidate in front of the others. With no candidate, the action fails
   ("No window to focus.").
+
+#### `window.swap`
+
+Spec v10. Swap Window trades places with another window: each takes the
+other's frame. The focused window keeps focus, so pressed again it goes
+on in the same direction.
+
+| Field | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `target` | `left`, `right`, `up`, `down`, `next`, `previous`, `first`, `last`, or an integer from 1 | required | Which window to swap with. |
+| `scope` | `all`, `display` | `all` | As for Focus Window: windows on every display, or only on the focused window's display. |
+
+- **Candidates and their order** are Focus Window's, for the same
+  `scope`.
+- **A direction** picks the window Focus Window would focus. With none,
+  the action fails ("No window to the left.").
+- **`next` and `previous`** are the windows after and before the focused
+  one in the order. They wrap at the ends. With no other window, the
+  action fails ("No other window to swap with.").
+- **`first`, `last` and a number** count in the order. Numbers start at 1
+  and count the focused window, so `1` is `first`, and after a swap with
+  `2` the focused window is the second. Past the last window, the action
+  fails ("No window 5. There are 3."). A target that is the focused
+  window does nothing, and that isn't a failure.
+- **The swap:** each window takes the other's frame as it is, with no
+  gap added, across displays too. A window that won't take the size ends
+  as close as it allows, as with Place Window, and the action doesn't
+  fail. Focus, and which window is in front, don't change.
+- **With no focused window**, the action fails, as every window action
+  does.
+- A `left` swap and then a `right` one put two windows side by side back
+  where they were.
 
 ## Contexts
 
@@ -542,7 +589,7 @@ stop a config from loading.
 | `bad-app-id` | Windows only: an `exe` doesn't end in `.exe`, an `appId` is blank, or a context's `apps` has a blank string. |
 | `bad-icon` | Windows only: an entry's `icon` is neither a `U+` code point nor a path. |
 | `bad-fraction` | A fraction is out of its range, a `frame` runs past the usable area, or `widths` is empty. |
-| `bad-window-value` | A window action's `preset`, `direction`, `step`, `anchor` or `layout` isn't one of its values. Or Arrange Windows' `count` isn't `"all"` or from 2 to 8, or its `groups` isn't from 1 to 8, or is more than a `count` that's a number. |
+| `bad-window-value` | A window action's `preset`, `direction`, `step`, `anchor`, `layout` or `scope` isn't one of its values, or Swap Window's `target` is neither one of its words nor an integer from 1, such as `0` or the string `"2"`. Or Arrange Windows' `count` isn't `"all"` or from 2 to 8, or its `groups` isn't from 1 to 8, or is more than a `count` that's a number. |
 | `unsupported-action` | An action's `type` is in the spec, but this platform's app can't do it yet. |
 
 ### Warnings
@@ -585,8 +632,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v8. They only add: new action types, new fields,
-the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, and a new name for a type whose old name still loads. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 to v10. They only add: new action types, new fields,
+the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, and a new name for a type whose old name still loads. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.

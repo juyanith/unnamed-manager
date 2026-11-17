@@ -1,6 +1,6 @@
 {
   "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
-  "spec": "v8",
+  "spec": "v10",
   "fixtures": [
     {
       "file": "valid/minimal.json",
@@ -807,6 +807,73 @@
     {
       "file": "valid/window-no-gap.json",
       "valid": true
+    },
+    {
+      "file": "valid/window-swap.json",
+      "valid": true
+    },
+    {
+      "file": "invalid/window-swap-no-target.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "missing-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-swap-target.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-swap-target-zero.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-swap-target-string-number.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-swap-target-type.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "wrong-type"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-swap-scope.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-focus-scope.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
     },
     {
       "file": "invalid/negative-gap.json",

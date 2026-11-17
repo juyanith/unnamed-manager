@@ -2,6 +2,28 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v10
+
+- **Swap Window:** a new action, `window.swap`, trades place and size
+  with another window. The focused window keeps focus. Its `target` is
+  `left`, `right`, `up`, `down`, `next`, `previous`, `first`, `last`, or a
+  number from 1 in Focus Window's order.
+- **`scope` for Focus Window and Swap Window:** `all` (the default, as
+  before) or `display`, which keeps them to the focused window's display.
+- **The alert sound:** when Focus Window or Swap Window finds no window,
+  the app plays the platform's alert sound, when `ui.errorBell` is on.
+  Before, `errorBell` was only for a key that isn't bound.
+- `bad-window-value` now also covers `scope` and `target`. A `target`
+  that's neither a string nor an integer is `wrong-type`.
+- `config.schema.json` lists the action and the field, and says spec v10
+  in its title.
+- 98 fixtures (16 valid, 82 invalid): `valid/window-swap.json`, six
+  `invalid/window-swap-*.json` and `invalid/window-focus-scope.json` are
+  new.
+
+Support: the Mac app from the commit that pins `spec/` to `spec-v10`. Not
+yet in the Windows app: it pins `spec-v4`.
+
 ## spec-v9
 
 - **Arrange Windows keeps the focused window where it is.** When the

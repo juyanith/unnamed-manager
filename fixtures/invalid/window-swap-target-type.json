@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "Meh+W",
+      "title": "Windows"
+    },
+    {
+      "keys": "Meh+W A",
+      "title": "swap",
+      "action": "swap"
+    }
+  ],
+  "actions": {
+    "swap": {
+      "type": "window.swap",
+      "target": 1.5
+    }
+  }
+}
