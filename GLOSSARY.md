@@ -16,6 +16,8 @@ Shortcuts below are the Mac's. On Windows, ⌘ is Ctrl. Words in a platform's ow
 | Group | In Home, the top-level entries that share the same modifiers, such as Hyper. | layer, modifier set, section |
 | Entry | Config-file word for a menu or binding. Never shown in the UI; say "binding" or "menu". | (UI) |
 | Action | What a binding does: open an app, open a file or URL, run a command, send a shortcut, choose by app, or nothing. | command, task, handler |
+| Built-in action | An action every config has without defining it, named by a binding, such as `window-place-left-half` or `window-focus-left` (spec v11). | preset action, default action, standard command |
+| Override | An action in the config with a built-in action's name. It replaces the built-in action everywhere the config names it. | shadow, replace, remap |
 | Use Application | The `application` action: focus an app, start it, or both, by its mode. | Open App, launch, activate, switch to |
 | Focus or Start | The default mode of Use Application: bring the app forward, starting it first if it isn't running. | open, launch or activate |
 | Focus | A mode of Use Application: bring the app forward only if it's running. | activate, switch to |

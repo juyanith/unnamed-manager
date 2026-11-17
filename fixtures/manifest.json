@@ -1,6 +1,6 @@
 {
   "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
-  "spec": "v10",
+  "spec": "v11",
   "fixtures": [
     {
       "file": "valid/minimal.json",
@@ -868,6 +868,106 @@
     },
     {
       "file": "invalid/window-focus-scope.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "valid/builtin-actions.json",
+      "valid": true
+    },
+    {
+      "file": "valid/builtin-override.json",
+      "valid": true
+    },
+    {
+      "file": "valid/window-focus-target.json",
+      "valid": true
+    },
+    {
+      "file": "invalid/builtin-misspelled.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "undefined-action",
+          "subject": "Meh+W A"
+        }
+      ]
+    },
+    {
+      "file": "invalid/builtin-zero.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "undefined-action",
+          "subject": "Meh+W A"
+        }
+      ]
+    },
+    {
+      "file": "invalid/builtin-leading-zero.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "undefined-action",
+          "subject": "Meh+W A"
+        }
+      ]
+    },
+    {
+      "file": "invalid/builtin-arrange-count.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "undefined-action",
+          "subject": "Meh+W A"
+        }
+      ]
+    },
+    {
+      "file": "invalid/builtin-case.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "undefined-action",
+          "subject": "Meh+W A"
+        }
+      ]
+    },
+    {
+      "file": "invalid/builtin-camel-case.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "undefined-action",
+          "subject": "Meh+W A"
+        }
+      ]
+    },
+    {
+      "file": "invalid/builtin-old-name.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "undefined-action",
+          "subject": "Meh+W A"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-focus-target-and-direction.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "conflicting-fields"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-focus-target-zero.json",
       "valid": false,
       "errors": [
         {

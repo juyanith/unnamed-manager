@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "Meh+W",
+      "title": "Windows"
+    },
+    {
+      "keys": "Meh+W A",
+      "title": "Window",
+      "action": "Window-Fill"
+    }
+  ]
+}

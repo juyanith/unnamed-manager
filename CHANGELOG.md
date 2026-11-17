@@ -2,6 +2,37 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v11
+
+- **Built-in actions:** a binding can name an action that isn't in
+  `actions`, such as `window-place-left-half`, `window-focus-left`,
+  `window-swap-2`, `window-fill` or `help`. The names follow one rule:
+  the type with hyphens for its dots, then a value of its main field in
+  lowercase words joined by hyphens, with every other field at its
+  default.
+- **Overrides:** an action in `actions` with a built-in name replaces the
+  built-in everywhere the config names it, with any type, such as a
+  window manager's own command. It isn't a warning.
+- **Focus Window's `direction` is now `target`,** which also takes a
+  number from 1, as Swap Window's does. `direction` still loads, and an
+  app keeps the name the file uses when it saves. Both is
+  `conflicting-fields`.
+- `undefined-action` now means neither an id in `actions` nor a built-in
+  name. `bad-window-value` also covers Focus Window's `target`.
+- **Planned:** inline actions in a binding, and built-in names for Move
+  Window once its spots have names.
+- `config.schema.json`: Focus Window has `target`, with `direction` as its
+  old name, and an entry's `action` mentions built-in actions. The title
+  says spec v11.
+- 110 fixtures (19 valid, 91 invalid): `valid/builtin-actions.json`,
+  `valid/builtin-override.json`, `valid/window-focus-target.json`, seven
+  `invalid/builtin-*.json` and two `invalid/window-focus-target-*.json`
+  are new. `valid/window-focus-ends.json` uses `target`, and
+  `valid/window-actions.json` keeps `direction`, the old name.
+
+Support: the Mac app from the commit that pins `spec/` to `spec-v11`. Not
+yet in the Windows app: it pins `spec-v4`.
+
 ## spec-v10
 
 - **Swap Window:** a new action, `window.swap`, trades place and size
