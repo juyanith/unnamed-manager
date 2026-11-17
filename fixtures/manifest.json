@@ -1,6 +1,6 @@
 {
   "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
-  "spec": "v14",
+  "spec": "v15",
   "fixtures": [
     {
       "file": "valid/minimal.json",
@@ -481,6 +481,18 @@
       ]
     },
     {
+      "file": "invalid/win-blank-window-app.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-app-id"
+        }
+      ],
+      "platforms": [
+        "windows"
+      ]
+    },
+    {
       "file": "invalid/win-bad-icon.json",
       "valid": false,
       "errors": [
@@ -896,7 +908,7 @@
       "valid": true
     },
     {
-      "file": "valid/window-exclude.json",
+      "file": "valid/window-apps.json",
       "valid": true
     },
     {
@@ -1024,7 +1036,7 @@
       ]
     },
     {
-      "file": "invalid/windows-exclude-type.json",
+      "file": "invalid/windows-apps-type.json",
       "valid": false,
       "errors": [
         {
@@ -1033,7 +1045,7 @@
       ]
     },
     {
-      "file": "invalid/windows-exclude-arrange-type.json",
+      "file": "invalid/windows-app-rule-type.json",
       "valid": false,
       "errors": [
         {
@@ -1042,7 +1054,16 @@
       ]
     },
     {
-      "file": "invalid/windows-exclude-unknown-field.json",
+      "file": "invalid/windows-app-unknown-rule.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "unknown-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/windows-exclude.json",
       "valid": false,
       "errors": [
         {

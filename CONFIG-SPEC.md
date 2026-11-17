@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v14, tagged `spec-v14`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v15, tagged `spec-v15`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps, and `windows.exclude`, apps whose windows Focus Window and Swap Window leave out. Spec v14 splits `windows.exclude` into `focus`, for Focus Window and Swap Window, and `arrange`, for Arrange Windows. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps. Spec v15 adds `windows.apps`, rules for each app that leave its windows out of Focus Window, Swap Window or Arrange Windows, in place of `windows.exclude` from spec v13 and v14, which no released app read. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -108,16 +108,32 @@ Spec v3.
 | `minVisible` | number ≥ 0 | `20` | Spec v12. Points on a side of the square a window's visible part must hold for [Focus Window](#windowfocus) and [Swap Window](#windowswap) to count it, and points it must share with the focused window to be in line. `0` counts any window with some part showing. |
 | `rowTolerance` | number ≥ 0 | `20` | Spec v12. Windows whose tops are within this many points share a row in Focus Window's order. |
 | `tieTolerance` | number ≥ 0 | `2` | Spec v12. Gaps within this many points count as the same when Focus Window picks a window in a direction. |
-| `exclude` | object | `{}` | Spec v13, an object from spec v14. Apps left out of window actions, in two lists. Each is an array of strings, written as a context's [`apps`](#contexts) are: bundle ids on the Mac, an `exe` or an `appId` on Windows. |
-| `exclude.focus` | array of strings | `[]` | Apps whose windows [Focus Window](#windowfocus) and [Swap Window](#windowswap) never pick, for any `target`. |
-| `exclude.arrange` | array of strings | `[]` | Spec v14. Apps whose windows [Arrange Windows](#windowarrange) never counts or moves. |
+| `apps` | object | `{}` | Spec v15. Rules for each app's windows, keyed by app id: a bundle id on the Mac, an `exe` or an `appId` on Windows, as in a context's [`apps`](#contexts). Each value is an object of the rules below. An app that isn't listed takes part in every window action. |
 
-- **The two lists are separate.** An app in one still takes part in the
-  actions of the other. An app in both is left out of all three actions.
-- **The spec v13 form,** an array for `exclude`, still loads as
-  `exclude.focus`. When an app saves a file, it keeps the form the file
-  uses, as with `window.maximize`. A new `exclude` is an object.
-- `exclude` with any other field is `unknown-field`.
+Each app in `windows.apps` takes these rules, all optional:
+
+| Field | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `focus` | boolean | `true` | `false`: [Focus Window](#windowfocus) never picks the app's windows, for any `target`. |
+| `swap` | boolean | `true` | `false`: [Swap Window](#windowswap) never moves the app's windows, as the window swapped with or as the focused one. |
+| `arrange` | boolean | `true` | `false`: [Arrange Windows](#windowarrange) never counts or moves the app's windows. |
+
+- The rules are separate: an app left out of one still takes part in
+  the others.
+- A window that an action leaves out still covers the windows behind it.
+- A rule that isn't one of these is `unknown-field`, and a rule that
+  isn't `true` or `false` is `wrong-type`.
+- When an app saves the file, it writes all three rules for each app
+  listed, so an app with every rule `true` stays listed.
+
+```json
+"windows": {
+  "apps": {
+    "com.apple.calculator": { "focus": true, "swap": true, "arrange": false },
+    "com.apple.finder": { "focus": false, "swap": false, "arrange": true }
+  }
+}
+```
 
 ## Keys
 
@@ -486,12 +502,12 @@ doesn't change.
   the order they were used in. With no focused window, the candidate in
   front of the others counts as the focused one. With no candidate, the
   action fails ("No window to arrange.").
-- **Left out** (spec v14): the windows of apps in
-  `windows.exclude.arrange` are never counted or moved, but still cover
-  the windows behind them. Apps in `windows.exclude.focus` are arranged
-  as any other. When the focused window's app is in
-  `windows.exclude.arrange`, its display is still the one arranged, and
-  the candidate in front of the others there counts as the focused one.
+- **Left out** (spec v15): the windows of an app with `"arrange": false`
+  in [`windows.apps`](#windows) are never counted or moved, but still
+  cover the windows behind them. An app's `focus` and `swap` rules don't
+  change what Arrange Windows does. When the focused window's app is
+  left out, its display is still the one arranged, and the candidate in
+  front of the others there counts as the focused one.
 - **How many cells:** `count`. With `"all"`, the number of windows on the
   display, at most `windows.maxColumns` times `windows.maxRows`, and never
   more than 8. Windows past that stay as they are.
@@ -563,9 +579,10 @@ stacks the two. `"count": "all"` arranges up to four windows.
   file uses, as with `window.maximize`, and a new action gets `target`.
 - **Candidates** are the standard, visible windows that aren't minimized,
   on the current Space or desktop of every display. Panels, the Guide and
-  the app's own windows are skipped, and so are the windows of apps in
-  `windows.exclude.focus` (spec v13). The focused window is still where a
-  direction starts when its app is excluded, but it isn't in the order,
+  the app's own windows are skipped, and so are the windows of an app
+  with `"focus": false` in [`windows.apps`](#windows) (spec v15). The
+  focused window is still where a direction starts when its app is left
+  out, but it isn't in the order,
   so `next` and `previous` from it go to the first and the last
   candidate.
 - **Only windows you can see count** (spec v12). A candidate's visible
@@ -653,8 +670,10 @@ on in the same direction.
 
 - **Candidates and their order** are Focus Window's, for the same
   `scope`, so a window you can't see is never swapped with (spec v12),
-  except by `recent`, and a window of an app in `windows.exclude.focus`
-  never is (spec v13).
+  except by `recent`. An app's `focus` rule doesn't apply here: its
+  `swap` rule does (spec v15). A window of an app with `"swap": false`
+  is never a candidate, and when the focused window is one, the action
+  fails ("Calculator is left out of Swap Window."), with the app's name.
   Its `target` takes the same values, and from spec v11 so does
   Focus Window's.
 - **A direction** picks the window Focus Window would focus. With none,
@@ -732,7 +751,7 @@ stop a config from loading.
 | `duplicate-context` | Two contexts share an `id`. |
 | `conflicting-fields` | An action has fields that don't go together: both `preset` and `frame`; two of `to`, `by` and `step`; `anchor` with `step`; `widths` without `step`; both `target` and `direction` (spec v11); or, on Windows, both `exe` and `appId`. (Neither of a required pair is `missing-field`.) |
 | `other-platform-field` | Windows only: an `application` action has `bundleId`, which only the Mac uses. (On the Mac, `exe` and `appId` are `unknown-field`.) |
-| `bad-app-id` | Windows only: an `exe` doesn't end in `.exe`, an `appId` is blank, or a context's `apps` or a list in `windows.exclude` (spec v13) has a blank string. |
+| `bad-app-id` | Windows only: an `exe` doesn't end in `.exe`, an `appId` is blank, or a context's `apps` has a blank string, or a key in `windows.apps` (spec v15) is blank. |
 | `bad-icon` | Windows only: an entry's `icon` is neither a `U+` code point nor a path. |
 | `bad-fraction` | A fraction is out of its range, a `frame` runs past the usable area, or `widths` is empty. |
 | `bad-window-value` | A window action's `preset`, `direction`, `step`, `anchor`, `layout` or `scope` isn't one of its values, or a `target` (or `direction`) is neither one of its words nor an integer from 1, such as `0` or the string `"2"`. Or Arrange Windows' `count` isn't `"all"` or from 2 to 8, or its `groups` isn't from 1 to 8, or is more than a `count` that's a number. |
@@ -778,8 +797,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v14. They only add: new action types, new fields,
-the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), a history of focused windows that the app keeps (spec v13), and a setting that becomes an object whose old form still loads (spec v14). Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 to v15. They only add: new action types, new fields,
+the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), and a history of focused windows that the app keeps (spec v13). Spec v15 drops `windows.exclude`, from spec v13 and v14, which no released app read; a file with it is `unknown-field`. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.

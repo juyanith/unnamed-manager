@@ -17,8 +17,21 @@
     }
   ],
   "windows": {
-    "exclude": {
-      "arrange": "com.apple.calculator"
+    "apps": {
+      "com.apple.calculator": {
+        "focus": true,
+        "swap": true,
+        "arrange": false
+      },
+      "CalculatorApp.exe": {
+        "arrange": false
+      },
+      "com.apple.finder": {
+        "focus": false,
+        "swap": false,
+        "arrange": true
+      },
+      "com.apple.Notes": {}
     }
   }
 }

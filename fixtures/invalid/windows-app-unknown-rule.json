@@ -6,12 +6,21 @@
       "title": "Windows"
     },
     {
+      "keys": "Meh+W A",
+      "title": "Arrange",
+      "action": "window-arrange"
+    },
+    {
       "keys": "Meh+W Tab",
       "title": "Focus the window used before",
       "action": "window-focus-recent"
     }
   ],
   "windows": {
-    "exclude": "com.apple.finder"
+    "apps": {
+      "com.apple.calculator": {
+        "float": true
+      }
+    }
   }
 }

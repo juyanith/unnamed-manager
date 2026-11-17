@@ -38,9 +38,15 @@
     }
   },
   "windows": {
-    "exclude": [
-      "com.apple.finder",
-      "notepad.exe"
-    ]
+    "apps": {
+      "com.apple.finder": {
+        "focus": false,
+        "swap": false,
+        "arrange": true
+      },
+      "notepad.exe": {
+        "focus": false
+      }
+    }
   }
 }

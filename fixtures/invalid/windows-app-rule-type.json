@@ -17,13 +17,10 @@
     }
   ],
   "windows": {
-    "exclude": {
-      "focus": [
-        "com.apple.finder"
-      ],
-      "swap": [
-        "com.apple.calculator"
-      ]
+    "apps": {
+      "com.apple.calculator": {
+        "arrange": "no"
+      }
     }
   }
 }

@@ -17,15 +17,13 @@
     }
   ],
   "windows": {
-    "exclude": {
-      "focus": [
-        "com.apple.finder",
-        "explorer.exe"
-      ],
-      "arrange": [
-        "com.apple.calculator",
-        "CalculatorApp.exe"
-      ]
+    "apps": {
+      "Code.exe": {
+        "arrange": false
+      },
+      "": {
+        "focus": false
+      }
     }
   }
 }

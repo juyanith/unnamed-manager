@@ -2,6 +2,32 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v15
+
+- **`windows.apps`**, rules for each app's windows, keyed by app id:
+  `focus`, `swap` and `arrange`, each `true` by default. `false` leaves
+  the app's windows out of Focus Window, Swap Window or Arrange Windows.
+  The rules are separate, so Calculator can take part in Focus Window
+  and stay out of Arrange Windows.
+- **Swap Window** reads `swap`, not `focus`, and never moves a window of
+  an app with `"swap": false`, as the window swapped with or as the
+  focused one. From such a window it fails ("Calculator is left out of
+  Swap Window.").
+- **`windows.exclude` is gone.** No released app read it, so nothing
+  loads it in its place: a file with it is `unknown-field`.
+- A rule that isn't one of the three is `unknown-field`, one that isn't
+  a boolean is `wrong-type`, and on Windows a blank app id is
+  `bad-app-id`.
+- `version` stays `1`.
+- `config.schema.json` has `windows.apps` in place of `windows.exclude`.
+  The title says spec v15.
+- 119 fixtures (22 valid, 97 invalid). `valid/window-apps.json`,
+  `invalid/windows-apps-type.json`, `invalid/windows-app-rule-type.json`
+  and `invalid/windows-app-unknown-rule.json` replace the
+  `windows-exclude` ones. `invalid/windows-exclude.json` and
+  `invalid/win-blank-window-app.json` (Windows only) are new.
+- Not yet supported by the Windows app, which pins spec-v4.
+
 ## spec-v14
 
 - **`windows.exclude` is an object with two lists.** `focus` holds the
