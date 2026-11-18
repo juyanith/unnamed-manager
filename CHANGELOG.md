@@ -2,6 +2,19 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v19
+
+- **`choose` on a list:** what choosing an item does. `focus`, the
+  default, goes to its window as in spec v18. `swap` trades places with
+  it as Swap Window does, and the focused window keeps focus.
+  - A swap list holds the windows on the current Space or desktop that
+    aren't minimized or hidden, without those of apps with
+    `"swap": false`.
+  - The focus history doesn't change, so choosing again right away swaps
+    the same two windows back.
+  - `minimized`, `hidden` and `spaces` with `"choose": "swap"` are
+    `conflicting-fields`; another `choose` value is `bad-list-value`.
+
 ## spec-v18
 
 - **Held menus:** `"hold": true` on a leader makes its menu, and every

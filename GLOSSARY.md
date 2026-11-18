@@ -40,6 +40,7 @@ Shortcuts below are the Mac's. On Windows, ⌘ is Ctrl. Words in a platform's ow
 | List | A menu the app fills when it opens, such as Recent Windows (spec v18). Config: `list`. | generated menu, dynamic menu, auto menu |
 | More | Key 0 in a list with more than 9 items: go to the next page of 9. | Next, page down, show more |
 | Recent Windows | The `windows.recent` list: the windows used last, most recent first. | window switcher, MRU, history |
+| When Chosen | What choosing a list's item does (spec v19): Focus goes to its window, Swap trades places with it. Config: `choose`. | action, verb, mode |
 | Config file | The one source of truth for bindings and settings. Where it lives: CONFIG-SPEC.md, The file. | settings file, preferences, profile, keymap |
 | Reload Config | Read the config file again and use it if it's valid. | refresh, restart, re-read |
 | Enabled | Whether the app is capturing leaders. When it's off, no keys are captured. | active, running, paused, armed |

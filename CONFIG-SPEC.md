@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v18, tagged `spec-v18`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v19, tagged `spec-v19`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps. Spec v15 adds `windows.apps`, rules for each app that leave its windows out of Focus Window, Swap Window or Arrange Windows, in place of `windows.exclude` from spec v13 and v14, which no released app read. Spec v16 adds Quit on close, for the Mac only: `windows.quitOnClose`, its wait, and a `quit` rule in `windows.apps`. Spec v17 adds Switch Space (`space.switch`), which goes to the Space or virtual desktop to the left or right, as quickly as the platform allows. Spec v18 adds held menus (`hold`), which work while the leader's modifiers are held and choose when you let go, as the platforms' app switchers do, and lists (`list`), menus the app fills when they open, starting with Recent Windows. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps. Spec v15 adds `windows.apps`, rules for each app that leave its windows out of Focus Window, Swap Window or Arrange Windows, in place of `windows.exclude` from spec v13 and v14, which no released app read. Spec v16 adds Quit on close, for the Mac only: `windows.quitOnClose`, its wait, and a `quit` rule in `windows.apps`. Spec v17 adds Switch Space (`space.switch`), which goes to the Space or virtual desktop to the left or right, as quickly as the platform allows. Spec v18 adds held menus (`hold`), which work while the leader's modifiers are held and choose when you let go, as the platforms' app switchers do, and lists (`list`), menus the app fills when they open, starting with Recent Windows. Spec v19 lets a list swap with the chosen window instead of focusing it (`choose`). What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -434,6 +434,7 @@ Recent Windows: the windows used last, most recent first, from the
 | `hidden` | boolean | `true` | Include the windows of hidden apps. Mac only: on Windows it's `other-platform-field`. |
 | `spaces` | `all`, `current` | `all` | `all`: windows on every Space or virtual desktop the app can bring forward. `current`: only the current Space or desktop of each display. |
 | `scope` | `all`, `display` | `all` | As for Focus Window: windows on every display, or only on the focused window's display. |
+| `choose` | `focus`, `swap` | `focus` | Spec v19. What choosing an item does: `focus` goes to its window, `swap` trades places with it, as [Swap Window](#windowswap) does. |
 
 - **Cancel is the focused window.** In a held list, Cancel shows the
   focused window's title and icon, so choosing it changes nothing. With
@@ -460,6 +461,31 @@ Recent Windows: the windows used last, most recent first, from the
   or sound.
 - **On the Mac**, a window on another Space is only found once it has
   had focus since the app started. It's in the focus history then.
+
+#### `"choose": "swap"`
+
+Spec v19. Choosing an item trades places with its window: each takes the
+other's frame, as Swap Window does, and the focused window keeps focus.
+
+```json
+{ "keys": "CAG+Tab", "title": "Swap With", "hold": true, "list": { "type": "windows.recent", "choose": "swap" } }
+```
+
+- **The items** are the windows on the current Space or desktop of each
+  display that aren't minimized and whose app isn't hidden, for `scope`,
+  without the focused window, in the same order as for `focus`. Whether
+  you can see them doesn't matter. Windows of an app with
+  `"swap": false` in [`windows.apps`](#windows) are never items; an
+  app's `focus` rule doesn't apply.
+- **`minimized`, `hidden` and `spaces` don't go with it:** with
+  `"choose": "swap"`, any of them is `conflicting-fields`. `count` and
+  `scope` work as for `focus`.
+- **The focus history doesn't change**, so pressing the leader again
+  right away swaps the same two windows back.
+- **With no focused window** there's nothing to swap: a held list has
+  only Cancel. When the focused window's app has `"swap": false`,
+  choosing an item fails as Swap Window does ("Calculator is left out of
+  Swap Window.").
 
 ## Actions
 
@@ -990,7 +1016,7 @@ stop a config from loading.
 | `hold-no-modifiers` | Spec v18. A leader with `"hold": true` has a chord with no modifiers, such as `F13`. |
 | `list-has-children` | Spec v18. An entry's parent is a [list](#lists). |
 | `unknown-list-type` | Spec v18. A `list`'s `type` isn't one of the types in [Lists](#lists). |
-| `bad-list-value` | Spec v18. A `list`'s `count` isn't from 1 to 99, or its `spaces` or `scope` isn't one of its values. |
+| `bad-list-value` | Spec v18. A `list`'s `count` isn't from 1 to 99, or its `spaces`, `scope` or `choose` (spec v19) isn't one of its values. |
 | `bad-runtime-key` | `cancelKey` or `backKey` isn't a key name. |
 | `same-cancel-back` | The cancel and back keys are the same. |
 | `negative-delay` | `hudDelayMs`, `timeoutMs` or `windows.quitOnCloseDelayMs` (spec v16) is negative. |
@@ -1005,7 +1031,7 @@ stop a config from loading.
 | `undefined-context` | A Context Aware variant names a context that isn't in `contexts`. |
 | `nested-contextual` | A Context Aware variant or fallback is itself `contextual`. |
 | `duplicate-context` | Two contexts share an `id`. |
-| `conflicting-fields` | An action has fields that don't go together: both `preset` and `frame`; two of `to`, `by` and `step`; `anchor` with `step`; `widths` without `step`; both `target` and `direction` (spec v11); an entry with both `action` and `list` (spec v18); or, on Windows, both `exe` and `appId`. (Neither of a required pair is `missing-field`.) |
+| `conflicting-fields` | An action has fields that don't go together: both `preset` and `frame`; two of `to`, `by` and `step`; `anchor` with `step`; `widths` without `step`; both `target` and `direction` (spec v11); an entry with both `action` and `list` (spec v18); a `list` with `"choose": "swap"` and `minimized`, `hidden` or `spaces` (spec v19); or, on Windows, both `exe` and `appId`. (Neither of a required pair is `missing-field`.) |
 | `other-platform-field` | Windows only: an `application` action has `bundleId`, which only the Mac uses, or `windows` has `quitOnClose` or `quitOnCloseDelayMs`, or an app in `windows.apps` has `quit` (spec v16), or a `windows.recent` list has `hidden` (spec v18). (On the Mac, `exe` and `appId` are `unknown-field`.) |
 | `bad-app-id` | Windows only: an `exe` doesn't end in `.exe`, an `appId` is blank, or a context's `apps` has a blank string, or a key in `windows.apps` (spec v15) is blank. |
 | `bad-icon` | Windows only: an entry's `icon` is neither a `U+` code point nor a path. |
@@ -1053,8 +1079,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v18. They only add: new action types, new fields,
-the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), a history of focused windows that the app keeps (spec v13), a family for Spaces (spec v17), and held menus and lists, two new entry fields (spec v18). Spec v15 drops `windows.exclude`, from spec v13 and v14, which no released app read; a file with it is `unknown-field`. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 to v19. They only add: new action types, new fields,
+the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), a history of focused windows that the app keeps (spec v13), a family for Spaces (spec v17), held menus and lists, two new entry fields (spec v18), and a list field (spec v19). Spec v15 drops `windows.exclude`, from spec v13 and v14, which no released app read; a file with it is `unknown-field`. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.
@@ -1088,6 +1114,9 @@ when it's decided.
 - **Keys for the highlighted item in a held menu,** as the app switchers
   have: close or minimize a window, quit or hide an app, without letting
   go.
+- **More `choose` values for a list,** such as `close`, `minimize` or
+  `quit`, run on the chosen window or its app (spec v19 has `focus` and
+  `swap`).
 - **Search in a held list,** by typing part of a title.
 - **More list types,** such as the running apps, or the windows of the
   app in front.

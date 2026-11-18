@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "CAG+Tab",
+      "title": "Close",
+      "list": {
+        "type": "windows.recent",
+        "choose": "close"
+      }
+    }
+  ]
+}

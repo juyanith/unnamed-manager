@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "CAG+Tab",
+      "title": "Swap With",
+      "list": {
+        "type": "windows.recent",
+        "choose": "swap",
+        "spaces": "current"
+      }
+    }
+  ]
+}

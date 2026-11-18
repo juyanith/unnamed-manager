@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "CAG+Tab",
+      "title": "Swap With",
+      "hold": true,
+      "list": {
+        "type": "windows.recent",
+        "choose": "swap"
+      }
+    },
+    {
+      "keys": "Hyper+Tab",
+      "title": "Swap Here",
+      "hold": true,
+      "list": {
+        "type": "windows.recent",
+        "choose": "swap",
+        "count": 5,
+        "scope": "display"
+      }
+    },
+    {
+      "keys": "CAG+H",
+      "title": "Recent Windows",
+      "hold": true,
+      "list": {
+        "type": "windows.recent",
+        "choose": "focus"
+      }
+    }
+  ]
+}
