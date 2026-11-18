@@ -2,6 +2,26 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v17
+
+- **Switch Space** (`space.switch`, Windows: Switch Desktop): goes to
+  the Space or virtual desktop to the left or right of the current one,
+  with `"target": "left"` or `"right"`, as quickly as the platform
+  allows, on the focused window's display. With no focused window, or
+  at the first or last Space, nothing happens, and that isn't a failure.
+  Full-screen apps count as Spaces on the Mac.
+- Built-in names `space-switch-left` and `space-switch-right`.
+- A `target` that isn't `left` or `right` is `bad-window-value`; none is
+  `missing-field`.
+- `version` stays `1`.
+- `config.schema.json` has `space.switch`. The title says spec v17.
+- 131 fixtures (24 valid, 107 invalid). `valid/space-switch.json`,
+  `invalid/space-switch-no-target.json`,
+  `invalid/space-switch-target.json`,
+  `invalid/space-switch-target-number.json` and
+  `invalid/builtin-space-switch-up.json` are new.
+- Not yet supported by either app.
+
 ## spec-v16
 
 - **Quit on close** (Mac only): `windows.quitOnClose`, `false` by

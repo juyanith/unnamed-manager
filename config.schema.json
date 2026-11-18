@@ -532,6 +532,28 @@
         {
           "additionalProperties" : false,
           "properties" : {
+            "target" : {
+              "description" : "The Space or desktop to go to: the one to the left or to the right of the current one.",
+              "enum" : [
+                "left",
+                "right"
+              ]
+            },
+            "type" : {
+              "enum" : [
+                "space.switch"
+              ]
+            }
+          },
+          "required" : [
+            "type",
+            "target"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
             "count" : {
               "description" : "How many windows: the focused one and the ones used before it. \"all\" is every window on the display, up to windows.maxColumns times windows.maxRows. Default 2.",
               "oneOf" : [
@@ -1129,6 +1151,28 @@
         {
           "additionalProperties" : false,
           "properties" : {
+            "target" : {
+              "description" : "The Space or desktop to go to: the one to the left or to the right of the current one.",
+              "enum" : [
+                "left",
+                "right"
+              ]
+            },
+            "type" : {
+              "enum" : [
+                "space.switch"
+              ]
+            }
+          },
+          "required" : [
+            "type",
+            "target"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
             "count" : {
               "description" : "How many windows: the focused one and the ones used before it. \"all\" is every window on the display, up to windows.maxColumns times windows.maxRows. Default 2.",
               "oneOf" : [
@@ -1374,6 +1418,6 @@
     "version",
     "entries"
   ],
-  "title" : "Unnamed Manager config (spec v16)",
+  "title" : "Unnamed Manager config (spec v17)",
   "type" : "object"
 }

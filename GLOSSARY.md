@@ -57,6 +57,7 @@ The UI names below are settled in the spec. The words in each app's forms get th
 | Move Window | The `window.move` action: move by points, or to a spot such as centered. | position, drag |
 | Resize Window | The `window.resize` action: resize by points, to a fraction, or step through widths. | size, scale |
 | Place Window | The `window.place` action: move and resize in one step, such as Left Half. | snap, tile, layout |
+| Switch Space | The `space.switch` action (spec v17): go to the Space to the left or right on the focused window's display, as quickly as the Mac allows. On Windows, Switch Desktop, for a virtual desktop. | Move Space, change desktop, next workspace |
 | Preset | A named part of the screen for Place Window, such as Left Half or Top Right. | layout, zone, snap area |
 | Swap Window | The `window.swap` action: trade place and size with the window in a direction, the next or previous one, the first or last one, one by number, or the window used before. | exchange, switch, flip |
 | Window used before | The window that had focus before the focused one, from the focus history the app keeps while it runs. The `recent` target. | previous window, last window, switch |

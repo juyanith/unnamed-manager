@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "Meh+S",
+      "title": "Spaces"
+    },
+    {
+      "keys": "Meh+S A",
+      "title": "switch",
+      "action": "switch"
+    }
+  ],
+  "actions": {
+    "switch": {
+      "type": "space.switch",
+      "target": "up"
+    }
+  }
+}

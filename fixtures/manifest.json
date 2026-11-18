@@ -1149,6 +1149,47 @@
       "platforms": [
         "windows"
       ]
+    },
+    {
+      "file": "valid/space-switch.json",
+      "valid": true
+    },
+    {
+      "file": "invalid/space-switch-no-target.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "missing-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/space-switch-target.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/space-switch-target-number.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/builtin-space-switch-up.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "undefined-action",
+          "subject": "Meh+S A"
+        }
+      ]
     }
   ]
 }

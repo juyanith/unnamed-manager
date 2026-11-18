@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v15, tagged `spec-v15`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v17, tagged `spec-v17`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps. Spec v15 adds `windows.apps`, rules for each app that leave its windows out of Focus Window, Swap Window or Arrange Windows, in place of `windows.exclude` from spec v13 and v14, which no released app read. Spec v16 adds Quit on close, for the Mac only: `windows.quitOnClose`, its wait, and a `quit` rule in `windows.apps`. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps. Spec v15 adds `windows.apps`, rules for each app that leave its windows out of Focus Window, Swap Window or Arrange Windows, in place of `windows.exclude` from spec v13 and v14, which no released app read. Spec v16 adds Quit on close, for the Mac only: `windows.quitOnClose`, its wait, and a `quit` rule in `windows.apps`. Spec v17 adds Switch Space (`space.switch`), which goes to the Space or virtual desktop to the left or right, as quickly as the platform allows. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -336,6 +336,7 @@ default. Names are case-sensitive, like ids.
 | `window.arrange` | `count` | `window-arrange`, and `window-arrange-` and a count from 2 to 8 or `all` | `window-arrange-3`, `window-arrange-all` |
 | `window.focus` | `target` | `window-focus-` and a target: a word, or a number from 1 | `window-focus-left`, `window-focus-next`, `window-focus-recent`, `window-focus-2` |
 | `window.swap` | `target` | `window-swap-` and a target | `window-swap-left`, `window-swap-first`, `window-swap-recent`, `window-swap-3` |
+| `space.switch` | `target` | `space-switch-left`, `space-switch-right` (spec v17) | |
 | `help` | none | `help` | Show Help |
 | `noop` | none | `noop` | Do Nothing |
 
@@ -397,8 +398,8 @@ the last few windows, but at least 10. Focus Window's and Swap Window's
 | `window.swap` | Swap Window | `target` (required), `scope` | Trades place and size with the window in a direction, the next or previous one, the first or last one, one by number (spec v10), or the window used before (spec v13). |
 
 Window families use a dotted `type`, one family per module. Later
-families follow the same shape, such as `audio.volume` and
-`display.resolution`.
+families follow the same shape, such as `space.switch` (spec v17),
+`audio.volume` and `display.resolution`.
 
 **Geometry both apps share:**
 
@@ -734,6 +735,40 @@ on in the same direction.
 - A `left` swap and then a `right` one put two windows side by side back
   where they were.
 
+### Space actions
+
+Spec v17. A Space on the Mac, a virtual desktop on Windows. Each
+platform's UI uses its own word, as the glossary says.
+
+| `type` | UI name | Fields | Does |
+| --- | --- | --- | --- |
+| `space.switch` | Switch Space (Windows: Switch Desktop) | `target` (required) | Goes to the Space or desktop to the left or right of the current one. |
+
+#### `space.switch`
+
+| Field | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `target` | `left`, `right` | required | Which way: the Space or desktop to the left or the right of the current one, in the order Mission Control or Task View shows them. |
+
+- **Which display:** the focused window's, the display that holds the
+  largest part of it, since you're working from the keyboard there,
+  wherever the pointer is. On Windows, and on the Mac with Displays have
+  separate Spaces off, every display switches together.
+- **With no focused window**, or no app in front, nothing happens. That
+  isn't a failure, and no sound plays.
+- **Full-screen apps** count as Spaces on the Mac, each in its place in
+  the order, as they do for the platform's own shortcut.
+- **At the first or last Space**, or with only one, nothing moves and
+  it doesn't wrap. That isn't a failure, and no sound plays, since the
+  platform shows its own bounce, or nothing.
+- **Quickly:** an app switches as quickly as the platform allows, and
+  skips the sliding animation where it can. How it does that is each
+  app's own. When an app can only switch with the animation, it still
+  switches: the action never fails for that.
+- **Focus** goes where the platform puts it after a switch, usually the
+  window in front on that Space. It counts as a focus change for the
+  [focus history](#window-actions).
+
 ## Contexts
 
 | Field | Type | Required | Meaning |
@@ -787,7 +822,7 @@ stop a config from loading.
 | `bad-app-id` | Windows only: an `exe` doesn't end in `.exe`, an `appId` is blank, or a context's `apps` has a blank string, or a key in `windows.apps` (spec v15) is blank. |
 | `bad-icon` | Windows only: an entry's `icon` is neither a `U+` code point nor a path. |
 | `bad-fraction` | A fraction is out of its range, a `frame` runs past the usable area, or `widths` is empty. |
-| `bad-window-value` | A window action's `preset`, `direction`, `step`, `anchor`, `layout` or `scope` isn't one of its values, or a `target` (or `direction`) is neither one of its words nor an integer from 1, such as `0` or the string `"2"`. Or Arrange Windows' `count` isn't `"all"` or from 2 to 8, or its `groups` isn't from 1 to 8, or is more than a `count` that's a number. |
+| `bad-window-value` | A window action's `preset`, `direction`, `step`, `anchor`, `layout` or `scope` isn't one of its values, or a `target` (or `direction`) is neither one of its words nor an integer from 1, such as `0` or the string `"2"`. Or Arrange Windows' `count` isn't `"all"` or from 2 to 8, or its `groups` isn't from 1 to 8, or is more than a `count` that's a number. Or Switch Space's `target` isn't `left` or `right` (spec v17), such as `"up"` or `2`. |
 | `unsupported-action` | An action's `type` is in the spec, but this platform's app can't do it yet. |
 
 ### Warnings
@@ -830,8 +865,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v16. They only add: new action types, new fields,
-the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), and a history of focused windows that the app keeps (spec v13). Spec v15 drops `windows.exclude`, from spec v13 and v14, which no released app read; a file with it is `unknown-field`. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 to v17. They only add: new action types, new fields,
+the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), a history of focused windows that the app keeps (spec v13), and a family for Spaces (spec v17). Spec v15 drops `windows.exclude`, from spec v13 and v14, which no released app read; a file with it is `unknown-field`. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.
@@ -852,6 +887,9 @@ when it's decided.
   "scope": "display" }`. It would cover what built-in names can't, such
   as a scope or a custom frame, with no id. Not decided: it needs an
   action form inside the binding in each app's editor.
+- **Switch Space by number**, `"target": 3` for the third Space or
+  desktop, and to the Space of the window used before. Not decided:
+  the Mac app's quick switch only goes one Space at a time.
 - **Built-in names for Move Window**, once its spots (Center, Top Left
   and the others) have names in this spec.
 
