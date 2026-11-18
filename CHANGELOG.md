@@ -28,7 +28,9 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
   `invalid/windows-app-quit-type.json` (Mac only),
   `invalid/win-quit-on-close.json`, `invalid/win-quit-on-close-delay.json`
   and `invalid/win-app-quit.json` (Windows only) are new.
-- Not yet supported by the Windows app, which pins spec-v4.
+- Not yet supported by the Windows app, which pins spec-v15. Its fields
+  are Mac only: the Windows app needs them only to report
+  `other-platform-field`.
 
 ## spec-v15
 
