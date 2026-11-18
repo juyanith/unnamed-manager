@@ -54,7 +54,7 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
   and `invalid/windows-app-unknown-rule.json` replace the
   `windows-exclude` ones. `invalid/windows-exclude.json` and
   `invalid/win-blank-window-app.json` (Windows only) are new.
-- Not yet supported by the Windows app, which pins spec-v4.
+- Supported by the Windows app from 0.4.0, which pins spec-v15.
 
 ## spec-v14
 
@@ -80,7 +80,7 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 - 117 fixtures (22 valid, 95 invalid): `valid/window-exclude.json`,
   `invalid/windows-exclude-arrange-type.json` and
   `invalid/windows-exclude-unknown-field.json` are new.
-- Not yet supported by the Windows app, which pins spec-v4.
+- Supported by the Windows app from 0.4.0, which pins spec-v15.
 
 ## spec-v13
 
@@ -106,7 +106,7 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
   the setting. The title says spec v13.
 - 114 fixtures (21 valid, 93 invalid): `valid/window-recent.json` and
   `invalid/windows-exclude-type.json` are new.
-- Not yet supported by the Windows app, which pins spec-v4.
+- Supported by the Windows app from 0.4.0, which pins spec-v15.
 
 ## spec-v12
 
@@ -134,8 +134,8 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 - 112 fixtures (20 valid, 92 invalid): `valid/window-focus-distances.json`
   and `invalid/negative-window-distance.json` are new.
 
-Support: the Mac app from the commit that pins `spec/` to `spec-v12`. Not
-yet in the Windows app: it pins `spec-v4`.
+Support: the Mac app from the commit that pins `spec/` to `spec-v12`. The
+Windows app from 0.4.0, which moves its `spec/` to `spec-v15`.
 
 ## spec-v11
 
@@ -165,8 +165,8 @@ yet in the Windows app: it pins `spec-v4`.
   are new. `valid/window-focus-ends.json` uses `target`, and
   `valid/window-actions.json` keeps `direction`, the old name.
 
-Support: the Mac app from the commit that pins `spec/` to `spec-v11`. Not
-yet in the Windows app: it pins `spec-v4`.
+Support: the Mac app from the commit that pins `spec/` to `spec-v11`. The
+Windows app from 0.4.0, which moves its `spec/` to `spec-v15`.
 
 ## spec-v10
 
@@ -187,8 +187,8 @@ yet in the Windows app: it pins `spec-v4`.
   `invalid/window-swap-*.json` and `invalid/window-focus-scope.json` are
   new.
 
-Support: the Mac app from the commit that pins `spec/` to `spec-v10`. Not
-yet in the Windows app: it pins `spec-v4`.
+Support: the Mac app from the commit that pins `spec/` to `spec-v10`. The
+Windows app from 0.4.0, which moves its `spec/` to `spec-v15`.
 
 ## spec-v9
 
@@ -208,8 +208,8 @@ yet in the Windows app: it pins `spec-v4`.
   90 fixtures are the same. `config.schema.json` says spec v9 in its
   title.
 
-Support: the Mac app from the commit that pins `spec/` to `spec-v9`. Not
-yet in the Windows app: it pins `spec-v4`.
+Support: the Mac app from the commit that pins `spec/` to `spec-v9`. The
+Windows app from 0.4.0, which moves its `spec/` to `spec-v15`.
 
 ## spec-v8
 
@@ -225,8 +225,8 @@ yet in the Windows app: it pins `spec-v4`.
 - 90 fixtures (15 valid, 75 invalid): `valid/window-arrange.json`, five
   `invalid/window-arrange-*.json` and `invalid/window-limit.json` are new.
 
-Support: the Mac app from the commit that pins `spec/` to `spec-v8`. Not
-yet in the Windows app: it pins `spec-v4`.
+Support: the Mac app from the commit that pins `spec/` to `spec-v8`. The
+Windows app from 0.4.0, which moves its `spec/` to `spec-v15`.
 
 ## spec-v7
 
@@ -243,8 +243,8 @@ yet in the Windows app: it pins `spec-v4`.
 - 83 fixtures (14 valid, 69 invalid): `valid/window-fill.json` and
   `invalid/window-fill-toggle-type.json` are new.
 
-Support: the Mac app from the commit that pins `spec/` to `spec-v7`. Not
-yet in the Windows app: it pins `spec-v4`.
+Support: the Mac app from the commit that pins `spec/` to `spec-v7`. The
+Windows app from 0.4.0, which moves its `spec/` to `spec-v15`.
 
 ## spec-v6
 
@@ -260,8 +260,8 @@ yet in the Windows app: it pins `spec-v4`.
 - 81 fixtures (13 valid, 68 invalid): `valid/window-focus-ends.json` is
   new.
 
-Support: the Mac app from the commit that pins `spec/` to `spec-v6`. Not
-yet in the Windows app: it pins `spec-v4`.
+Support: the Mac app from the commit that pins `spec/` to `spec-v6`. The
+Windows app from 0.4.0, which moves its `spec/` to `spec-v15`.
 
 ## spec-v5
 
@@ -271,8 +271,8 @@ yet in the Windows app: it pins `spec-v4`.
   others. With no candidate it fails with "No window to focus."
 - No change to the format, the schema or the fixtures.
 
-Support: the Mac app from the commit that pins `spec/` to `spec-v5`. Not
-yet in the Windows app: it pins `spec-v4`.
+Support: the Mac app from the commit that pins `spec/` to `spec-v5`. The
+Windows app from 0.4.0, which moves its `spec/` to `spec-v15`.
 
 ## spec-v4
 
