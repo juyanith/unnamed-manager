@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "CAG+H",
+      "title": "Recent Windows",
+      "list": {
+        "type": "windows.recent",
+        "count": 0
+      }
+    }
+  ]
+}

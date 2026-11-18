@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "CAG+H",
+      "title": "Recent Windows",
+      "list": {
+        "type": "windows.recent"
+      }
+    },
+    {
+      "keys": "CAG+H F",
+      "title": "Fill",
+      "action": "window-fill"
+    }
+  ]
+}

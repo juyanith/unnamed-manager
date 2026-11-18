@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "F13",
+      "title": "Apps",
+      "hold": true
+    },
+    {
+      "keys": "F13 F",
+      "title": "Fill",
+      "action": "window-fill"
+    }
+  ]
+}

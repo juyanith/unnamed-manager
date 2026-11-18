@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "CAG+D",
+      "title": "Window",
+      "hold": true
+    },
+    {
+      "keys": "CAG+D D",
+      "title": "Center",
+      "action": "window-place-center"
+    }
+  ]
+}

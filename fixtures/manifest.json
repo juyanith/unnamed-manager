@@ -1,6 +1,6 @@
 {
   "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
-  "spec": "v15",
+  "spec": "v18",
   "fixtures": [
     {
       "file": "valid/minimal.json",
@@ -1189,6 +1189,169 @@
           "rule": "undefined-action",
           "subject": "Meh+S A"
         }
+      ]
+    },
+    {
+      "file": "valid/held-menus.json",
+      "valid": true
+    },
+    {
+      "file": "invalid/hold-on-child.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "hold-not-leader",
+          "subject": "CAG+A W"
+        }
+      ]
+    },
+    {
+      "file": "invalid/hold-on-direct-binding.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "hold-not-leader",
+          "subject": "CAG+F"
+        }
+      ]
+    },
+    {
+      "file": "invalid/hold-no-modifiers.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "hold-no-modifiers",
+          "subject": "F13"
+        }
+      ]
+    },
+    {
+      "file": "invalid/hold-wrong-type.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "wrong-type"
+        }
+      ]
+    },
+    {
+      "file": "invalid/step-is-repeat-key.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "step-is-repeat-key",
+          "subject": "CAG+D D"
+        }
+      ]
+    },
+    {
+      "file": "invalid/step-is-repeat-key-nested.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "step-is-repeat-key",
+          "subject": "CAG+A B B"
+        }
+      ]
+    },
+    {
+      "file": "invalid/list-repeat-key-digit.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "step-is-repeat-key",
+          "subject": "CAG+1"
+        }
+      ]
+    },
+    {
+      "file": "invalid/list-has-children.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "list-has-children",
+          "subject": "CAG+H F"
+        }
+      ]
+    },
+    {
+      "file": "invalid/list-with-action.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "conflicting-fields",
+          "subject": "CAG+H"
+        }
+      ]
+    },
+    {
+      "file": "invalid/list-type-unknown.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "unknown-list-type",
+          "subject": "CAG+H"
+        }
+      ]
+    },
+    {
+      "file": "invalid/list-type-missing.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "missing-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/list-count-zero.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-list-value",
+          "subject": "CAG+H"
+        }
+      ]
+    },
+    {
+      "file": "invalid/list-count-too-big.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-list-value",
+          "subject": "CAG+H"
+        }
+      ]
+    },
+    {
+      "file": "invalid/list-spaces.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-list-value",
+          "subject": "CAG+H"
+        }
+      ]
+    },
+    {
+      "file": "invalid/list-unknown-field.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "unknown-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/win-list-hidden.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "other-platform-field"
+        }
+      ],
+      "platforms": [
+        "windows"
       ]
     }
   ]

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "CAG+H",
+      "title": "Recent Apps",
+      "list": {
+        "type": "apps.running"
+      }
+    }
+  ]
+}

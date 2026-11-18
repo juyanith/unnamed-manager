@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v17, tagged `spec-v17`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v18, tagged `spec-v18`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps. Spec v15 adds `windows.apps`, rules for each app that leave its windows out of Focus Window, Swap Window or Arrange Windows, in place of `windows.exclude` from spec v13 and v14, which no released app read. Spec v16 adds Quit on close, for the Mac only: `windows.quitOnClose`, its wait, and a `quit` rule in `windows.apps`. Spec v17 adds Switch Space (`space.switch`), which goes to the Space or virtual desktop to the left or right, as quickly as the platform allows. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps. Spec v15 adds `windows.apps`, rules for each app that leave its windows out of Focus Window, Swap Window or Arrange Windows, in place of `windows.exclude` from spec v13 and v14, which no released app read. Spec v16 adds Quit on close, for the Mac only: `windows.quitOnClose`, its wait, and a `quit` rule in `windows.apps`. Spec v17 adds Switch Space (`space.switch`), which goes to the Space or virtual desktop to the left or right, as quickly as the platform allows. Spec v18 adds held menus (`hold`), which work while the leader's modifiers are held and choose when you let go, as the platforms' app switchers do, and lists (`list`), menus the app fills when they open, starting with Recent Windows. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -248,6 +248,8 @@ Every entry is a **menu** (no `action`) or a **binding** (an `action`).
 | `title` | string, not blank | yes | What the Guide and the Bindings window show. |
 | `action` | action id | no | Makes it a binding. An id in `actions`, or the name of a [built-in action](#built-in-actions) (spec v11). |
 | `icon` | string | no | Its icon. Mac: an SF Symbol name, or a path starting with `/` or `~` for that file's icon. Windows (spec v4): a Segoe Fluent Icons code point written `U+E756` (4 to 6 hex digits, any case), or a path for that file's icon (an `.exe`, `.ico`, `.png` or any file), starting with a drive (`C:\`), `\\` or `~`. Anything else is `bad-icon` on Windows. `""` is the same as leaving it out. |
+| `hold` | boolean | no | Spec v18. Leaders only. `true` makes the leader's menu, and every menu under it, a [held menu](#held-menus). Default `false`. |
+| `list` | object | no | Spec v18. Menus only. Makes the menu a [list](#lists): the app fills it with items when it opens, and it has no entries under it. |
 
 - **Entries are a flat, ordered list keyed by their full path.** The tree
   is built from the paths, and children keep file order.
@@ -255,6 +257,8 @@ Every entry is a **menu** (no `action`) or a **binding** (an `action`).
   binding** when it has an action. A config can mix both, or have only
   direct bindings.
 - **Only the first chord has modifiers.** Step keys are bare keys.
+- **A list is a menu** (spec v18): it has no `action`, and with both
+  `action` and `list` an entry is `conflicting-fields`.
 
 ## Behavior both apps share
 
@@ -262,7 +266,9 @@ The full rules are in the Mac app's `docs/SPEC.md`. These are the ones a
 user would notice if the two apps differed:
 
 - **Each key is decided as soon as it's pressed.** No timers decide which
-  entry a key picks, so there are no ambiguous prefixes.
+  entry a key picks, so there are no ambiguous prefixes. In a [held
+  menu](#held-menus) (spec v18), letting go of the modifiers decides
+  instead, and still no timer does.
 - **In a sequence, every key is consumed** until the sequence ends,
   including repeats and key-ups. Outside one, only leader and direct
   binding chords are consumed.
@@ -278,6 +284,182 @@ user would notice if the two apps differed:
   that app untouched.
 - **The Guide never takes focus.** The app that was in front when the
   leader was pressed stays in front, and actions go to it.
+
+## Held menus
+
+Spec v18. A held menu works the way ⌘Tab and Alt+Tab do. Hold the
+leader's modifiers, move a highlight with keys, and let go to choose
+the highlighted item. A quick press and release chooses the first item,
+with no Guide.
+
+```json
+{ "keys": "CAG+A", "title": "Apps", "hold": true },
+{ "keys": "CAG+A T", "title": "Terminal", "action": "terminal" },
+{ "keys": "CAG+A B", "title": "Browser", "action": "browser" }
+```
+
+Here CAG+A, let go, opens Terminal. Holding CAG and pressing A, then B,
+then letting go opens Browser. Holding CAG and pressing A twice, then
+letting go, opens Browser too.
+
+**Which menus are held.** `"hold": true` goes on a leader. Its menu
+and every menu under it are held menus, while the leader's modifiers
+stay held. Every other menu works as before, so you can press its leader,
+let go, and then press its keys.
+
+**The words.**
+
+- **The highlight** is on one item of the menu at a time. The Guide
+  shows which.
+- **The repeat key** of a menu is the key that opened it: the leader
+  chord's key for the leader's menu (`A` in `CAG+A`), and a menu's own
+  step key for a menu under it (`B` in `CAG+A B`).
+- **Cancel** is the first item of every held menu. It has no key and
+  runs nothing.
+
+**While the modifiers are held:**
+
+- **Opening a held menu** puts the highlight on its first item after
+  Cancel. In a menu with no items but Cancel, the highlight is on Cancel.
+- **The repeat key** moves the highlight to the next item. After the
+  last item it goes to Cancel, then to the first again.
+- **Shift with the repeat key** moves the highlight back, when Shift
+  isn't one of the leader's modifiers. With a leader that has Shift,
+  such as `Hyper`, only the repeat key and Up and Down move the
+  highlight.
+- **Down and Up** move the highlight forward and back, as the repeat key
+  and Shift do, unless the menu has an item on that key. Then the item
+  wins. Left and Right do nothing.
+- **A key held down** moves the highlight once. Its repeats do nothing,
+  so the highlight never runs past where you stopped.
+- **A binding's key** moves the highlight to that binding. It doesn't
+  run yet.
+- **A menu's key** opens that menu at once, as a held menu with the
+  highlight on its first item. Its key becomes the repeat key.
+- **Cancel** (`runtime.cancelKey`) ends the sequence at once, and runs
+  nothing.
+- **Back** (`runtime.backKey`) goes up one menu, with the highlight on
+  the menu you came from. From the leader's menu, Back opens Home, as in
+  any sequence. Home and what follows from it aren't held.
+- **Any other key** is an error flash or sound, as in any sequence, and
+  the highlight stays where it is.
+- **No `timeoutMs`** while the modifiers are held. The Guide appears
+  after `hudDelayMs`, as in any sequence. Each key restarts that wait.
+
+**Letting go:** the first of the leader's modifiers to come up chooses.
+An app compares which modifiers are held, not the order they come up
+in, so a key remapper that lets go of several at once and a hand that
+lets go of one at a time choose the same item. Then the app does what
+the highlighted item does:
+
+- **A binding** runs its action, and the sequence ends.
+- **A menu** opens as an ordinary menu. The sequence goes on in it with
+  no modifiers held, as after any leader, and `timeoutMs` applies.
+- **Cancel** ends the sequence, and runs nothing. That isn't a failure.
+- **A Context Aware binding with nothing to run for the app in front**
+  stays in its menu, now an ordinary menu, and shows that, as in any
+  sequence.
+
+Letting go before the Guide appears chooses as well, and the Guide never
+appears. A sequence is never left waiting because a key-up was missed:
+when an app finds that the leader's modifiers are no longer held, it
+chooses then. It checks at least every 200 ms while a held menu is open.
+
+**A held menu's keys can't be its repeat key.** A step key under a held
+leader that's the same as its menu's repeat key is `step-is-repeat-key`.
+So `CAG+D D` is fine unless `CAG+D` has `hold`. Up and Down are
+fine as step keys: the item wins. A held list's own key can't be `0` to
+`9` either, since its items have those keys.
+
+**`hold` needs modifiers.** A leader with `hold` must have at least one
+modifier, since letting go of it chooses. Without one it's
+`hold-no-modifiers`. `hold` on a direct binding or on a menu that isn't
+a leader is `hold-not-leader`. A held leader's menu under Home works as a
+held menu only when its leader was pressed. From Home it's an ordinary
+menu.
+
+**On Windows**, a held leader can be `Alt+Tab`. The app's keyboard hook
+sees it before Windows does, so the app's menu replaces the Windows
+switcher while the app runs. Where the hook sees nothing (over a window
+of an app running as administrator, when the app isn't, and on the
+secure desktop of UAC and Ctrl+Alt+Delete), Windows' own switcher still
+works. Letting go of Alt after a held menu opens neither the window's
+menu bar nor Start. On the Mac, the Dock takes ⌘Tab: see
+[Planned](#planned).
+
+## Lists
+
+Spec v18. A list is a menu the app fills when it opens, from what's
+on screen, instead of from entries. Its `list` object says what it holds.
+
+```json
+{ "keys": "CAG+H", "title": "Recent Windows", "hold": true, "list": { "type": "windows.recent" } }
+```
+
+| Field | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `type` | `windows.recent` | required | What the list holds. |
+| `count` | integer from 1 to 99 | `9` | The most items it holds. |
+
+- **No entries under a list.** An entry whose parent is a list is
+  `list-has-children`. A list is never `empty-menu`.
+- **Items are fixed when the list opens.** A window that opens while the
+  list is up isn't added, and the order doesn't change.
+- **Keys:** items get the keys `1` to `9`, in order. With more than 9,
+  the list has pages of 9, and `0` is **More**, which goes to the next
+  page, where the keys are `1` to `9` again. The last page has no More.
+  Back goes to the page before. From the first page, Back works as in any
+  menu.
+- **In a held list**, the repeat key and Down go from item 9 onto the
+  next page, so the highlight reaches every item. After the last item it
+  goes to Cancel, on the first page. The Guide shows the page the
+  highlight is on. More is a key, not an item: the highlight never rests
+  on it.
+- **When an item goes away while the list is up** (its window closes),
+  it leaves the list, and the keys after it move up. If it had the
+  highlight, the highlight goes to the next item, else the one before,
+  else Cancel.
+- **In the Guide,** an item shows its own title and icon.
+- **In a menu that isn't held**, a list works as any menu: press an
+  item's key and it runs. It has no Cancel item and no highlight.
+
+### `windows.recent`
+
+Recent Windows: the windows used last, most recent first, from the
+[focus history](#window-actions).
+
+| Field | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `minimized` | boolean | `true` | Include minimized windows. |
+| `hidden` | boolean | `true` | Include the windows of hidden apps. Mac only: on Windows it's `other-platform-field`. |
+| `spaces` | `all`, `current` | `all` | `all`: windows on every Space or virtual desktop the app can bring forward. `current`: only the current Space or desktop of each display. |
+| `scope` | `all`, `display` | `all` | As for Focus Window: windows on every display, or only on the focused window's display. |
+
+- **Cancel is the focused window.** In a held list, Cancel shows the
+  focused window's title and icon, so choosing it changes nothing. With
+  no focused window, it's Cancel.
+- **The items** are the windows Focus Window could pick, for `minimized`,
+  `hidden`, `spaces` and `scope`, without the focused window, in the
+  order of the focus history. Whether you can see them doesn't matter.
+  After the windows in the history come the windows the app can find
+  that the history doesn't hold yet, the one in front first. Windows of
+  an app with `"focus": false` in [`windows.apps`](#windows) are never
+  items.
+- **An item's title** is its window's title, or its app's name when the
+  window has none. Its icon is its app's. The Guide marks a window
+  that's minimized, hidden, on another Space or desktop, or on another
+  display.
+- **Choosing an item** focuses its window as Focus Window's `recent`
+  does: it brings back a minimized window, shows a hidden app, and goes
+  to the window's Space or desktop. The window goes first in the focus
+  history as soon as it's chosen, so pressing the leader again right
+  away goes back.
+- **Nothing to list:** a held list with no items has only Cancel, and
+  choosing it does nothing. A list that isn't held with no items shows
+  that it's empty, and every key but Back and Cancel is an error flash
+  or sound.
+- **On the Mac**, a window on another Space is only found once it has
+  had focus since the app started. It's in the focus history then.
 
 ## Actions
 
@@ -792,7 +974,7 @@ stop a config from loading.
 | `invalid-json` | The file isn't valid JSON. |
 | `version` | `version` isn't `1`. |
 | `unknown-field` | An object has a field the format doesn't have. |
-| `missing-field` | A required field is missing (`version`, `entries`, an entry's `keys` or `title`, a context's `id` or `apps`, an action's `type` or a field its type requires, both fields of a pair where a window action needs one, or both `exe` and `appId` on Windows). |
+| `missing-field` | A required field is missing (`version`, `entries`, an entry's `keys` or `title`, a context's `id` or `apps`, an action's `type` or a field its type requires, a `list`'s `type` (spec v18), both fields of a pair where a window action needs one, or both `exe` and `appId` on Windows). |
 | `wrong-type` | A field has the wrong kind of value, such as `"version": "1"`. |
 | `no-entries` | `entries` is empty. |
 | `empty-title` | An entry's title is blank. |
@@ -803,6 +985,12 @@ stop a config from loading.
 | `empty-menu` | A menu (a leader included) has no children. |
 | `step-modifiers` | A step key has modifiers. |
 | `step-is-runtime-key` | A step key is the cancel or back key. |
+| `step-is-repeat-key` | Spec v18. Under a leader with `hold`, a step key is the same as its menu's [repeat key](#held-menus): the leader chord's key for the leader's own keys, such as `CAG+D D`, or its menu's step key below that, such as `CAG+A B B`. Or a held [list](#lists)'s own key is `0` to `9`, such as `CAG+1`, since its items have those keys. |
+| `hold-not-leader` | Spec v18. An entry with `"hold": true` isn't a leader: it's a direct binding, or a menu or binding under another menu. |
+| `hold-no-modifiers` | Spec v18. A leader with `"hold": true` has a chord with no modifiers, such as `F13`. |
+| `list-has-children` | Spec v18. An entry's parent is a [list](#lists). |
+| `unknown-list-type` | Spec v18. A `list`'s `type` isn't one of the types in [Lists](#lists). |
+| `bad-list-value` | Spec v18. A `list`'s `count` isn't from 1 to 99, or its `spaces` or `scope` isn't one of its values. |
 | `bad-runtime-key` | `cancelKey` or `backKey` isn't a key name. |
 | `same-cancel-back` | The cancel and back keys are the same. |
 | `negative-delay` | `hudDelayMs`, `timeoutMs` or `windows.quitOnCloseDelayMs` (spec v16) is negative. |
@@ -817,8 +1005,8 @@ stop a config from loading.
 | `undefined-context` | A Context Aware variant names a context that isn't in `contexts`. |
 | `nested-contextual` | A Context Aware variant or fallback is itself `contextual`. |
 | `duplicate-context` | Two contexts share an `id`. |
-| `conflicting-fields` | An action has fields that don't go together: both `preset` and `frame`; two of `to`, `by` and `step`; `anchor` with `step`; `widths` without `step`; both `target` and `direction` (spec v11); or, on Windows, both `exe` and `appId`. (Neither of a required pair is `missing-field`.) |
-| `other-platform-field` | Windows only: an `application` action has `bundleId`, which only the Mac uses, or `windows` has `quitOnClose` or `quitOnCloseDelayMs`, or an app in `windows.apps` has `quit` (spec v16). (On the Mac, `exe` and `appId` are `unknown-field`.) |
+| `conflicting-fields` | An action has fields that don't go together: both `preset` and `frame`; two of `to`, `by` and `step`; `anchor` with `step`; `widths` without `step`; both `target` and `direction` (spec v11); an entry with both `action` and `list` (spec v18); or, on Windows, both `exe` and `appId`. (Neither of a required pair is `missing-field`.) |
+| `other-platform-field` | Windows only: an `application` action has `bundleId`, which only the Mac uses, or `windows` has `quitOnClose` or `quitOnCloseDelayMs`, or an app in `windows.apps` has `quit` (spec v16), or a `windows.recent` list has `hidden` (spec v18). (On the Mac, `exe` and `appId` are `unknown-field`.) |
 | `bad-app-id` | Windows only: an `exe` doesn't end in `.exe`, an `appId` is blank, or a context's `apps` has a blank string, or a key in `windows.apps` (spec v15) is blank. |
 | `bad-icon` | Windows only: an entry's `icon` is neither a `U+` code point nor a path. |
 | `bad-fraction` | A fraction is out of its range, a `frame` runs past the usable area, or `widths` is empty. |
@@ -865,8 +1053,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v17. They only add: new action types, new fields,
-the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), a history of focused windows that the app keeps (spec v13), and a family for Spaces (spec v17). Spec v15 drops `windows.exclude`, from spec v13 and v14, which no released app read; a file with it is `unknown-field`. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 to v18. They only add: new action types, new fields,
+the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), a history of focused windows that the app keeps (spec v13), a family for Spaces (spec v17), and held menus and lists, two new entry fields (spec v18). Spec v15 drops `windows.exclude`, from spec v13 and v14, which no released app read; a file with it is `unknown-field`. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.
@@ -892,6 +1080,18 @@ when it's decided.
   the Mac app's quick switch only goes one Space at a time.
 - **Built-in names for Move Window**, once its spots (Center, Top Left
   and the others) have names in this spec.
+- **⌘Tab as a held leader on the Mac.** The Dock takes ⌘Tab and ⌘⇧Tab
+  before other apps' shortcuts. The only known way to stop it is a
+  private call whose change outlives the app, even a crash. Not decided:
+  test whether the event tap sees ⌘Tab first, then decide between
+  `reserved-chord` and support.
+- **Keys for the highlighted item in a held menu,** as the app switchers
+  have: close or minimize a window, quit or hide an app, without letting
+  go.
+- **Search in a held list,** by typing part of a title.
+- **More list types,** such as the running apps, or the windows of the
+  app in front.
+- **A list of Spaces,** once Switch Space can go to a Space by number.
 
 ### Decided in spec v2
 

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "CAG+A",
+      "title": "Apps",
+      "hold": "yes"
+    },
+    {
+      "keys": "CAG+A F",
+      "title": "Fill",
+      "action": "window-fill"
+    }
+  ]
+}

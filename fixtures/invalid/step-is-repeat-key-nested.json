@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "CAG+A",
+      "title": "Apps",
+      "hold": true
+    },
+    {
+      "keys": "CAG+A B",
+      "title": "Windows"
+    },
+    {
+      "keys": "CAG+A B B",
+      "title": "Fill",
+      "action": "window-fill"
+    }
+  ]
+}

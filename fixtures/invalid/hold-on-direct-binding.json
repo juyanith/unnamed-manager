@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "CAG+F",
+      "title": "Fill",
+      "action": "window-fill",
+      "hold": true
+    }
+  ]
+}

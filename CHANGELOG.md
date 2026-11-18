@@ -2,6 +2,62 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v18
+
+- **Held menus:** `"hold": true` on a leader makes its menu, and every
+  menu under it, work while the leader's modifiers are held, as ⌘Tab and
+  Alt+Tab do.
+  - The highlight starts on the first item.
+  - The repeat key (the key that opened the menu) moves it on. Shift
+    with the repeat key moves it back, unless Shift is in the leader.
+  - Down and Up move it too, unless an item uses that key.
+  - A binding's key moves the highlight there; a menu's key opens that
+    menu at once.
+  - Letting go of the first modifier chooses the highlighted item. A
+    menu chosen that way goes on as an ordinary menu.
+  - Every held menu starts with Cancel, which has no key.
+  - Key repeats don't move the highlight.
+  - No `timeoutMs` while held. `hudDelayMs` still applies, and letting
+    go before the Guide appears chooses with no Guide.
+  - An app must notice a missed key-up within 200 ms.
+- **Lists:** `list` on a menu makes the app fill it when it opens. The
+  first type is `windows.recent`, Recent Windows.
+  - It holds the windows used last, most recent first, with
+    `count` (9 by default, up to 99), `minimized`, `hidden` (Mac only),
+    `spaces` (`all` or `current`) and `scope` (`all` or `display`).
+  - Items have keys 1 to 9 on pages of 9, and `0` is More.
+  - In a held list, Cancel is the focused window.
+  - Choosing a window brings it back from minimized, hidden or another
+    Space, and puts it first in the focus history at once.
+- On Windows, a held leader can be `Alt+Tab`, and replaces the Windows
+  switcher while the app runs, except over apps running as administrator
+  and on the secure desktop.
+- New errors:
+  - `step-is-repeat-key`: a key under a held leader equals its menu's
+    repeat key, such as `CAG+D D` with `hold`, or a held list's key is a
+    digit.
+  - `hold-not-leader`
+  - `hold-no-modifiers`
+  - `list-has-children`
+  - `unknown-list-type`
+  - `bad-list-value`
+- An entry with both `action` and `list` is `conflicting-fields`. A
+  list with no `type` is `missing-field`. `hidden` on Windows is
+  `other-platform-field`.
+- Planned: ⌘Tab as a held leader on the Mac, keys for the highlighted
+  item, search in a held list, more list types.
+- `version` stays `1`.
+- `config.schema.json` has `hold` and `list`. The title says spec v18.
+- 148 fixtures (25 valid, 123 invalid). `valid/held-menus.json` and 16
+  invalid fixtures are new: `hold-on-child`, `hold-on-direct-binding`,
+  `hold-no-modifiers`, `hold-wrong-type`, `step-is-repeat-key`,
+  `step-is-repeat-key-nested`, `list-repeat-key-digit`,
+  `list-has-children`, `list-with-action`, `list-type-unknown`,
+  `list-type-missing`, `list-count-zero`, `list-count-too-big`,
+  `list-spaces`, `list-unknown-field` and `win-list-hidden` (Windows
+  only). The manifest says `v18`.
+- Not yet supported by either app.
+
 ## spec-v17
 
 - **Switch Space** (`space.switch`, Windows: Switch Desktop): goes to
