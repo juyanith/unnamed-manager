@@ -9,19 +9,25 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
   Finder or the Mac app itself, an app that hasn't shown a window, a menu
   bar or background app, or an app with a minimized window, one on
   another Space, or one that's hidden.
+- **`windows.quitOnCloseDelayMs`** (Mac only), `500` by default: how long
+  after a window closes the app's windows are counted. Negative is
+  `negative-delay`.
 - **`quit`**, a fourth rule in `windows.apps`, `true` by default.
   `false` keeps the app open with Quit on close on. It also keeps apps
   inside that app's bundle. The Mac app writes all four rules for each
   listed app.
-- On Windows, `quitOnClose` and `quit` are `other-platform-field`.
+- On Windows, `quitOnClose`, `quitOnCloseDelayMs` and `quit` are
+  `other-platform-field`.
 - `version` stays `1`.
-- `config.schema.json` has `windows.quitOnClose` and the `quit` rule. The
+- `config.schema.json` has `windows.quitOnClose`,
+  `windows.quitOnCloseDelayMs` and the `quit` rule. The
   title says spec v16.
-- 124 fixtures (23 valid, 101 invalid). `valid/quit-on-close.json`,
-  `invalid/quit-on-close-type.json` and
+- 126 fixtures (23 valid, 103 invalid). `valid/quit-on-close.json`,
+  `invalid/quit-on-close-type.json`,
+  `invalid/quit-on-close-negative-delay.json` and
   `invalid/windows-app-quit-type.json` (Mac only),
-  `invalid/win-quit-on-close.json` and `invalid/win-app-quit.json`
-  (Windows only) are new.
+  `invalid/win-quit-on-close.json`, `invalid/win-quit-on-close-delay.json`
+  and `invalid/win-app-quit.json` (Windows only) are new.
 - Not yet supported by the Windows app, which pins spec-v4.
 
 ## spec-v15

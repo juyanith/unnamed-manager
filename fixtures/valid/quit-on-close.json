@@ -18,6 +18,7 @@
   ],
   "windows": {
     "quitOnClose": true,
+    "quitOnCloseDelayMs": 800,
     "apps": {
       "com.apple.Preview": {
         "focus": true,

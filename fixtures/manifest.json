@@ -1125,6 +1125,30 @@
       "platforms": [
         "windows"
       ]
+    },
+    {
+      "file": "invalid/quit-on-close-negative-delay.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "negative-delay"
+        }
+      ],
+      "platforms": [
+        "mac"
+      ]
+    },
+    {
+      "file": "invalid/win-quit-on-close-delay.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "other-platform-field"
+        }
+      ],
+      "platforms": [
+        "windows"
+      ]
     }
   ]
 }

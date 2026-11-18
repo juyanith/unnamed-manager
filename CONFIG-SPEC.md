@@ -109,6 +109,7 @@ Spec v3.
 | `rowTolerance` | number ≥ 0 | `20` | Spec v12. Windows whose tops are within this many points share a row in Focus Window's order. |
 | `tieTolerance` | number ≥ 0 | `2` | Spec v12. Gaps within this many points count as the same when Focus Window picks a window in a direction. |
 | `quitOnClose` | boolean | `false` | Spec v16, Mac only. [Quit on close](#quit-on-close): closing an app's last window also quits the app. |
+| `quitOnCloseDelayMs` | integer ≥ 0 | `500` | Spec v16, Mac only. How long after a window closes Quit on close counts the app's windows, so an app that opens a window in place of the one it closed isn't quit. |
 | `apps` | object | `{}` | Spec v15. Rules for each app's windows, keyed by app id: a bundle id on the Mac, an `exe` or an `appId` on Windows, as in a context's [`apps`](#contexts). Each value is an object of the rules below. An app that isn't listed takes part in every window action. |
 
 Each app in `windows.apps` takes these rules, all optional:
@@ -152,12 +153,15 @@ app when its last window closes, as Windows apps do. It never quits:
   of a hidden app.
 
 An app inside an app that has `"quit": false`, such as a helper app in
-its bundle, is kept too. On Windows, `quitOnClose` and the `quit` rule
-are `other-platform-field`.
+its bundle, is kept too. The app's windows are counted
+`quitOnCloseDelayMs` after a window closes. On Windows,
+`quitOnClose`, `quitOnCloseDelayMs` and the `quit` rule are
+`other-platform-field`.
 
 ```json
 "windows": {
   "quitOnClose": true,
+  "quitOnCloseDelayMs": 800,
   "apps": {
     "com.apple.Preview": { "focus": true, "swap": true, "arrange": true, "quit": false }
   }
@@ -766,7 +770,7 @@ stop a config from loading.
 | `step-is-runtime-key` | A step key is the cancel or back key. |
 | `bad-runtime-key` | `cancelKey` or `backKey` isn't a key name. |
 | `same-cancel-back` | The cancel and back keys are the same. |
-| `negative-delay` | `hudDelayMs` or `timeoutMs` is negative. |
+| `negative-delay` | `hudDelayMs`, `timeoutMs` or `windows.quitOnCloseDelayMs` (spec v16) is negative. |
 | `negative-gap` | `windows.gap` is negative. |
 | `bad-window-limit` | `windows.maxColumns` or `windows.maxRows` isn't from 1 to 8. |
 | `negative-window-distance` | `windows.minVisible`, `windows.rowTolerance` or `windows.tieTolerance` is negative (spec v12). |
@@ -779,7 +783,7 @@ stop a config from loading.
 | `nested-contextual` | A Context Aware variant or fallback is itself `contextual`. |
 | `duplicate-context` | Two contexts share an `id`. |
 | `conflicting-fields` | An action has fields that don't go together: both `preset` and `frame`; two of `to`, `by` and `step`; `anchor` with `step`; `widths` without `step`; both `target` and `direction` (spec v11); or, on Windows, both `exe` and `appId`. (Neither of a required pair is `missing-field`.) |
-| `other-platform-field` | Windows only: an `application` action has `bundleId`, which only the Mac uses, or `windows` has `quitOnClose` or an app in `windows.apps` has `quit` (spec v16). (On the Mac, `exe` and `appId` are `unknown-field`.) |
+| `other-platform-field` | Windows only: an `application` action has `bundleId`, which only the Mac uses, or `windows` has `quitOnClose` or `quitOnCloseDelayMs`, or an app in `windows.apps` has `quit` (spec v16). (On the Mac, `exe` and `appId` are `unknown-field`.) |
 | `bad-app-id` | Windows only: an `exe` doesn't end in `.exe`, an `appId` is blank, or a context's `apps` has a blank string, or a key in `windows.apps` (spec v15) is blank. |
 | `bad-icon` | Windows only: an entry's `icon` is neither a `U+` code point nor a path. |
 | `bad-fraction` | A fraction is out of its range, a `frame` runs past the usable area, or `widths` is empty. |
