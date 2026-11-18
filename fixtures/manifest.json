@@ -1070,6 +1070,61 @@
           "rule": "unknown-field"
         }
       ]
+    },
+    {
+      "file": "valid/quit-on-close.json",
+      "valid": true,
+      "platforms": [
+        "mac"
+      ]
+    },
+    {
+      "file": "invalid/quit-on-close-type.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "wrong-type"
+        }
+      ],
+      "platforms": [
+        "mac"
+      ]
+    },
+    {
+      "file": "invalid/windows-app-quit-type.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "wrong-type"
+        }
+      ],
+      "platforms": [
+        "mac"
+      ]
+    },
+    {
+      "file": "invalid/win-quit-on-close.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "other-platform-field"
+        }
+      ],
+      "platforms": [
+        "windows"
+      ]
+    },
+    {
+      "file": "invalid/win-app-quit.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "other-platform-field"
+        }
+      ],
+      "platforms": [
+        "windows"
+      ]
     }
   ]
 }

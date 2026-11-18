@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "Meh+W",
+      "title": "Windows"
+    },
+    {
+      "keys": "Meh+W A",
+      "title": "Arrange",
+      "action": "window-arrange"
+    },
+    {
+      "keys": "Meh+W Tab",
+      "title": "Focus the window used before",
+      "action": "window-focus-recent"
+    }
+  ],
+  "windows": {
+    "quitOnClose": true,
+    "apps": {
+      "com.apple.Preview": {
+        "focus": true,
+        "swap": true,
+        "arrange": true,
+        "quit": false
+      },
+      "com.apple.Notes": {
+        "quit": true
+      }
+    }
+  }
+}

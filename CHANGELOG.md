@@ -2,6 +2,28 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v16
+
+- **Quit on close** (Mac only): `windows.quitOnClose`, `false` by
+  default, quits an app when its last window closes. It never quits
+  Finder or the Mac app itself, an app that hasn't shown a window, a menu
+  bar or background app, or an app with a minimized window, one on
+  another Space, or one that's hidden.
+- **`quit`**, a fourth rule in `windows.apps`, `true` by default.
+  `false` keeps the app open with Quit on close on. It also keeps apps
+  inside that app's bundle. The Mac app writes all four rules for each
+  listed app.
+- On Windows, `quitOnClose` and `quit` are `other-platform-field`.
+- `version` stays `1`.
+- `config.schema.json` has `windows.quitOnClose` and the `quit` rule. The
+  title says spec v16.
+- 124 fixtures (23 valid, 101 invalid). `valid/quit-on-close.json`,
+  `invalid/quit-on-close-type.json` and
+  `invalid/windows-app-quit-type.json` (Mac only),
+  `invalid/win-quit-on-close.json` and `invalid/win-app-quit.json`
+  (Windows only) are new.
+- Not yet supported by the Windows app, which pins spec-v4.
+
 ## spec-v15
 
 - **`windows.apps`**, rules for each app's windows, keyed by app id:

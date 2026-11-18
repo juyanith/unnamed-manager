@@ -108,6 +108,7 @@ Spec v3.
 | `minVisible` | number ≥ 0 | `20` | Spec v12. Points on a side of the square a window's visible part must hold for [Focus Window](#windowfocus) and [Swap Window](#windowswap) to count it, and points it must share with the focused window to be in line. `0` counts any window with some part showing. |
 | `rowTolerance` | number ≥ 0 | `20` | Spec v12. Windows whose tops are within this many points share a row in Focus Window's order. |
 | `tieTolerance` | number ≥ 0 | `2` | Spec v12. Gaps within this many points count as the same when Focus Window picks a window in a direction. |
+| `quitOnClose` | boolean | `false` | Spec v16, Mac only. [Quit on close](#quit-on-close): closing an app's last window also quits the app. |
 | `apps` | object | `{}` | Spec v15. Rules for each app's windows, keyed by app id: a bundle id on the Mac, an `exe` or an `appId` on Windows, as in a context's [`apps`](#contexts). Each value is an object of the rules below. An app that isn't listed takes part in every window action. |
 
 Each app in `windows.apps` takes these rules, all optional:
@@ -117,20 +118,48 @@ Each app in `windows.apps` takes these rules, all optional:
 | `focus` | boolean | `true` | `false`: [Focus Window](#windowfocus) never picks the app's windows, for any `target`. |
 | `swap` | boolean | `true` | `false`: [Swap Window](#windowswap) never moves the app's windows, as the window swapped with or as the focused one. |
 | `arrange` | boolean | `true` | `false`: [Arrange Windows](#windowarrange) never counts or moves the app's windows. |
+| `quit` | boolean | `true` | Spec v16, Mac only. `false`: [Quit on close](#quit-on-close) never quits the app. |
 
 - The rules are separate: an app left out of one still takes part in
   the others.
 - A window that an action leaves out still covers the windows behind it.
 - A rule that isn't one of these is `unknown-field`, and a rule that
   isn't `true` or `false` is `wrong-type`.
-- When an app saves the file, it writes all three rules for each app
-  listed, so an app with every rule `true` stays listed.
+- When an app saves the file, it writes every rule its platform has for
+  each app listed (four on the Mac, three on Windows), so an app with
+  every rule `true` stays listed.
 
 ```json
 "windows": {
   "apps": {
     "com.apple.calculator": { "focus": true, "swap": true, "arrange": false },
     "com.apple.finder": { "focus": false, "swap": false, "arrange": true }
+  }
+}
+```
+
+#### Quit on close
+
+Spec v16, Mac only. With `windows.quitOnClose` on, the Mac app quits an
+app when its last window closes, as Windows apps do. It never quits:
+
+- Finder, or the Mac app itself, whatever `windows.apps` says.
+- An app with `"quit": false` in `windows.apps`.
+- An app that hasn't shown a window since the Mac app started watching it.
+- A menu bar app or a background app (`LSUIElement` or `LSBackgroundOnly`
+  in its `Info.plist`).
+- An app with a window left: a minimized one, one on another Space, or one
+  of a hidden app.
+
+An app inside an app that has `"quit": false`, such as a helper app in
+its bundle, is kept too. On Windows, `quitOnClose` and the `quit` rule
+are `other-platform-field`.
+
+```json
+"windows": {
+  "quitOnClose": true,
+  "apps": {
+    "com.apple.Preview": { "focus": true, "swap": true, "arrange": true, "quit": false }
   }
 }
 ```
@@ -750,7 +779,7 @@ stop a config from loading.
 | `nested-contextual` | A Context Aware variant or fallback is itself `contextual`. |
 | `duplicate-context` | Two contexts share an `id`. |
 | `conflicting-fields` | An action has fields that don't go together: both `preset` and `frame`; two of `to`, `by` and `step`; `anchor` with `step`; `widths` without `step`; both `target` and `direction` (spec v11); or, on Windows, both `exe` and `appId`. (Neither of a required pair is `missing-field`.) |
-| `other-platform-field` | Windows only: an `application` action has `bundleId`, which only the Mac uses. (On the Mac, `exe` and `appId` are `unknown-field`.) |
+| `other-platform-field` | Windows only: an `application` action has `bundleId`, which only the Mac uses, or `windows` has `quitOnClose` or an app in `windows.apps` has `quit` (spec v16). (On the Mac, `exe` and `appId` are `unknown-field`.) |
 | `bad-app-id` | Windows only: an `exe` doesn't end in `.exe`, an `appId` is blank, or a context's `apps` has a blank string, or a key in `windows.apps` (spec v15) is blank. |
 | `bad-icon` | Windows only: an entry's `icon` is neither a `U+` code point nor a path. |
 | `bad-fraction` | A fraction is out of its range, a `frame` runs past the usable area, or `widths` is empty. |
@@ -797,7 +826,7 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v15. They only add: new action types, new fields,
+`version` stays `1` in spec v2 to v16. They only add: new action types, new fields,
 the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), and a history of focused windows that the app keeps (spec v13). Spec v15 drops `windows.exclude`, from spec v13 and v14, which no released app read; a file with it is `unknown-field`. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new

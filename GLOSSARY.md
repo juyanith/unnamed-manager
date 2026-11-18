@@ -60,6 +60,7 @@ The UI names below are settled in the spec. The words in each app's forms get th
 | Preset | A named part of the screen for Place Window, such as Left Half or Top Right. | layout, zone, snap area |
 | Swap Window | The `window.swap` action: trade place and size with the window in a direction, the next or previous one, the first or last one, one by number, or the window used before. | exchange, switch, flip |
 | Window used before | The window that had focus before the focused one, from the focus history the app keeps while it runs. The `recent` target. | previous window, last window, switch |
+| Quit on close | Mac only (spec v16): quit an app when its last window closes. Finder and apps with Quit unchecked in Apps stay open. | auto quit, close to quit, quit when closed |
 | Usable area | The screen without the menu bar and Dock, or the taskbar. Window sizes are fractions of it. | visible frame, work area |
 | Anchor | The point of a window that stays put while it resizes, such as its top left corner. | origin, pin, gravity |
 | Grow, Shrink | Step a window's width to the next wider or narrower of its widths. | expand, cycle |
