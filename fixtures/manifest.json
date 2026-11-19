@@ -1,6 +1,6 @@
 {
   "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
-  "spec": "v19",
+  "spec": "v20",
   "fixtures": [
     {
       "file": "valid/minimal.json",
@@ -1385,6 +1385,65 @@
         {
           "rule": "conflicting-fields",
           "subject": "CAG+Tab"
+        }
+      ]
+    },
+    {
+      "file": "valid/space-send.json",
+      "valid": true
+    },
+    {
+      "file": "invalid/space-send-no-target.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "missing-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/space-send-target-zero.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/space-send-target-up.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/space-send-target-string.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/space-send-follow-string.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "wrong-type"
+        }
+      ]
+    },
+    {
+      "file": "invalid/builtin-space-send-0.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "undefined-action",
+          "subject": "Meh+S A"
         }
       ]
     }

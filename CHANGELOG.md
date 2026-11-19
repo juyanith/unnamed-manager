@@ -2,6 +2,37 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v20
+
+- **Send to Space** (`space.send`, Windows: Send to Desktop): puts the
+  focused window on the Space or virtual desktop to the left or right
+  of its own, or on one by number with `"target": 2`.
+  - `"follow": true` goes there with the window; `false`, the default,
+    stays, and focus goes to the window used before on this Space.
+  - Numbers count desktops only, from 1, on the window's display. On the
+    Mac, full-screen apps aren't counted and can't take a window.
+  - Fails with the alert sound with no focused window, a number past the
+    last desktop, a full-screen window or one on every Space, or when the
+    platform refuses the move. Already there, or `left` or `right` at the
+    end, does nothing, with no sound.
+  - How an app moves the window is its own, since the Mac has no public
+    way; it may slide.
+- Built-in names `space-send-left`, `space-send-right`, and
+  `space-send-` and a number from 1, all with `follow` off.
+- A `target` that isn't `left`, `right` or an integer from 1 is
+  `bad-window-value`; none is `missing-field`. A `follow` that isn't a
+  boolean is `wrong-type`.
+- `version` stays `1`.
+- `config.schema.json` has `space.send`. The title says spec v20.
+- 159 fixtures (27 valid, 132 invalid). `valid/space-send.json`,
+  `invalid/space-send-no-target.json`,
+  `invalid/space-send-target-zero.json`,
+  `invalid/space-send-target-up.json`,
+  `invalid/space-send-target-string.json`,
+  `invalid/space-send-follow-string.json` and
+  `invalid/builtin-space-send-0.json` are new.
+- Not yet supported by either app.
+
 ## spec-v19
 
 - **`choose` on a list:** what choosing an item does. `focus`, the

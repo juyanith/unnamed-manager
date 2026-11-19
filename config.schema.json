@@ -554,6 +554,40 @@
         {
           "additionalProperties" : false,
           "properties" : {
+            "follow" : {
+              "description" : "Go to that Space or desktop with the window. Default false: stay where you are.",
+              "type" : "boolean"
+            },
+            "target" : {
+              "description" : "Where the window goes: the Space or desktop to the left or right of its own, or the one with that number, from 1.",
+              "oneOf" : [
+                {
+                  "enum" : [
+                    "left",
+                    "right"
+                  ]
+                },
+                {
+                  "minimum" : 1,
+                  "type" : "integer"
+                }
+              ]
+            },
+            "type" : {
+              "enum" : [
+                "space.send"
+              ]
+            }
+          },
+          "required" : [
+            "type",
+            "target"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
             "count" : {
               "description" : "How many windows: the focused one and the ones used before it. \"all\" is every window on the display, up to windows.maxColumns times windows.maxRows. Default 2.",
               "oneOf" : [
@@ -1173,6 +1207,40 @@
         {
           "additionalProperties" : false,
           "properties" : {
+            "follow" : {
+              "description" : "Go to that Space or desktop with the window. Default false: stay where you are.",
+              "type" : "boolean"
+            },
+            "target" : {
+              "description" : "Where the window goes: the Space or desktop to the left or right of its own, or the one with that number, from 1.",
+              "oneOf" : [
+                {
+                  "enum" : [
+                    "left",
+                    "right"
+                  ]
+                },
+                {
+                  "minimum" : 1,
+                  "type" : "integer"
+                }
+              ]
+            },
+            "type" : {
+              "enum" : [
+                "space.send"
+              ]
+            }
+          },
+          "required" : [
+            "type",
+            "target"
+          ],
+          "type" : "object"
+        },
+        {
+          "additionalProperties" : false,
+          "properties" : {
             "count" : {
               "description" : "How many windows: the focused one and the ones used before it. \"all\" is every window on the display, up to windows.maxColumns times windows.maxRows. Default 2.",
               "oneOf" : [
@@ -1481,6 +1549,6 @@
     "version",
     "entries"
   ],
-  "title" : "Unnamed Manager config (spec v18)",
+  "title" : "Unnamed Manager config (spec v20)",
   "type" : "object"
 }
