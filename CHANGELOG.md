@@ -31,7 +31,7 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
   `invalid/space-send-target-string.json`,
   `invalid/space-send-follow-string.json` and
   `invalid/builtin-space-send-0.json` are new.
-- Not yet supported by either app.
+- Supported by the Mac app. Not yet supported by the Windows app.
 
 ## spec-v19
 
