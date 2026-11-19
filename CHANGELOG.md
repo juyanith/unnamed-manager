@@ -31,7 +31,8 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
   `invalid/space-send-target-string.json`,
   `invalid/space-send-follow-string.json` and
   `invalid/builtin-space-send-0.json` are new.
-- Supported by the Mac app. Not yet supported by the Windows app.
+- Supported by the Mac app, and by the Windows app from 0.5.0, which
+  pins spec-v20.
 
 ## spec-v19
 
@@ -100,7 +101,8 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
   `list-type-missing`, `list-count-zero`, `list-count-too-big`,
   `list-spaces`, `list-unknown-field` and `win-list-hidden` (Windows
   only). The manifest says `v18`.
-- Not yet supported by either app.
+- Supported by the Mac app, and by the Windows app from 0.5.0, which
+  pins spec-v20.
 
 ## spec-v17
 
@@ -120,7 +122,8 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
   `invalid/space-switch-target.json`,
   `invalid/space-switch-target-number.json` and
   `invalid/builtin-space-switch-up.json` are new.
-- Not yet supported by either app.
+- Supported by the Mac app, and by the Windows app from 0.5.0, which
+  pins spec-v20.
 
 ## spec-v16
 
@@ -148,8 +151,8 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
   `invalid/windows-app-quit-type.json` (Mac only),
   `invalid/win-quit-on-close.json`, `invalid/win-quit-on-close-delay.json`
   and `invalid/win-app-quit.json` (Windows only) are new.
-- Not yet supported by the Windows app, which pins spec-v15. Its fields
-  are Mac only: the Windows app needs them only to report
+- Supported by the Windows app from 0.5.0, which pins spec-v20. Its
+  fields are Mac only: the Windows app reports them as
   `other-platform-field`.
 
 ## spec-v15
