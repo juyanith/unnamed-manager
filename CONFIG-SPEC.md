@@ -1160,6 +1160,96 @@ when it's decided.
 - **More list types,** such as the running apps, or the windows of the
   app in front.
 - **A list of Spaces,** once Switch Space can go to a Space by number.
+- **Modifiers on step keys,** so `T` and `Shift+T` can be two entries in
+  one menu. See below.
+
+### Modifiers on step keys
+
+A proposal for spec v21. Today only the first chord has modifiers, and a
+step key with modifiers is `step-modifiers`. This would let a step key
+be a chord too: `CAG+Space T` focuses Terminal and `CAG+Space Shift+T`
+opens a new one, with no extra level for the second.
+
+```json
+{ "keys": "CAG+Space", "title": "Leader" },
+{ "keys": "CAG+Space T", "title": "Terminal", "action": "terminal" },
+{ "keys": "CAG+Space Shift+T", "title": "New Terminal", "action": "terminal-new" }
+```
+
+**Matching.** A step key matches when its key is pressed and the extra
+modifiers held are exactly its modifiers. The extra modifiers are the
+ones held, less the leader's modifiers that have stayed down since the
+leader. Once a leader modifier is let go, it counts again, as the rule
+that held leader modifiers are ignored already says. With `CAG+Space`:
+
+| You do | Matches |
+| --- | --- |
+| Keep CAG down, press T | `T` |
+| Keep CAG down, add Shift, press T | `Shift+T` |
+| Let go, press T | `T` |
+| Let go, press Shift+T | `Shift+T` |
+| Let go, press Ctrl+T | `Ctrl+T` |
+
+So one entry works whether you hold the leader's modifiers or let go of
+them, and no leader has to choose a style.
+
+**What would change:**
+
+- **Keys:** the rule "Only the first chord has modifiers" goes, and
+  `step-modifiers` is removed. A step key is a key name or a chord, with
+  the same names and groups as the first chord. Apps write it the same
+  way: `Ctrl+Alt+Shift+T` as `Meh+T`.
+- **Duplicates:** paths are compared as chords, so `T` and `Shift+T` are
+  different paths, and `Shift+Alt+T` and `Alt+Shift+T` are the same one
+  (`duplicate-path`).
+- **A leader's own modifier:** a step key with a modifier its leader has
+  can only match after you let go of it. That's a warning,
+  `step-uses-leader-modifier`, not an error. Under a `Hyper` leader every
+  modified step key gets it.
+- **The reverse modifier** (`runtime.reverseModifier`): the modifier
+  that, with the repeat key, moves a held menu's highlight back. Today
+  that's always Shift. It becomes a setting, one modifier name (`Shift`,
+  `Ctrl`, `Alt` or `Cmd`, or one of their other names), default
+  `Shift`, so a config can use `Alt` (`Opt` on the Mac) for it. A group
+  or anything else is `bad-runtime-key`. When the leader has the reverse
+  modifier, it works as Shift does today in a leader that has Shift:
+  only the repeat key and Up and Down move the highlight.
+- **Held menus:** a step key in a held menu that is the reverse modifier
+  with its menu's repeat key is an error, `step-is-reverse-key`, unless
+  the leader has that modifier. Any other modified step key moves the
+  highlight to its item, as a bare one does.
+- **Cancel and Back** (`runtime.cancelKey`, `runtime.backKey`) work
+  whatever modifiers are held, so `Shift+Escape` still cancels. A step
+  key on either key, with or without modifiers, is still
+  `step-is-runtime-key`.
+- **Lists:** their items keep the bare keys `1` to `9` and More on `0`.
+  Modified digits do nothing in a list.
+- **Home:** works as any menu. Its entries are leaders and direct
+  bindings, which already have modifiers.
+- **Send Shortcut:** no change. Modifiers held for the step key are let
+  go before the shortcut is sent, as held leader modifiers already are.
+- **The Guide** shows each row's modifiers with its key, and puts `T` and
+  `Shift+T` next to each other.
+- **The apps' key recorders** take a chord, not a key, for a step.
+
+**Compatibility.** Every config that's valid today stays valid and works
+the same. A config that uses a modified step key is `step-modifiers` in
+an app on spec v20 or older.
+
+**Decided:**
+
+1. ~~Should a modified step key with no match fall back to the bare
+   key?~~ No. `Shift+X` with only `X` in the menu is an error flash, so
+   a stray modifier never runs the wrong action.
+2. ~~Should the reverse modifier be a setting?~~ Yes,
+   `runtime.reverseModifier`, default `Shift`. Configs are likely to use
+   `Alt` or `Opt` for it.
+
+**Not decided:**
+
+1. Does the Mac app's event tap see every modified step key? Option with
+   a letter types a character on the Mac, but the tap consumes the key
+   before any app sees it, so it should. Needs a test on the Mac.
 
 ### Decided in spec v2
 
