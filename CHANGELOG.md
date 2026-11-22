@@ -2,6 +2,24 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v21
+
+- **Dialogs are candidates** for Focus Window and Recent Windows, the
+  window Use Application returns to, and in the focus history. Before,
+  only standard windows were.
+- They are never candidates for Swap Window, a list that swaps, or
+  Arrange Windows. With one focused, the first two fail with the alert
+  sound and Arrange Windows leaves it out.
+- On Windows a dialog is an owned, visible, enabled window with a caption
+  that isn't a tool window. A window that one disabled stands aside for
+  it in Focus Window, Recent Windows and Use Application.
+- No field, rule or fixture changes. Modifiers on step keys, proposed as
+  spec v21, is now proposed as spec v22.
+
+Support: the Mac app has taken dialogs this way since 0.5.2, and hasn't
+run its fixture tests against v21. The Windows app builds it in S-082
+and S-083.
+
 ## spec-v20
 
 - **Send to Space** (`space.send`, Windows: Send to Desktop): puts the

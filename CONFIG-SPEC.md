@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v20, tagged `spec-v20`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v21, tagged `spec-v21`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps. Spec v15 adds `windows.apps`, rules for each app that leave its windows out of Focus Window, Swap Window or Arrange Windows, in place of `windows.exclude` from spec v13 and v14, which no released app read. Spec v16 adds Quit on close, for the Mac only: `windows.quitOnClose`, its wait, and a `quit` rule in `windows.apps`. Spec v17 adds Switch Space (`space.switch`), which goes to the Space or virtual desktop to the left or right, as quickly as the platform allows. Spec v18 adds held menus (`hold`), which work while the leader's modifiers are held and choose when you let go, as the platforms' app switchers do, and lists (`list`), menus the app fills when they open, starting with Recent Windows. Spec v19 lets a list swap with the chosen window instead of focusing it (`choose`). Spec v20 adds Send to Space (`space.send`), which puts the focused window on another Space or virtual desktop, and can go with it (`follow`). What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps. Spec v15 adds `windows.apps`, rules for each app that leave its windows out of Focus Window, Swap Window or Arrange Windows, in place of `windows.exclude` from spec v13 and v14, which no released app read. Spec v16 adds Quit on close, for the Mac only: `windows.quitOnClose`, its wait, and a `quit` rule in `windows.apps`. Spec v17 adds Switch Space (`space.switch`), which goes to the Space or virtual desktop to the left or right, as quickly as the platform allows. Spec v18 adds held menus (`hold`), which work while the leader's modifiers are held and choose when you let go, as the platforms' app switchers do, and lists (`list`), menus the app fills when they open, starting with Recent Windows. Spec v19 lets a list swap with the chosen window instead of focusing it (`choose`). Spec v20 adds Send to Space (`space.send`), which puts the focused window on another Space or virtual desktop, and can go with it (`follow`). Spec v21 makes dialogs candidates for Focus Window and Recent Windows, and never for Swap Window or Arrange Windows. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -476,7 +476,8 @@ other's frame, as Swap Window does, and the focused window keeps focus.
   without the focused window, in the same order as for `focus`. Whether
   you can see them doesn't matter. Windows of an app with
   `"swap": false` in [`windows.apps`](#windows) are never items; an
-  app's `focus` rule doesn't apply.
+  app's `focus` rule doesn't apply. [Dialogs](#dialogs) are never items
+  (spec v21).
 - **`minimized`, `hidden` and `spaces` don't go with it:** with
   `"choose": "swap"`, any of them is `conflicting-fields`. `count` and
   `scope` work as for `focus`.
@@ -494,7 +495,7 @@ fields depend on it. Unknown fields are errors.
 
 | `type` | UI name | Fields | Behavior |
 | --- | --- | --- | --- |
-| `application` | Use Application | Mac: `bundleId` (required). Windows: `exe` or `appId`, exactly one. `mode` | `focusOrStart` (default): bring the app forward, starting it if needed. `focus`: only if it's running. `start`: start a new copy even if one is running. Focusing returns to the app's last focused window. |
+| `application` | Use Application | Mac: `bundleId` (required). Windows: `exe` or `appId`, exactly one. `mode` | `focusOrStart` (default): bring the app forward, starting it if needed. `focus`: only if it's running. `start`: start a new copy even if one is running. Focusing returns to the app's last focused window, which can be a dialog (spec v21). |
 | `open` | Open | `target` (required) | Opens a file, folder or URL with its default app. A leading `~` is the home folder. |
 | `exec` | Run Command | `command` (required, array, at least one item), `cwd`, `env` | Starts a process directly: no shell, no expansion except a leading `~`. `cwd` defaults to the home folder. Doesn't wait, but reports a failure to start. |
 | `send` | Send Shortcut | `keys` (required, key path) | Presses one or more chords in the app that was in front. |
@@ -745,6 +746,8 @@ doesn't change.
   the order they were used in. With no focused window, the candidate in
   front of the others counts as the focused one. With no candidate, the
   action fails ("No window to arrange.").
+- **Dialogs** (spec v21) are never counted or moved: see
+  [Dialogs](#dialogs).
 - **Left out** (spec v15): the windows of an app with `"arrange": false`
   in [`windows.apps`](#windows) are never counted or moved, but still
   cover the windows behind them. An app's `focus` and `swap` rules don't
@@ -820,7 +823,8 @@ stacks the two. `"count": "all"` arranges up to four windows.
   still loads and takes the same values. An action with both is
   `conflicting-fields`. When an app saves a file, it keeps the name the
   file uses, as with `window.maximize`, and a new action gets `target`.
-- **Candidates** are the standard, visible windows that aren't minimized,
+- **Candidates** are the standard windows and, from spec v21, the
+  [dialogs](#dialogs), that are visible and aren't minimized,
   on the current Space or desktop of every display. Panels, the Guide and
   the app's own windows are skipped, and so are the windows of an app
   with `"focus": false` in [`windows.apps`](#windows) (spec v15). The
@@ -900,6 +904,33 @@ stacks the two. `"count": "all"` arranges up to four windows.
   candidate in front of the others. With no candidate, the action fails
   ("No window to focus.").
 
+#### Dialogs
+
+Spec v21. Many apps' Settings windows are dialogs, so they can be
+reached as windows can, but never change places or size with them.
+
+- **What a dialog is.** On the Mac: a window whose accessibility subrole
+  is dialog. On Windows: a top-level window with an owner that is
+  visible, enabled, has a caption and isn't a tool window. Tooltips,
+  menus, palettes and owned windows with no caption aren't dialogs, and
+  are never candidates.
+- **Where a dialog counts:** as a candidate for every `target` of Focus
+  Window, as an item of Recent Windows, as a window Use Application
+  returns to, and in the focus history when it takes focus.
+- **Where it doesn't:** a dialog is never a candidate for Swap Window, an
+  item of a list that swaps, or a window Arrange Windows counts or
+  moves. It still covers the windows behind it.
+- **With a dialog focused,** Swap Window and choosing in a list that
+  swaps move nothing and fail with the alert sound ("A dialog is left out
+  of Swap Window."). Arrange Windows treats it as a left-out app's
+  window: its display is still the one arranged, and the candidate in
+  front of the others there counts as the focused one. Fill, Minimize,
+  Place, Move and Resize Window work on it as on any window.
+- **A window a dialog blocks** (Windows): a window that a modal dialog of
+  its own disabled stands aside for that dialog in Focus Window, Recent
+  Windows and Use Application, since it can't take input. It's still
+  swapped and arranged.
+
 #### `window.swap`
 
 Spec v10. Swap Window trades places with another window: each takes the
@@ -917,6 +948,7 @@ on in the same direction.
   `swap` rule does (spec v15). A window of an app with `"swap": false`
   is never a candidate, and when the focused window is one, the action
   fails ("Calculator is left out of Swap Window."), with the app's name.
+  A [dialog](#dialogs) is never a candidate either (spec v21).
   Its `target` takes the same values, and from spec v11 so does
   Focus Window's.
 - **A direction** picks the window Focus Window would focus. With none,
@@ -1118,7 +1150,7 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v20. They only add: new action types, new fields,
+`version` stays `1` in spec v2 to v21. They only add: new action types, new fields,
 the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), a history of focused windows that the app keeps (spec v13), a family for Spaces (spec v17), held menus and lists, two new entry fields (spec v18), a list field (spec v19), and Send to Space (spec v20). Spec v15 drops `windows.exclude`, from spec v13 and v14, which no released app read; a file with it is `unknown-field`. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
@@ -1165,7 +1197,7 @@ when it's decided.
 
 ### Modifiers on step keys
 
-A proposal for spec v21. Today only the first chord has modifiers, and a
+A proposal for spec v22. Today only the first chord has modifiers, and a
 step key with modifiers is `step-modifiers`. This would let a step key
 be a chord too: `CAG+Space T` focuses Terminal and `CAG+Space Shift+T`
 opens a new one, with no extra level for the second.
@@ -1234,7 +1266,7 @@ them, and no leader has to choose a style.
 
 **Compatibility.** Every config that's valid today stays valid and works
 the same. A config that uses a modified step key is `step-modifiers` in
-an app on spec v20 or older.
+an app on spec v21 or older.
 
 **Decided:**
 
