@@ -24,6 +24,16 @@
       "keys": "Meh+S D",
       "title": "built-in right",
       "action": "space-switch-right"
+    },
+    {
+      "keys": "Meh+S E",
+      "title": "go-one",
+      "action": "go-one"
+    },
+    {
+      "keys": "Meh+S F",
+      "title": "built-in 3",
+      "action": "space-switch-3"
     }
   ],
   "actions": {
@@ -34,6 +44,10 @@
     "go-right": {
       "type": "space.switch",
       "target": "right"
+    },
+    "go-one": {
+      "type": "space.switch",
+      "target": 1
     }
   }
 }

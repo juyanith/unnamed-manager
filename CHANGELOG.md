@@ -2,6 +2,38 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v22
+
+- **Switch Space by number** (`space.switch`, Windows: Switch Desktop):
+  `"target": 1` goes to the first Space or virtual desktop, as
+  `space.send` already could with `follow`.
+  - Numbers count desktops only, from 1. On the Mac, full-screen apps
+    aren't counted, as with Send to Space and the Mac's own Switch to
+    Desktop shortcuts. `left` and `right` still count them.
+  - A number works with no focused window, on the display with the
+    pointer, so you can leave an empty desktop. `left` and `right` still
+    do nothing there.
+  - A number past the last desktop fails with the alert sound. The one
+    you're on does nothing, with no sound.
+  - An app may reach a number one Space at a time, as the Mac app does
+    when Send to Space follows a window.
+- Built-in names `space-switch-` and a number from 1, such as
+  `space-switch-1`.
+- A `target` that isn't `left`, `right` or an integer from 1 is
+  `bad-window-value`, as before for anything but the two words.
+- `version` stays `1`. A config with a number is `bad-window-value` in
+  an app on spec v21 or older.
+- `config.schema.json` takes a number for `space.switch`. The title says
+  spec v22.
+- 161 fixtures (27 valid, 134 invalid). `valid/space-switch.json` adds a
+  number and `space-switch-3`. `invalid/space-switch-target-number.json`
+  is now `invalid/space-switch-target-zero.json`, and
+  `invalid/space-switch-target-string.json` and
+  `invalid/builtin-space-switch-0.json` are new.
+- Modifiers on step keys, proposed as spec v22, is now proposed as spec
+  v23. Switch Space to the window used before stays under Planned.
+- Not yet supported by either app.
+
 ## spec-v21
 
 - **Dialogs are candidates** for Focus Window and Recent Windows, the
