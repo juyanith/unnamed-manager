@@ -1,6 +1,6 @@
 # Unnamed Manager config spec
 
-**Status:** spec v22, tagged `spec-v22`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
+**Status:** spec v23, tagged `spec-v23`. [CHANGELOG.md](CHANGELOG.md) lists what changed in each version.
 
 This is the contract the Mac and Windows apps share: the config file's
 format, what each field means, and the rules that make a file valid. Each
@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps. Spec v15 adds `windows.apps`, rules for each app that leave its windows out of Focus Window, Swap Window or Arrange Windows, in place of `windows.exclude` from spec v13 and v14, which no released app read. Spec v16 adds Quit on close, for the Mac only: `windows.quitOnClose`, its wait, and a `quit` rule in `windows.apps`. Spec v17 adds Switch Space (`space.switch`), which goes to the Space or virtual desktop to the left or right, as quickly as the platform allows. Spec v18 adds held menus (`hold`), which work while the leader's modifiers are held and choose when you let go, as the platforms' app switchers do, and lists (`list`), menus the app fills when they open, starting with Recent Windows. Spec v19 lets a list swap with the chosen window instead of focusing it (`choose`). Spec v20 adds Send to Space (`space.send`), which puts the focused window on another Space or virtual desktop, and can go with it (`follow`). Spec v21 makes dialogs candidates for Focus Window and Recent Windows, and never for Swap Window or Arrange Windows. Spec v22 lets Switch Space go to a Space or desktop by number. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps. Spec v15 adds `windows.apps`, rules for each app that leave its windows out of Focus Window, Swap Window or Arrange Windows, in place of `windows.exclude` from spec v13 and v14, which no released app read. Spec v16 adds Quit on close, for the Mac only: `windows.quitOnClose`, its wait, and a `quit` rule in `windows.apps`. Spec v17 adds Switch Space (`space.switch`), which goes to the Space or virtual desktop to the left or right, as quickly as the platform allows. Spec v18 adds held menus (`hold`), which work while the leader's modifiers are held and choose when you let go, as the platforms' app switchers do, and lists (`list`), menus the app fills when they open, starting with Recent Windows. Spec v19 lets a list swap with the chosen window instead of focusing it (`choose`). Spec v20 adds Send to Space (`space.send`), which puts the focused window on another Space or virtual desktop, and can go with it (`follow`). Spec v21 makes dialogs candidates for Focus Window and Recent Windows, and never for Swap Window or Arrange Windows. Spec v22 lets Switch Space go to a Space or desktop by number. Spec v23 makes going with a sent window its own action, Follow to Space (`space.follow`), in place of Send to Space's `follow`. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -547,6 +547,7 @@ default. Names are case-sensitive, like ids.
 | `window.swap` | `target` | `window-swap-` and a target | `window-swap-left`, `window-swap-first`, `window-swap-recent`, `window-swap-3` |
 | `space.switch` | `target` | `space-switch-left`, `space-switch-right` (spec v17), and `space-switch-` and a number from 1 (spec v22) | `space-switch-1` |
 | `space.send` | `target` | `space-send-left`, `space-send-right`, and `space-send-` and a number from 1 (spec v20) | `space-send-2`, which stays where you are |
+| `space.follow` | `target` | `space-follow-left`, `space-follow-right`, and `space-follow-` and a number from 1 (spec v23) | `space-follow-2`, which goes with the window |
 | `help` | none | `help` | Show Help |
 | `noop` | none | `noop` | Do Nothing |
 
@@ -984,7 +985,8 @@ platform's UI uses its own word, as the glossary says.
 | `type` | UI name | Fields | Does |
 | --- | --- | --- | --- |
 | `space.switch` | Switch Space (Windows: Switch Desktop) | `target` (required) | Goes to the Space or desktop to the left or right of the current one, or to one by number (spec v22). |
-| `space.send` | Send to Space (Windows: Send to Desktop) | `target` (required), `follow` | Puts the focused window on the Space or desktop to the left or right, or on one by number (spec v20). |
+| `space.send` | Send to Space (Windows: Send to Desktop) | `target` (required) | Puts the focused window on the Space or desktop to the left or right, or on one by number, and you stay (spec v20). |
+| `space.follow` | Follow to Space (Windows: Follow to Desktop) | `target` (required) | Puts the focused window there as Send to Space does, and you go with it (spec v23). |
 
 #### `space.switch`
 
@@ -1031,10 +1033,9 @@ Spec v20.
 | Field | Type | Default | Meaning |
 | --- | --- | --- | --- |
 | `target` | `left`, `right`, or an integer from 1 | required | Where the window goes: the Space or desktop to the left or right of its own, or the one with that number, counting from 1 in the order Mission Control or Task View shows them. |
-| `follow` | boolean | `false` | `false`: you stay where you are. `true`: you go to that Space or desktop with the window. |
 
 ```json
-"to-two": { "type": "space.send", "target": 2, "follow": true }
+"to-two": { "type": "space.send", "target": 2 }
 ```
 
 - **Which window:** the focused one. **Which display:** the one the
@@ -1044,11 +1045,10 @@ Spec v20.
 - **Numbers count desktops only.** On the Mac, full-screen apps aren't
   counted and can't take a window, as with the Mac's own Switch to
   Desktop shortcuts. `left` and `right` skip them too.
-- **With `follow` off,** the Space or desktop on screen stays, and focus
-  goes to the [window used before](#window-actions) there, or to none.
-  Typing never goes to a window you can't see.
-- **With `follow` on,** the app goes to that Space or desktop too, and
-  the sent window keeps focus.
+- **You stay:** the Space or desktop on screen stays, and focus goes to
+  the [window used before](#window-actions) there, or to none. Typing
+  never goes to a window you can't see. To go with the window, use
+  [Follow to Space](#spacefollow).
 - **The focus history** keeps the sent window, so Focus Window's
   `recent` target can go back to it on its new Space.
 - **These fail, with the alert sound:** no focused window; a number past
@@ -1060,6 +1060,32 @@ Spec v20.
   this on the Mac, so how an app moves the window is its own. It may
   slide, or show the other Space for a moment; the action never fails
   for that.
+- **`follow`** (spec v20 to v22) is gone. A `space.send` with it is
+  `unknown-field`; use `space.follow` for `"follow": true`, and leave it
+  out for `false`.
+
+#### `space.follow`
+
+Spec v23. Follow to Space does what Send to Space does, then goes to
+that Space or desktop with the window. It has the same field, and the
+same rules for which window, which display, numbers, failures and
+nothing happening.
+
+| Field | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `target` | `left`, `right`, or an integer from 1 | required | Where the window goes, and you with it, as for [Send to Space](#spacesend). |
+
+```json
+"with-two": { "type": "space.follow", "target": 2 }
+```
+
+- **You go with it:** the app goes to that Space or desktop too, and the
+  sent window keeps focus. It counts as a focus change for the
+  [focus history](#window-actions).
+- **Quickly:** as for [Switch Space](#spaceswitch), an app goes there as
+  quickly as the platform allows. It may go one Space at a time.
+- **When nothing moves,** because the window is already there or at the
+  first or last Space, you stay too, with no sound.
 
 ## Contexts
 
@@ -1120,7 +1146,7 @@ stop a config from loading.
 | `bad-app-id` | Windows only: an `exe` doesn't end in `.exe`, an `appId` is blank, or a context's `apps` has a blank string, or a key in `windows.apps` (spec v15) is blank. |
 | `bad-icon` | Windows only: an entry's `icon` is neither a `U+` code point nor a path. |
 | `bad-fraction` | A fraction is out of its range, a `frame` runs past the usable area, or `widths` is empty. |
-| `bad-window-value` | A window action's `preset`, `direction`, `step`, `anchor`, `layout` or `scope` isn't one of its values, or a `target` (or `direction`) is neither one of its words nor an integer from 1, such as `0` or the string `"2"`. Or Arrange Windows' `count` isn't `"all"` or from 2 to 8, or its `groups` isn't from 1 to 8, or is more than a `count` that's a number. Or Switch Space's `target` is neither `left`, `right` (spec v17) nor an integer from 1 (spec v22), such as `0`, `"up"` or `"2"`. Or Send to Space's `target` is neither `left`, `right` nor an integer from 1 (spec v20), such as `0`, `"up"` or `"2"`. |
+| `bad-window-value` | A window action's `preset`, `direction`, `step`, `anchor`, `layout` or `scope` isn't one of its values, or a `target` (or `direction`) is neither one of its words nor an integer from 1, such as `0` or the string `"2"`. Or Arrange Windows' `count` isn't `"all"` or from 2 to 8, or its `groups` isn't from 1 to 8, or is more than a `count` that's a number. Or Switch Space's `target` is neither `left`, `right` (spec v17) nor an integer from 1 (spec v22), such as `0`, `"up"` or `"2"`. Or Send to Space's or Follow to Space's `target` is neither `left`, `right` nor an integer from 1 (spec v20, v23), such as `0`, `"up"` or `"2"`. |
 | `unsupported-action` | An action's `type` is in the spec, but this platform's app can't do it yet. |
 
 ### Warnings
@@ -1163,8 +1189,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v22. They only add: new action types, new fields,
-the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), a history of focused windows that the app keeps (spec v13), a family for Spaces (spec v17), held menus and lists, two new entry fields (spec v18), a list field (spec v19), Send to Space (spec v20), and numbers for Switch Space (spec v22). Spec v15 drops `windows.exclude`, from spec v13 and v14, which no released app read; a file with it is `unknown-field`. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 to v23. They only add: new action types, new fields,
+the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), a history of focused windows that the app keeps (spec v13), a family for Spaces (spec v17), held menus and lists, two new entry fields (spec v18), a list field (spec v19), Send to Space (spec v20), numbers for Switch Space (spec v22), and Follow to Space (spec v23). Spec v15 drops `windows.exclude`, from spec v13 and v14, which no released app read; a file with it is `unknown-field`. Spec v23 drops Send to Space's `follow` the same way, while the format is still young: a file with it is `unknown-field`. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.
@@ -1210,7 +1236,7 @@ when it's decided.
 
 ### Modifiers on step keys
 
-A proposal for spec v23. Today only the first chord has modifiers, and a
+A proposal for spec v24. Today only the first chord has modifiers, and a
 step key with modifiers is `step-modifiers`. This would let a step key
 be a chord too: `CAG+Space T` focuses Terminal and `CAG+Space Shift+T`
 opens a new one, with no extra level for the second.
@@ -1279,7 +1305,7 @@ them, and no leader has to choose a style.
 
 **Compatibility.** Every config that's valid today stays valid and works
 the same. A config that uses a modified step key is `step-modifiers` in
-an app on spec v22 or older.
+an app on spec v23 or older.
 
 **Decided:**
 

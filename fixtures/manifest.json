@@ -1,6 +1,6 @@
 {
   "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
-  "spec": "v22",
+  "spec": "v23",
   "fixtures": [
     {
       "file": "valid/minimal.json",
@@ -1448,16 +1448,66 @@
       ]
     },
     {
-      "file": "invalid/space-send-follow-string.json",
+      "file": "invalid/space-send-follow.json",
       "valid": false,
       "errors": [
         {
-          "rule": "wrong-type"
+          "rule": "unknown-field"
         }
       ]
     },
     {
       "file": "invalid/builtin-space-send-0.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "undefined-action",
+          "subject": "Meh+S A"
+        }
+      ]
+    },
+    {
+      "file": "valid/space-follow.json",
+      "valid": true
+    },
+    {
+      "file": "invalid/space-follow-no-target.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "missing-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/space-follow-target-zero.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/space-follow-target-string.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-value"
+        }
+      ]
+    },
+    {
+      "file": "invalid/space-follow-send.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "unknown-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/builtin-space-follow-0.json",
       "valid": false,
       "errors": [
         {

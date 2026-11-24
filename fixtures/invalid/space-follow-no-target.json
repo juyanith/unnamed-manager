@@ -7,15 +7,13 @@
     },
     {
       "keys": "Meh+S A",
-      "title": "send",
-      "action": "send-it"
+      "title": "follow",
+      "action": "follow-it"
     }
   ],
   "actions": {
-    "send-it": {
-      "type": "space.send",
-      "target": 2,
-      "follow": "yes"
+    "follow-it": {
+      "type": "space.follow"
     }
   }
 }

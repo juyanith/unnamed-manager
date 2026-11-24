@@ -38,8 +38,7 @@
     },
     "to-two": {
       "type": "space.send",
-      "target": 2,
-      "follow": true
+      "target": 2
     }
   }
 }

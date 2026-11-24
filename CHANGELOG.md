@@ -2,6 +2,35 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v23
+
+- **Follow to Space** (`space.follow`, Windows: Follow to Desktop): puts
+  the focused window on another Space or virtual desktop, as Send to
+  Space does, and goes there with it. Its only field is `target`, as for
+  `space.send`.
+- **Send to Space loses `follow`.** It always stays. A `space.send` with
+  `follow` is `unknown-field`: use `space.follow` for `"follow": true`,
+  and leave it out for `false`. The format is still young, so `version`
+  stays `1`, as when spec v15 dropped `windows.exclude`.
+- Built-in names `space-follow-left`, `space-follow-right`, and
+  `space-follow-` and a number from 1, such as `space-follow-2`. The
+  naming rule doesn't change: each type's other fields have their
+  defaults, and now neither type has another field.
+- `config.schema.json` adds `space.follow` and drops `follow` from
+  `space.send`. The title says spec v23.
+- 167 fixtures (28 valid, 139 invalid). `valid/space-send.json` drops
+  `follow`. `invalid/space-send-follow-string.json` is now
+  `invalid/space-send-follow.json`, `unknown-field`. `valid/space-follow.json`,
+  `invalid/space-follow-no-target.json`,
+  `invalid/space-follow-target-zero.json`,
+  `invalid/space-follow-target-string.json`,
+  `invalid/space-follow-send.json` and
+  `invalid/builtin-space-follow-0.json` are new.
+- Modifiers on step keys, proposed as spec v23, is now proposed as spec
+  v24.
+- Supported by the Mac app from its first release after 0.5.4. Not yet
+  supported by the Windows app.
+
 ## spec-v22
 
 - **Switch Space by number** (`space.switch`, Windows: Switch Desktop):

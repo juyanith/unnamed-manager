@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "Meh+S",
+      "title": "Spaces"
+    },
+    {
+      "keys": "Meh+S A",
+      "title": "send",
+      "action": "send-it"
+    }
+  ],
+  "actions": {
+    "send-it": {
+      "type": "space.send",
+      "target": 2,
+      "follow": true
+    }
+  }
+}

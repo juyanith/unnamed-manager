@@ -65,7 +65,8 @@ The UI names below are settled in the spec. The words in each app's forms get th
 | Resize Window | The `window.resize` action: resize by points, to a fraction, or step through widths. | size, scale |
 | Place Window | The `window.place` action: move and resize in one step, such as Left Half. | snap, tile, layout |
 | Switch Space | The `space.switch` action (spec v17): go to the Space to the left or right on the focused window's display, or to one by number (spec v22), as quickly as the Mac allows. On Windows, Switch Desktop, for a virtual desktop. | Move Space, change desktop, next workspace |
-| Send to Space | The `space.send` action (spec v20): put the focused window on the Space to the left or right, or on one by number, and stay, or go with it (`follow`). On Windows, Send to Desktop. | Move to Space, push, throw, carry |
+| Send to Space | The `space.send` action (spec v20): put the focused window on the Space to the left or right, or on one by number, and stay. On Windows, Send to Desktop. | Move to Space, push, throw, carry |
+| Follow to Space | The `space.follow` action (spec v23): put the focused window on another Space as Send to Space does, and go with it. On Windows, Follow to Desktop. | Take to Space, pursue, trail, carry |
 | Preset | A named part of the screen for Place Window, such as Left Half or Top Right. | layout, zone, snap area |
 | Swap Window | The `window.swap` action: trade place and size with the window in a direction, the next or previous one, the first or last one, one by number, or the window used before. | exchange, switch, flip |
 | Window used before | The window that had focus before the focused one, from the focus history the app keeps while it runs. The `recent` target. | previous window, last window, switch |
