@@ -32,7 +32,8 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
   `invalid/builtin-space-switch-0.json` are new.
 - Modifiers on step keys, proposed as spec v22, is now proposed as spec
   v23. Switch Space to the window used before stays under Planned.
-- Not yet supported by either app.
+- Supported by the Windows app from 0.6.0, which pins spec-v22. Not yet
+  supported by the Mac app.
 
 ## spec-v21
 
@@ -49,8 +50,8 @@ Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
   spec v21, is now proposed as spec v22.
 
 Support: the Mac app has taken dialogs this way since 0.5.2, and hasn't
-run its fixture tests against v21. The Windows app builds it in S-082
-and S-083.
+run its fixture tests against v21. The Windows app from 0.6.0, which
+pins spec-v22.
 
 ## spec-v20
 
