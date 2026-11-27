@@ -1648,9 +1648,9 @@ niri and PaperWM, without scrolling off screen.
      column's width. They hang off the bottom of the screen, with their
      title bars in the shelf. That keeps at least 40 points of title bar
      on screen, so the spec's rule holds and no window is hidden.
-   - Stepping through the column makes the next window current: it goes
-     to the top, and the windows after it follow. A window keeps its
-     height, so stepping moves windows and doesn't resize them.
+   - Stepping through the column shifts its windows, as in 14. A window
+     keeps its height, so stepping moves windows and doesn't resize
+     them.
    - The bar still shows how many windows the column has and which is
      current.
 7. **A Space scrolls left and right** over its columns. Columns that
@@ -1678,16 +1678,32 @@ niri and PaperWM, without scrolling off screen.
     the part of a window past it, as it would for any window there.
 11. **Windows in a shelf overlap,** the same as a window behind another
     one today. Their title bars are still there to click.
-12. **Clicking a window in a shelf makes it current.** It moves to the
-    front of its column, the windows after it follow, and the ones that
-    no longer fit go back to the shelf. So clicking through the shelf
-    steps through the column's windows.
-13. **Columns shift as little as they can.** Decided on 2026-11-27, in
-    place of the rule in 12 for columns. Clicking a window of a column
-    in the right shelf brings that column in at the right edge: the
-    shown columns shift left by as many as it takes, and the leftmost
-    ones leave. It works as scrolling does, so there's no "current
-    column" to keep.
+12. ~~Clicking a window in a shelf makes it current, at the front of its
+    column.~~ Replaced by 13 and 14.
+13. **Three kinds of shelf,** for columns in a Space and for windows in
+    a column alike. Decided on 2026-11-27:
+    - **No shelf.** Everything must fit on the display. Sending a window
+      or a column that won't fit is an error, and so is resizing a
+      column so that it, or another one, would go past the display's
+      edge. Errors flash or sound as other actions' errors do. For
+      several displays next to each other, this keeps every window on
+      its own display.
+    - **One shelf** (right or left for columns, bottom or top for
+      windows). Clicking the front one in the shelf brings it in at the
+      shelf's edge. The ones shown shift away from the shelf, and the
+      farthest one goes to the back of the shelf. Clicking on and on
+      turns through all of them, like a wheel, and ends back at the
+      layout you started with.
+    - **Two shelves** (left and right, or top and bottom). The same, but
+      the shelf you click decides the way: clicking the right shelf
+      shifts toward the left, and the one that leaves goes to the front
+      of the left shelf. It works as scrolling does.
+14. **One rule for columns and windows.** A Space and its columns, and a
+    column and its windows, shift the same way. Clicking a window in a
+    column's shelf brings it in at the shelf's edge. Windows already
+    shown stay, pushed away from the shelf, while there's room. The ones
+    that no longer fit, the farthest first, go into the shelf in order.
+    There's no "current" window or column to keep, only what is shown.
 **What changed.** The layout is no longer only what you set by hand: a
 window you send to a column is arranged by it from then on. New windows
 still float, so the layout only touches windows you gave it. That, and
@@ -1745,15 +1761,10 @@ windows in one tile, without tabs.
    nothing is resized. Shown as rows, the other rows keep their size and
    leave a hole until a key fills the column again, since growing them
    would be arranging on its own. Proposed, not decided.
-2. **Where the leftmost column goes** when the columns shift: to a
-   shelf on the left edge (so a Space can have a shelf at both edges,
-   as a scroll can be at both ends), or to the right shelf, after the
-   others (so the columns turn like a wheel).
-3. **Windows in a column the same way?** Windows in a column now make
-   the clicked one current, at the top (12). Shifting as little as
-   possible would instead bring it in just above the shelf. Keeping the
-   two rules the same is simpler to learn; the top of a column may still
-   be the better place for the window in use.
+2. **The default kind of shelf,** and whether it's set for each Space,
+   each display, or once for all.
+3. **Keys for shifting,** the same as clicking the front one in a shelf,
+   so the keyboard can do it too.
 4. **Memory:** whether a Space keeps its columns after the app quits.
    The config is the only file the app keeps.
 5. **Keys:** send a window to a column (by number, left, right, a new
