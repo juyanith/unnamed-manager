@@ -1681,8 +1681,13 @@ niri and PaperWM, without scrolling off screen.
 12. **Clicking a window in a shelf makes it current.** It moves to the
     front of its column, the windows after it follow, and the ones that
     no longer fit go back to the shelf. So clicking through the shelf
-    steps through the column's windows. The same goes for columns in
-    the Space's shelf.
+    steps through the column's windows.
+13. **Columns shift as little as they can.** Decided on 2026-11-27, in
+    place of the rule in 12 for columns. Clicking a window of a column
+    in the right shelf brings that column in at the right edge: the
+    shown columns shift left by as many as it takes, and the leftmost
+    ones leave. It works as scrolling does, so there's no "current
+    column" to keep.
 **What changed.** The layout is no longer only what you set by hand: a
 window you send to a column is arranged by it from then on. New windows
 still float, so the layout only touches windows you gave it. That, and
@@ -1740,24 +1745,30 @@ windows in one tile, without tabs.
    nothing is resized. Shown as rows, the other rows keep their size and
    leave a hole until a key fills the column again, since growing them
    would be arranging on its own. Proposed, not decided.
-2. **Which column is current in a Space,** and so where the shown
-   columns start: the focused one, at the edge away from the shelf, or
-   the one you last stepped to.
-3. **Memory:** whether a Space keeps its columns after the app quits.
+2. **Where the leftmost column goes** when the columns shift: to a
+   shelf on the left edge (so a Space can have a shelf at both edges,
+   as a scroll can be at both ends), or to the right shelf, after the
+   others (so the columns turn like a wheel).
+3. **Windows in a column the same way?** Windows in a column now make
+   the clicked one current, at the top (12). Shifting as little as
+   possible would instead bring it in just above the shelf. Keeping the
+   two rules the same is simpler to learn; the top of a column may still
+   be the better place for the window in use.
+4. **Memory:** whether a Space keeps its columns after the app quits.
    The config is the only file the app keeps.
-4. **Keys:** send a window to a column (by number, left, right, a new
+5. **Keys:** send a window to a column (by number, left, right, a new
    one), take it out so it floats again, step through a column's
    windows, and switch a column between rows and one at a time.
-5. **Windows behind:** a waiting window sits behind the front one. If
+6. **Windows behind:** a waiting window sits behind the front one. If
    it refused the column's size it may show around the edges, and
    clicking it brings it forward. Minimizing instead is slow, and the
    Mac can only hide whole apps.
-6. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
+7. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
    have different limits, and apps report smallest sizes differently.
    The bar's panel has to follow its Space on both.
-7. **Where a new column goes:** right of the focused column, at the
+8. **Where a new column goes:** right of the focused column, at the
    first free 24th from the left, or where the window already is.
-8. **A window dragged out of its column** with the mouse: it floats
+9. **A window dragged out of its column** with the mouse: it floats
    again, or it goes back. Going back is fighting you.
 
 **Walkthrough.** A trace through the decisions above, to find where
