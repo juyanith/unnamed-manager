@@ -1933,6 +1933,32 @@ this is the design as it stands, with what it replaced at the end.
     - **Config:** a `window.combine` action with `maximum`, and the
       built-ins `combine` and `combine-maximum-` and a number. A key in
       the `CAG+W` menu (not decided, 1).
+24. **The laptop's widths.** Decided on 2026-11-27. Fractions of a narrow
+    display are narrow: an 8/24 column is 1280 points on the wide display
+    and 504 on a 1512-point laptop. Apps' own smallest widths don't help,
+    since they're often about 500 points: where an app still draws, not
+    where it's useful.
+    - **A smallest column width for each display,** in grid steps, set
+      with its grid and shelf (4, 8). For the laptop, 3 of 6: a half. No
+      default; a display without one is unchanged.
+    - **A column's width on a display** is the largest of its kept
+      fraction, the display's smallest column width, and the largest
+      smallest width among its windows, rounded up to the grid (3).
+    - **The fraction doesn't change,** so plugging the wide display back
+      in gives every column its share there again.
+    - **Sizing with keys** works from the width you see. Narrower than the
+      display's smallest is an error. Wider sets a new fraction from that
+      display: 4/6 on the laptop is 2/3, so 16/24 on the wide display.
+      You sized it, so it carries over.
+    - **On the laptop,** two columns show at a time and the rest are on
+      the shelves, which then work as scrolling through the columns
+      (walkthrough, 8).
+    - **Read back from the screen** (22) on the laptop, a half is read as
+      a half, so 12/24 on the wide display. A small loss, the price of
+      keeping no file.
+    - Not chosen: **widths in points.** A 1280-point column shows one at
+      a time on the laptop, but points lose the shares of 3, and widths
+      wouldn't fit any other display you plug in.
 
 **Not decided:**
 
@@ -1945,10 +1971,9 @@ this is the design as it stands, with what it replaced at the end.
    test.
 3. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
    have different limits, and apps report smallest sizes differently.
-   The bar's panel has to follow its Space on both.
-4. **The laptop's widths:** fractions of a narrow display are narrow,
-   so the smallest widths of its windows mostly decide the columns
-   there.
+   The bar's panel has to follow its Space on both. Settings for each
+   display (4, 8, 24) need a way to name a display in the config on
+   both, such as by its name or its size.
 
 **Ideas to weigh:**
 
@@ -1980,9 +2005,10 @@ points across (a 14-inch MacBook Pro's default).
 7. Clicking Chrome's title bar on the shelf brings its column in at the
    right edge. Zed's column no longer fits and goes to the back of the
    shelf. Clicking again brings Zed's back.
-8. The wide display is unplugged. The laptop's own shelf settings
-   apply. Zed's 10/24 there is 630 points, so Zed's smallest width
-   decides it, and fewer columns are shown, the rest on the shelf.
+8. The wide display is unplugged. The laptop's own settings apply.
+   Zed's 10/24 there is 630 points, below the laptop's smallest column
+   of a half, so it shows at 756 (24). Chrome's is 756 too. The two
+   fill the laptop, and the rest go to the shelves.
 9. Where macOS puts the windows of an unplugged display's Spaces needs a
    test on the Mac. Windows does the same with virtual desktops in its
    own way.
