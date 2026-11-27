@@ -1657,14 +1657,32 @@ niri and PaperWM, without scrolling off screen.
    don't fit can show in part at the right or left edge. This answers
    walkthrough steps 6 and 7: a column can grow past the screen, and on
    the laptop the same Space shows fewer columns at a time instead of
-   needing a layout of its own. Where columns that are wholly past the
-   edge go is open (see below).
+   needing a layout of its own. Columns wholly past the edge go to a
+   shelf (see 9).
 8. **The grid is set for each display,** such as 24 by 6 on the wide
    display and 6 by 6 on the laptop. It only sets the steps for sizing
    with keys. Widths are kept as fractions of the usable width, so a
    column keeps its share when the display changes, and snaps to the
    grid when you next size it with a key.
 
+9. **Columns get a shelf too.** Decided on 2026-11-27: a Space treats
+   its columns as a column treats its windows. The current column and
+   the ones after it are shown while they fit, and the rest go to a
+   shelf at the edge, with at least 40 points of their title bars on
+   screen.
+10. **Where the shelves are can be set:** at the top or the bottom of
+    each column, and at the left or the right of the screen for
+    columns. A top shelf holds the title bars at the top of the column,
+    with the windows behind the ones shown, since a title bar can't go
+    above the screen. Either way, a display next to that edge can show
+    the part of a window past it, as it would for any window there.
+11. **Windows in a shelf overlap,** the same as a window behind another
+    one today. Their title bars are still there to click.
+12. **Clicking a window in a shelf makes it current.** It moves to the
+    front of its column, the windows after it follow, and the ones that
+    no longer fit go back to the shelf. So clicking through the shelf
+    steps through the column's windows. The same goes for columns in
+    the Space's shelf.
 **What changed.** The layout is no longer only what you set by hand: a
 window you send to a column is arranged by it from then on. New windows
 still float, so the layout only touches windows you gave it. That, and
@@ -1672,8 +1690,8 @@ the shelf instead of hiding or going off screen, is what sets this apart
 from niri and Paneru.
 
 **Hiding a window** was the main risk while columns scrolled up and
-down. The shelf avoids it for windows in a column. It still matters for
-columns wholly past the edge of a Space:
+down. Shelves avoid it, for windows in a column and for columns in a
+Space, so nothing is hidden. Kept for the record:
 
 - **No OS hides one window of an app.** The Mac hides whole apps.
   Windows can hide a window, but its taskbar button goes too, and some
@@ -1692,15 +1710,9 @@ columns wholly past the edge of a Space:
 
 **The shelf, still open:**
 
-1. Windows in the shelf are all at the same place, so only the top one's
-   title bar shows. They could be staggered a little, so each shows a
-   sliver, or the bar alone shows how many there are.
-2. Clicking a window in the shelf brings it forward over the others. The
-   column should then make it current, or the layout is broken until a
-   key fixes it.
-3. A window that would fit only in part above the shelf: it goes to the
+1. A window that would fit only in part above the shelf: it goes to the
    shelf, or it shows in part, with the shelf over its bottom.
-4. How tall a window is in a column: its own height, a share of the
+2. How tall a window is in a column: its own height, a share of the
    column (from the grid's rows), or the column's whole height less the
    shelf.
 
@@ -1728,8 +1740,9 @@ windows in one tile, without tabs.
    nothing is resized. Shown as rows, the other rows keep their size and
    leave a hole until a key fills the column again, since growing them
    would be arranging on its own. Proposed, not decided.
-2. **Columns wholly past the edge of a Space:** where they go, as the
-   shelf does for windows (see Hiding a window, above).
+2. **Which column is current in a Space,** and so where the shown
+   columns start: the focused one, at the edge away from the shelf, or
+   the one you last stepped to.
 3. **Memory:** whether a Space keeps its columns after the app quits.
    The config is the only file the app keeps.
 4. **Keys:** send a window to a column (by number, left, right, a new
