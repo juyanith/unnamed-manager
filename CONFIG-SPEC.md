@@ -1959,6 +1959,46 @@ this is the design as it stands, with what it replaced at the end.
     - Not chosen: **widths in points.** A 1280-point column shows one at
       a time on the laptop, but points lose the shares of 3, and widths
       wouldn't fit any other display you plug in.
+25. **Both platforms.** Decided on 2026-11-27.
+    - **Workspaces.** On the Mac each display has its own Spaces (the
+      default). On Windows one virtual desktop covers every display, and
+      switching switches them all. So columns belong to a workspace on
+      one display: a Space on the Mac, a desktop and a display on
+      Windows. That also covers the Mac with "Displays have separate
+      Spaces" off. Reading one back (22) needs only its own windows: the
+      Mac's window list can be limited to what's on screen, and Windows
+      tells whether a window is on the current desktop.
+    - **Smallest sizes.** Neither OS lets one app read another's reliably.
+      So they're learned: when a window refuses a size, what it took is
+      its smallest (2), kept for each app until the app quits. And
+      `minWidth` and `minHeight` in [`windows.apps`](#windows), in
+      points, give the size where an app is useful, which the OS's
+      numbers don't (24), such as 800 for Chrome. Both work the same on
+      both platforms.
+    - **The bar** is a panel for each workspace. On the Mac a panel stays
+      on the Space it was made on, and slides with it. On Windows the app
+      can move its own windows to a desktop. The bar never counts as a
+      window for Focus or any other window action, as the app's own
+      windows already don't.
+    - **Naming displays.** A `displays` list holds the settings for each
+      display (4, 8, 24). An entry matches by `name`, the OS's name for
+      the display, or by `"builtIn": true` for a laptop's screen. The
+      first that matches wins; a display that matches none uses the
+      defaults. Each platform has its own file (spec v2), so names match
+      on one OS only. Two displays of the same model need more than a
+      name, left for later.
+    - **The OS's own layout.** Maximized on Windows, and full screen
+      with F11, is away (20): the window goes back to its place when
+      restored. Snapping (Win and the arrows and Snap Layouts on Windows,
+      tiling from the green button or its keys on the Mac) is your own
+      move, so the window floats where it lands (19), and Put Back
+      undoes it. The Mac's green-button zoom only resizes.
+    - **Tests:** where each OS puts windows when a display is unplugged
+      (walkthrough, 9), and until then a change of displays is taken as
+      a restart, read again and nothing moved; whether a panel stays on
+      its Space on the Mac and can be moved to a desktop on Windows;
+      whether the Mac's zoom can be told from a resize; and `CAG` and a
+      drag on Windows (not decided, 2).
 
 **Not decided:**
 
@@ -1969,11 +2009,6 @@ this is the design as it stands, with what it replaced at the end.
 2. **`CAG` and a drag on Windows:** whether holding Win+Ctrl+Alt while
    dragging is safe there (Win alone opens Start when let go). Needs a
    test.
-3. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
-   have different limits, and apps report smallest sizes differently.
-   The bar's panel has to follow its Space on both. Settings for each
-   display (4, 8, 24) need a way to name a display in the config on
-   both, such as by its name or its size.
 
 **Ideas to weigh:**
 
@@ -2009,9 +2044,9 @@ points across (a 14-inch MacBook Pro's default).
    Zed's 10/24 there is 630 points, below the laptop's smallest column
    of a half, so it shows at 756 (24). Chrome's is 756 too. The two
    fill the laptop, and the rest go to the shelves.
-9. Where macOS puts the windows of an unplugged display's Spaces needs a
-   test on the Mac. Windows does the same with virtual desktops in its
-   own way.
+9. Where each OS puts the windows of an unplugged display needs a test
+   on each (25). Until then, the app reads the screen again, as after a
+   restart (22), and moves nothing.
 10. A window that refuses the column's width: wider, it makes the column
     grow (3); narrower, it keeps its size, at the column's left edge or
     in the middle.
