@@ -1862,6 +1862,41 @@ this is the design as it stands, with what it replaced at the end.
       lands on it and shifts it in, like scrolling, as niri does. Among
       what's shown, Focus Window never shifts anything.
     - **During a drag,** nothing shifts until you let go (19).
+22. **Memory.** Decided on 2026-11-27. The app keeps no record of
+    columns. When it starts, it reads each Space's columns back from the
+    windows on screen: they are the record, so the config stays the only
+    file the app keeps.
+    - **What it reads:**
+      - **Columns:** windows stacked over the same span across make a
+        column, as wide as its widest window, counting one that refused
+        the width (walkthrough, 10). The order is top to bottom.
+      - **Shelves:** a stack of windows mostly off screen at a shelf's
+        edge. Their order front to back comes from the stacking order,
+        which both OSes report.
+      - **Heights:** windows sharing a column's height equally are Fill.
+        Any other height is set, at its size (19).
+      - **Away windows:** a minimized window still has the frame it
+        comes back to, on both OSes. If that's in a column, it keeps its
+        place there (20).
+    - **Windows that always float are never read into a column:**
+      - **Dialogs** ([Dialogs](#dialogs)), which always float (1).
+      - **Apps with `"columns": false`** in [`windows.apps`](#windows), a
+        new rule like `arrange`, for apps such as Calculator. Their
+        windows never join a column: sending one, with a key or with
+        `CAG` and a drag, is an error, as other actions' errors are.
+    - **When:** each Space the first time you go to it after the app
+      starts, so it never needs windows on other Spaces. Reading moves
+      nothing; nothing moves until your next action (10).
+    - **What's lost:** empty columns (no window to read), Put Back's
+      memory (19), and now and then a floating window that sits exactly
+      in a column's place. Take out fixes that one.
+    - **After a restart,** apps that put their windows back where they
+      were (Resume on the Mac, and many Windows apps) bring the columns
+      back too.
+    - Not chosen: **a state file.** It would be a second file, and it
+      wouldn't survive restarts anyway: window ids change when windows
+      open again, and matching by app and title breaks easily. It could
+      come later if reading the screen proves weak.
 
 **Not decided:**
 
@@ -1872,12 +1907,10 @@ this is the design as it stands, with what it replaced at the end.
 2. **`CAG` and a drag on Windows:** whether holding Win+Ctrl+Alt while
    dragging is safe there (Win alone opens Start when let go). Needs a
    test.
-3. **Memory:** whether a Space keeps its columns after the app quits.
-   The config is the only file the app keeps.
-4. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
+3. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
    have different limits, and apps report smallest sizes differently.
    The bar's panel has to follow its Space on both.
-5. **The laptop's widths:** fractions of a narrow display are narrow,
+4. **The laptop's widths:** fractions of a narrow display are narrow,
    so the smallest widths of its windows mostly decide the columns
    there.
 
