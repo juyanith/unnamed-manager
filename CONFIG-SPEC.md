@@ -1473,6 +1473,18 @@ twice".
 | 12 | halves, thirds, quarters, sixths | eighths |
 | 24 | all of these | short moves: a quarter-wide window takes 6 single-cell pushes to move a quarter |
 
+A grid that holds several fractions needs the least common multiple of
+their parts. Across, 1/2, 1/3, 1/4, 1/6 and 1/8 need 24 columns. Down,
+halves and thirds need only 6 rows; 12 rows adds quarters. On a 57-inch
+32:9 display at 3840 by 1080 points, a 24 by 6 grid has cells of about
+160 by 175 points.
+
+**Smallest size.** A fine grid is easier with a smallest size per app,
+in cells, such as 3 by 2 (an eighth wide, a third high), perhaps in
+[`windows.apps`](#windows). Most apps aren't useful smaller than a
+half on a laptop, so the smallest size could depend on the display.
+Moves by the window's own size matter more on a fine grid.
+
 **Compared with Place on Grid:**
 
 | | Place on Grid | Grid Moves |
@@ -1495,7 +1507,22 @@ twice".
 4. Whether both models could live together: Place on Grid for getting
    to a spot, Grid Moves for small changes after.
 
-**Next:** try `hs.grid` with a 12x3 grid on a 57-inch 32:9 display before
+**Arranging automatically.** What the tools above do, as of 2026-11-27:
+
+| Tool | Arranges on its own |
+| --- | --- |
+| yabai | Yes. A tiling manager: the `bsp` layout tiles each new window, with `stack` and `float` as other layouts, set per Space. Rules per app can float an app (`manage=off`). Directional focus doesn't appear to cover floating windows. Some features need System Integrity Protection partly off. |
+| Hammerspoon | With scripts. `hs.window.layout` keeps rules in force, and its `tile` and `fit` rules spread windows over an area. `hs.layout.apply` places apps once. Not tied to `hs.grid` cells. |
+| FancyZones | Partly. Puts an app back in its zone when it opens, and keeps zone numbers when the layout changes. Doesn't fill zones. |
+| Moom | Saved snapshots of a whole arrangement, applied by click or shortcut. |
+| AeroSpace, komorebi, GlazeWM, i3 | Fully tiling. You never pick sizes. |
+
+Arrange Windows already lays out the windows used last in equal columns
+or rows. Grid Moves could extend it: arrange in cells, and keep each
+app's smallest size. No tool above was found to combine a fixed grid,
+a smallest size per app in cells, and arranging on its own.
+
+**Next:** try `hs.grid` with a 24x6 grid on a 57-inch 32:9 display before
 choosing between the two.
 
 ### Decided in spec v2
