@@ -1682,12 +1682,27 @@ this is the design as it stands, with what it replaced at the end.
       simpler ones.
 13. **Shifting with an empty shelf is an error,** as clicking nothing
     would be: it flashes or sounds as other actions' errors do.
+14. **The other keys.** Decided on 2026-11-27. None of the new chords
+    is used in today's config.
+
+    | Keys | Does |
+    | --- | --- |
+    | `Hyper+J`, `Hyper+Semicolon` | Move the focused window to the column on the left or right. A floating window joins the nearest column that way. Today these are Swap Window; in columns, swapping becomes trading places. |
+    | `Hyper+L`, `Hyper+K` | Move the focused window up or down in its column. |
+    | `CAG+Comma`, `CAG+Period` | Shift the columns, as clicking the left or right shelf does. |
+    | `CAG+N`, `CAG+M` | Shift the windows in the focused column, as clicking its shelf does. |
+    | `CAG+LeftBracket`, `CAG+RightBracket` | The column one grid step narrower or wider (12). |
+    | `CAG+Minus`, `CAG+Equal` | The window one grid step shorter or taller (12). |
+    | `CAG+W` menu | Less frequent ones: send to a new column, take out so it floats, remove an empty column. |
+
+    Focus Window (`CAG+J`, `CAG+K`, `CAG+L`, `CAG+Semicolon`) stays as
+    it is: it already goes by window edges and counts floating windows.
+    Fill and Center (`CAG+W F`, `CAG+W C`) stay for floating windows.
 
 **Not decided:**
 
-1. **Keys:** send a window to a column (by number, left, right, a new
-   one), take it out so it floats again, and shift as a shelf click
-   does. Which of today's `CAG+W` entries stay. Whether Windows takes
+1. **Keys:** the letters in the `CAG+W` menu, sending to a column by
+   number, and which of today's other `CAG+W` entries stay. Whether Windows takes
    Win+Ctrl+Alt with Minus or Equal for Magnifier, and macOS Zoom
    takes ⌃⌥⌘ with them, needs a test on each.
 2. **Heights:** a window's own height, a share of the column from the
