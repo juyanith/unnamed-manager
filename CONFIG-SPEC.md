@@ -1622,13 +1622,12 @@ niri and PaperWM, without scrolling off screen.
    front is marked. A column with one window has no bar. It works as a
    small dock for the column: keys step forward and back through its
    windows, and the bar shows where you are.
-3. **Column widths are in 24ths** of the usable width, which keys can
-   reach and which hold halves, thirds, quarters, sixths and eighths. A
-   new column takes its width from the first window sent to it, as the
-   smallest number of 24ths that holds it. After that, the column is
+3. **Column widths come from the first window, and the column resizes
+   as a whole.** A new column takes the width of the first window sent
+   to it, rounded up to the grid (see 8). After that the column is
    resized as a whole, and its windows with it. A column is never
-   narrower than the smallest number of 24ths that holds the largest
-   smallest width among its windows.
+   narrower than the grid steps that hold the largest smallest width
+   among its windows.
 4. **Nothing rearranges on its own.** When a column's last window
    closes, the column stays, empty. Removing a column is something you
    do, and other columns don't spread into its space unless you ask.
@@ -1637,25 +1636,44 @@ niri and PaperWM, without scrolling off screen.
    past the window's largest width; then the window just doesn't grow.
    Its height comes from the column's settings in the same way. Its
    place comes from what the column shows now.
-6. **A column is a view that scrolls up and down** over its windows.
-   Rows and one at a time are the same thing: how many windows the view
-   holds. Windows outside the view are hidden, since windows can't be
-   placed off screen. A window at the view's edge can show in part,
-   depending on where the column is scrolled. The bar shows the view's
-   place, as a scroll bar does.
-7. **A Space is a view that scrolls left and right** over its columns,
-   in the same way. Columns that don't fit are hidden, and can show in
-   part at the edges. This answers walkthrough steps 6 and 7: a column
-   can grow past the screen, and on the laptop the same Space shows
-   fewer columns at a time instead of needing a layout of its own.
+6. **The current window is at the top of its column,** and the others
+   follow below it, in the column's order. Changed on 2026-11-27 from a
+   view that scrolls, since a title bar can't go above the top of the
+   screen on either platform, and nothing needs to be hidden this way:
+   - **One window** gets the column's whole height.
+   - **All the windows fit:** all are shown, top to bottom, with no
+     space kept for the rest.
+   - **They don't all fit:** the column keeps a strip at the bottom, the
+     **shelf**, and the windows that don't fit go there, each at the
+     column's width. They hang off the bottom of the screen, with their
+     title bars in the shelf. That keeps at least 40 points of title bar
+     on screen, so the spec's rule holds and no window is hidden.
+   - Stepping through the column makes the next window current: it goes
+     to the top, and the windows after it follow. A window keeps its
+     height, so stepping moves windows and doesn't resize them.
+   - The bar still shows how many windows the column has and which is
+     current.
+7. **A Space scrolls left and right** over its columns. Columns that
+   don't fit can show in part at the right or left edge. This answers
+   walkthrough steps 6 and 7: a column can grow past the screen, and on
+   the laptop the same Space shows fewer columns at a time instead of
+   needing a layout of its own. Where columns that are wholly past the
+   edge go is open (see below).
+8. **The grid is set for each display,** such as 24 by 6 on the wide
+   display and 6 by 6 on the laptop. It only sets the steps for sizing
+   with keys. Widths are kept as fractions of the usable width, so a
+   column keeps its share when the display changes, and snaps to the
+   grid when you next size it with a key.
 
 **What changed.** The layout is no longer only what you set by hand: a
 window you send to a column is arranged by it from then on. New windows
 still float, so the layout only touches windows you gave it. That, and
-hiding instead of going off screen, is what sets this apart from niri
-and Paneru.
+the shelf instead of hiding or going off screen, is what sets this apart
+from niri and Paneru.
 
-**Hiding a window,** on both platforms, is now the main thing to test:
+**Hiding a window** was the main risk while columns scrolled up and
+down. The shelf avoids it for windows in a column. It still matters for
+columns wholly past the edge of a Space:
 
 - **No OS hides one window of an app.** The Mac hides whole apps.
   Windows can hide a window, but its taskbar button goes too, and some
@@ -1664,13 +1682,27 @@ and Paneru.
   taskbar, and is slow to undo.
 - **Moving a window almost out of sight,** as AeroSpace does with the
   windows of other workspaces (it leaves them in a corner of the
-  screen). A window then stays a window to the OS, but the spec's rule
-  that 40 points of its title bar stay on screen would need an
-  exception.
+  screen). The same idea as the shelf, turned on its side: columns past
+  the edge could keep 40 points of title bar at the screen's edge.
 - **Showing in part** has limits: on the Mac a title bar can't go under
   the menu bar, so a window can only be cut off at the bottom, left or
-  right, not the top. With two displays side by side, the part past the
-  edge shows on the other display.
+  right, not the top. With two displays next to each other, the part
+  past the edge shows on the other display: below, for the shelf, if a
+  display is arranged under the one with the column.
+
+**The shelf, still open:**
+
+1. Windows in the shelf are all at the same place, so only the top one's
+   title bar shows. They could be staggered a little, so each shows a
+   sliver, or the bar alone shows how many there are.
+2. Clicking a window in the shelf brings it forward over the others. The
+   column should then make it current, or the layout is broken until a
+   key fixes it.
+3. A window that would fit only in part above the shelf: it goes to the
+   shelf, or it shows in part, with the shelf over its bottom.
+4. How tall a window is in a column: its own height, a share of the
+   column (from the grid's rows), or the column's whole height less the
+   shelf.
 
 **Prior art:** niri (Linux) puts windows in columns on a strip that
 scrolls, and new windows never resize the others; columns can show
@@ -1696,7 +1728,8 @@ windows in one tile, without tabs.
    nothing is resized. Shown as rows, the other rows keep their size and
    leave a hole until a key fills the column again, since growing them
    would be arranging on its own. Proposed, not decided.
-2. **Columns that don't fit** (see the walkthrough below).
+2. **Columns wholly past the edge of a Space:** where they go, as the
+   shelf does for windows (see Hiding a window, above).
 3. **Memory:** whether a Space keeps its columns after the app quits.
    The config is the only file the app keeps.
 4. **Keys:** send a window to a column (by number, left, right, a new
