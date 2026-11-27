@@ -1714,29 +1714,50 @@ this is the design as it stands, with what it replaced at the end.
       change to the layout already.
     - With 6 rows, a row is about 175 points on the wide display and 160
       on a 14-inch laptop.
-    - **A window that fits only in part:** a set one goes to the shelf, and Fill windows shrink, down to their
-      smallest heights, before anything is shelved.
+    - **A window that fits only in part:** a set one goes to the shelf,
+      and Fill windows shrink, down to their smallest heights, before
+      anything is shelved.
+16. **Where a sent window goes.** Decided on 2026-11-27:
+    - **It comes in at the shelf's edge,** as if it were the front one on
+      the shelf and was clicked. With the shelf at the bottom, it goes
+      below the shown windows. They're pushed away from the shelf, and
+      what no longer fits goes to the shelf as in 6 and 7. With no shelf,
+      sending a window that won't fit is an error, and it stays where it
+      was. Things only ever shift one way.
+    - **A sent window is always shown and keeps focus.** It never lands
+      on a shelf.
+    - **It starts as Fill** (15).
+    - **`Hyper+J` and `Hyper+Semicolon` work the same way.** The window
+      doesn't keep its place up or down; `Hyper+L` and `Hyper+K` move it
+      after.
+    - **Past the last shown column is an error,** as shifting with an
+      empty shelf is (13). These keys move only among shown columns:
+      shift one in first with `CAG+Comma` or `CAG+Period`, or send to a
+      new column from the `CAG+W` menu.
+    - **A floating window** joins the nearest column that way (14), at
+      the shelf's edge too.
+    - The column it left closes up as it would when a window closes
+      (not decided, 2).
 
 **Not decided:**
 
 1. **Keys:** the letters in the `CAG+W` menu, sending to a column by
-   number, and which of today's other `CAG+W` entries stay. Whether Windows takes
-   Win+Ctrl+Alt with Minus or Equal for Magnifier, and macOS Zoom
-   takes ⌃⌥⌘ with them, needs a test on each.
-2. **Where a sent window goes:** brought in at the shelf's edge, as a
-   click does, or at the far end.
-3. **A window closing in a column:** the windows after it move up, or
-   the space stays until you ask (as in 10).
-4. **Where a new column goes:** next to the focused column, at the
+   number, and which of today's other `CAG+W` entries stay. Whether
+   Windows takes Win+Ctrl+Alt with Minus or Equal for Magnifier, and
+   macOS Zoom takes ⌃⌥⌘ with them, needs a test on each.
+2. **A window closing in a column,** or leaving it: the windows after it
+   move up, or the space stays until you ask (as in 10). Fill windows
+   take up what a Fill window leaves without a new rule (15).
+3. **Where a new column goes:** next to the focused column, at the
    first free place, or where the window already is.
-5. **A window dragged out of its column** with the mouse: it floats
+4. **A window dragged out of its column** with the mouse: it floats
    again, or it goes back. Going back is fighting you.
-6. **Memory:** whether a Space keeps its columns after the app quits.
+5. **Memory:** whether a Space keeps its columns after the app quits.
    The config is the only file the app keeps.
-7. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
+6. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
    have different limits, and apps report smallest sizes differently.
    The bar's panel has to follow its Space on both.
-8. **The laptop's widths:** fractions of a narrow display are narrow,
+7. **The laptop's widths:** fractions of a narrow display are narrow,
    so the smallest widths of its windows mostly decide the columns
    there.
 
