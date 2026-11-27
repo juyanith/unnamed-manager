@@ -1693,7 +1693,7 @@ this is the design as it stands, with what it replaced at the end.
     | `CAG+N`, `CAG+M` | Shift the windows in the focused column, as clicking its shelf does. |
     | `CAG+LeftBracket`, `CAG+RightBracket` | The column one grid step narrower or wider (12). |
     | `CAG+Minus`, `CAG+Equal` | The window one grid step shorter or taller (12). |
-    | `CAG+W` menu | Less frequent ones: send to a new column, take out so it floats, remove an empty column. |
+    | `CAG+W` menu | Less frequent ones: send to a new column, take out so it floats, remove an empty column, Put Back (19). |
 
     Focus Window (`CAG+J`, `CAG+K`, `CAG+L`, `CAG+Semicolon`) stays as
     it is: it already goes by window edges and counts floating windows.
@@ -1740,7 +1740,7 @@ this is the design as it stands, with what it replaced at the end.
       (17).
 17. **A window closing in a column, or leaving it.** Decided on
     2026-11-27. Leaving is being sent to another column, taken out to
-    float, or dragged out (not decided, 2). The column closes up and lays
+    float, or dragged out (19). The column closes up and lays
     itself out again. This isn't against 10: that keeps columns from
     spreading across, and laying out its own windows is a column's job
     (2).
@@ -1787,6 +1787,41 @@ this is the design as it stands, with what it replaced at the end.
     - Not chosen: where the window already is (that's wherever its app
       put it, 1), next to the focused column (the focused window is the
       one being sent), and the first free place (a second way in).
+19. **The mouse.** Decided on 2026-11-27.
+    - **A dragged window floats,** and stays where you drop it, as the OS
+      does. Its column closes up (17), and so does a shelf it was
+      dragged off. A plain drag never makes a window join a column, so
+      moving one aside to see what's behind it rearranges nothing.
+    - **`CAG` and a drag drops into a column.** Hold `CAG` when you let
+      go, and the window joins the column under the pointer, at the place
+      nearest it: between two windows, or reordered in its own column.
+      Dropped on a column's shelf, it comes in at the shelf's edge (16).
+      Dropped where there's no column, it floats, as a plain drag does.
+      While `CAG` is held, the place it would go is marked. `CAG` counts
+      at the drop, not at the start, so the app never gets a modified
+      click (Control and a click is a right click on the Mac), and you
+      can decide during the drag. Nothing is laid out again until you
+      let go, so the places don't move under the pointer.
+    - **Put Back,** a new item in the `CAG+W` menu. A window remembers
+      the column it left and its place there until it joins another.
+      Put Back returns it, so a slip of the mouse is one key to undo. If
+      that column is gone, it's an error.
+    - **Only your own drags count:** not the layout's moves, and not an
+      app moving its own windows (such as at launch). Windows reports the
+      start and end of a drag. The Mac only reports that a window moved,
+      so the app checks whether the mouse button is down, with the event
+      tap's help.
+    - **Resizing with the mouse** keeps the window in its column, at the
+      size you gave it:
+      - **Width** resizes the whole column, and the columns next to it
+        shift as with keys. It's kept as a fraction, not rounded, and
+        snaps to the grid at the next key step (3). With no shelf, a
+        width that won't fit can't be an error, since the OS already
+        resized the window: the column takes the widest that fits.
+      - **Height** makes the window a set one, at that height, and the
+        others are laid out again (15). The next `CAG+Minus` or
+        `CAG+Equal` snaps it to a whole row, so a set height isn't
+        always a whole number of rows.
 
 **Not decided:**
 
@@ -1794,8 +1829,9 @@ this is the design as it stands, with what it replaced at the end.
    number, and which of today's other `CAG+W` entries stay. Whether
    Windows takes Win+Ctrl+Alt with Minus or Equal for Magnifier, and
    macOS Zoom takes ⌃⌥⌘ with them, needs a test on each.
-2. **A window dragged out of its column** with the mouse: it floats
-   again, or it goes back. Going back is fighting you.
+2. **`CAG` and a drag on Windows:** whether holding Win+Ctrl+Alt while
+   dragging is safe there (Win alone opens Start when let go). Needs a
+   test.
 3. **Memory:** whether a Space keeps its columns after the app quits.
    The config is the only file the app keeps.
 4. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
