@@ -1705,10 +1705,27 @@ this is the design as it stands, with what it replaced at the end.
    number, and which of today's other `CAG+W` entries stay. Whether Windows takes
    Win+Ctrl+Alt with Minus or Equal for Magnifier, and macOS Zoom
    takes ⌃⌥⌘ with them, needs a test on each.
-2. **Heights:** a window's own height, a share of the column from the
-   grid's rows, or the column's whole height less the shelf.
-3. **A window that fits only in part** above or below the shelf: it goes
-   to the shelf, or it shows in part, with the shelf over it.
+2. **Heights.** Proposed on 2026-11-27, not decided yet:
+   - **Each window in a column has a height:** either **Fill** or a
+     number of grid rows. A window sent to a column starts as Fill.
+   - **Fill windows share what the set heights leave,** equally. One
+     window alone fills the column; two Fill windows get halves.
+   - **No window goes below its smallest height.** When the shown
+     windows can't all keep theirs, the farthest one from the shelf
+     side goes to the shelf, and the rest are laid out again.
+   - **`CAG+Minus` and `CAG+Equal`** turn a Fill window into the rows it
+     has now, less or plus one, and step a set window by one row.
+     Growing to the whole column height makes it Fill again.
+   - **Rows divide the column's height** less the shelf when the column
+     has one. A shelf appears only when a window goes to it, which is a
+     change to the layout already.
+   - With 6 rows, a row is about 175 points on the wide display and 160
+     on a 14-inch laptop.
+   - This also answers the next question: a set window that fits only
+     in part goes to the shelf, and Fill windows shrink, down to their
+     smallest heights, before anything is shelved.
+3. **A window that fits only in part** above or below the shelf: see
+   the heights proposal in 2.
 4. **Where a sent window goes:** brought in at the shelf's edge, as a
    click does, or at the far end.
 5. **A window closing in a column:** the windows after it move up, or
