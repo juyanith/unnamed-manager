@@ -1822,6 +1822,25 @@ this is the design as it stands, with what it replaced at the end.
         others are laid out again (15). The next `CAG+Minus` or
         `CAG+Equal` snaps it to a whole row, so a set height isn't
         always a whole number of rows.
+20. **Windows that are away.** Decided on 2026-11-27. A window is away
+    when it's minimized, its app is hidden (⌘H or Hide Others on the
+    Mac), or it's full screen on the Mac.
+    - **It keeps its place** in the column's order, but the column is
+      laid out as if it were gone: it closes up and the shelf gives back
+      (17). Unlike a window that leaves, it's still in the column.
+    - **Coming back,** it returns to its place, shown and focused. If its
+      place is on the shelf, the column shifts it in, as a click on it
+      does (6, 9): bringing a window back is something you did. The rest
+      are laid out again (15), and the farthest may go to the shelf.
+    - **A column whose windows are all away** keeps its width and its
+      space, as an empty one does (10), and comes back with them.
+    - **Full screen** is away too, so Zed goes back to its column
+      (walkthrough, 11).
+    - **Quitting the app** is closing (17), not away.
+    - **Both platforms.** Windows has no hiding, only minimizing. Win+D
+      (Show Desktop) minimizes everything, and bringing it all back puts
+      each window in its place, which is a good test. Both OSes report
+      minimizing and restoring; the Mac reports hiding and showing too.
 
 **Not decided:**
 
@@ -1840,10 +1859,11 @@ this is the design as it stands, with what it replaced at the end.
 5. **The laptop's widths:** fractions of a narrow display are narrow,
    so the smallest widths of its windows mostly decide the columns
    there.
-6. **Minimized windows and hidden apps** (⌘H on the Mac): leaning
-   toward keeping their place in the order, laying out the column as if
-   they were gone, and putting them back in that place when they return,
-   as for full screen in the walkthrough (11).
+6. **A shelved window that gets focus** another way: ⌘Tab, the Dock or
+   taskbar, a notification, or Focus Window. The OS brings it to the
+   front where it is on the shelf, over the others there. Leaning toward
+   shifting it in, as a click does, but focus keys that shift the layout
+   could make Focus Window jumpy.
 
 **Ideas to weigh:**
 
@@ -1884,9 +1904,9 @@ points across (a 14-inch MacBook Pro's default).
 10. A window that refuses the column's width: wider, it makes the column
     grow (3); narrower, it keeps its size, at the column's left edge or
     in the middle.
-11. Zed goes full screen on the Mac. It gets a Space of its own and
-    leaves the column; on its way back it floats, or it goes back to
-    its column.
+11. Zed goes full screen on the Mac. It gets a Space of its own and is
+    away from the column; on its way back it goes back to its place
+    (20).
 
 **Considered and replaced:**
 
