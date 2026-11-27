@@ -1632,6 +1632,45 @@ niri and PaperWM, without scrolling off screen.
 4. **Nothing rearranges on its own.** When a column's last window
    closes, the column stays, empty. Removing a column is something you
    do, and other columns don't spread into its space unless you ask.
+5. **A column lays out its windows.** Once a window is in a column, the
+   column decides its frame. Its width is the column's, unless that's
+   past the window's largest width; then the window just doesn't grow.
+   Its height comes from the column's settings in the same way. Its
+   place comes from what the column shows now.
+6. **A column is a view that scrolls up and down** over its windows.
+   Rows and one at a time are the same thing: how many windows the view
+   holds. Windows outside the view are hidden, since windows can't be
+   placed off screen. A window at the view's edge can show in part,
+   depending on where the column is scrolled. The bar shows the view's
+   place, as a scroll bar does.
+7. **A Space is a view that scrolls left and right** over its columns,
+   in the same way. Columns that don't fit are hidden, and can show in
+   part at the edges. This answers walkthrough steps 6 and 7: a column
+   can grow past the screen, and on the laptop the same Space shows
+   fewer columns at a time instead of needing a layout of its own.
+
+**What changed.** The layout is no longer only what you set by hand: a
+window you send to a column is arranged by it from then on. New windows
+still float, so the layout only touches windows you gave it. That, and
+hiding instead of going off screen, is what sets this apart from niri
+and Paneru.
+
+**Hiding a window,** on both platforms, is now the main thing to test:
+
+- **No OS hides one window of an app.** The Mac hides whole apps.
+  Windows can hide a window, but its taskbar button goes too, and some
+  apps don't expect it.
+- **Minimizing** works on both, but it animates, fills the Dock or
+  taskbar, and is slow to undo.
+- **Moving a window almost out of sight,** as AeroSpace does with the
+  windows of other workspaces (it leaves them in a corner of the
+  screen). A window then stays a window to the OS, but the spec's rule
+  that 40 points of its title bar stay on screen would need an
+  exception.
+- **Showing in part** has limits: on the Mac a title bar can't go under
+  the menu bar, so a window can only be cut off at the bottom, left or
+  right, not the top. With two displays side by side, the part past the
+  edge shows on the other display.
 
 **Prior art:** niri (Linux) puts windows in columns on a strip that
 scrolls, and new windows never resize the others; columns can show
@@ -1691,16 +1730,18 @@ Pro's default), so a 24th is 63 points.
 5. Zed's column grows to 10/24. Chrome's column moves right by 2/24.
    It moves; it isn't resized. Now 20/24 is used.
 6. Zed's column grows to 16/24. With Chrome's 10/24, that's 26/24.
-   **Open:** refuse the change, or make the column on the right wait
-   behind another one, or narrow the others (which is tiling).
+   **Answered by decision 7:** the Space scrolls, and Chrome's column
+   is hidden, or shows in part at the right edge, until you scroll to
+   it.
 7. The wide display is unplugged. On the laptop, the same fractions are
    much narrower: Zed's 10/24 is 630 points, and Chrome at its 1600
    points would need more than the whole width. With the rule that a
    column holds its widest window's smallest width, the columns no
    longer fit. **So on the laptop, columns that don't fit are the usual
-   case, not an edge case.** Either the layout needs a rule for them, or
-   each Space keeps one layout for each display shape (wide and laptop)
-   and switches when the display changes.
+   case, not an edge case.** **Answered by decision 7:** the laptop shows
+   one or two columns at a time, and you scroll to the others. Still
+   open: whether widths are 24ths of each display, which makes them
+   narrow on the laptop, so the smallest widths decide them there.
 8. Where macOS puts the windows of an unplugged display's Spaces needs a
    test on the Mac. Windows does the same with virtual desktops in its
    own way.
