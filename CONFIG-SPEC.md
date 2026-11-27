@@ -1737,7 +1737,31 @@ this is the design as it stands, with what it replaced at the end.
     - **A floating window** joins the nearest column that way (14), at
       the shelf's edge too.
     - The column it left closes up as it would when a window closes
-      (not decided, 2).
+      (17).
+17. **A window closing in a column, or leaving it.** Decided on
+    2026-11-27. Leaving is being sent to another column, taken out to
+    float, or dragged out (not decided, 3). The column closes up and lays
+    itself out again. This isn't against 10: that keeps columns from
+    spreading across, and laying out its own windows is a column's job
+    (2).
+    - **The windows after it move up.** Set windows keep their heights,
+      and Fill windows share what's left (15). A gap would only stay
+      when every window is set, so there's no gap.
+    - **The shelf gives back.** Its front window comes in at the shelf's
+      edge, then the next, while every shown window keeps its smallest
+      height (5). With two shelves, it's the shelf at the edge where sent
+      windows come in (16). So a column is just its windows in order and
+      where the shown ones start: the same windows in the same order
+      always look the same, however you got there.
+    - **A window closing on the shelf** leaves the shelf, and nothing
+      shown moves. If it was the only one there, the shelf goes away,
+      and the shown windows are laid out again in the space it frees:
+      rows divide the whole height again (15), and Fill windows grow.
+    - **Widths don't change.** The column keeps its width, even when the
+      window that closed was the one that made it wide (3).
+    - **The last window:** the column stays, empty (10).
+    - **Focus** isn't the layout's to pick. It goes back to the window
+      used before, as in 1.
 
 **Not decided:**
 
@@ -1745,21 +1769,22 @@ this is the design as it stands, with what it replaced at the end.
    number, and which of today's other `CAG+W` entries stay. Whether
    Windows takes Win+Ctrl+Alt with Minus or Equal for Magnifier, and
    macOS Zoom takes ⌃⌥⌘ with them, needs a test on each.
-2. **A window closing in a column,** or leaving it: the windows after it
-   move up, or the space stays until you ask (as in 10). Fill windows
-   take up what a Fill window leaves without a new rule (15).
-3. **Where a new column goes:** next to the focused column, at the
+2. **Where a new column goes:** next to the focused column, at the
    first free place, or where the window already is.
-4. **A window dragged out of its column** with the mouse: it floats
+3. **A window dragged out of its column** with the mouse: it floats
    again, or it goes back. Going back is fighting you.
-5. **Memory:** whether a Space keeps its columns after the app quits.
+4. **Memory:** whether a Space keeps its columns after the app quits.
    The config is the only file the app keeps.
-6. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
+5. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
    have different limits, and apps report smallest sizes differently.
    The bar's panel has to follow its Space on both.
-7. **The laptop's widths:** fractions of a narrow display are narrow,
+6. **The laptop's widths:** fractions of a narrow display are narrow,
    so the smallest widths of its windows mostly decide the columns
    there.
+7. **Minimized windows and hidden apps** (⌘H on the Mac): leaning
+   toward keeping their place in the order, laying out the column as if
+   they were gone, and putting them back in that place when they return,
+   as for full screen in the walkthrough (11).
 
 **Ideas to weigh:**
 
