@@ -1910,7 +1910,29 @@ this is the design as it stands, with what it replaced at the end.
       most that many, the ones used last, and the rest keep floating.
       Without it, it takes them all. A built-in such as
       `combine-maximum-3` would make a column of the last 3 windows.
-    - The rest of how it works is not decided (5).
+    - **Which windows:** floating ones on the focused window's Space and
+      display, in the order they were last used, up to `maximum`. Not
+      dialogs, not apps with `"arrange": false`, and not windows that
+      are away (20): you didn't put those away to have them combined.
+      Other displays are never touched.
+    - **Where:** a new column at the in side (18). Combine never adds to
+      a column that's there; windows are sent to one, one at a time.
+    - **Width:** the width of the window used last, rounded up to the
+      grid, as a column takes its first window's (3), and never
+      narrower than the largest smallest width among its windows.
+    - **Order:** top to bottom from the side away from the shelf, the
+      window used last first. All start as Fill (15), shown while they
+      fit, the rest on the shelf (5). This builds a new column, so 16's
+      "in at the shelf's edge" doesn't apply.
+    - **Focus** stays on the window that had it: first, and shown.
+    - **When it can't do it all:** no floating window is an error; one
+      is the same as sending it to a new column. With no shelf for
+      columns, a column that won't fit across is an error (18). With no
+      shelf for windows, it takes those that fit, in order, and the rest
+      keep floating, as if `maximum` were what fits.
+    - **Config:** a `window.combine` action with `maximum`, and the
+      built-ins `combine` and `combine-maximum-` and a number. A key in
+      the `CAG+W` menu (not decided, 1).
 
 **Not decided:**
 
@@ -1927,13 +1949,6 @@ this is the design as it stands, with what it replaced at the end.
 4. **The laptop's widths:** fractions of a narrow display are narrow,
    so the smallest widths of its windows mostly decide the columns
    there.
-5. **Combine's details** (23). Leaning: a new column at the in side
-   (18), as wide as its widest window rounded up to the grid (3), with
-   the windows in the order they were last used, so the focused one is
-   shown first (the same order `maximum` picks by); the rest shown, then shelved (5). A key in the `CAG+W`
-   menu (1). Whether to combine only the windows you can see, or also
-   minimized ones.
-
 **Ideas to weigh:**
 
 - **The bar in the gap.** With a gap of 8 points, a thin bar fits
