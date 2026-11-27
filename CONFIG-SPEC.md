@@ -1589,8 +1589,8 @@ only within limits, instead of dividing the screen among them.
 
 ### Columns
 
-Recorded to compare; the current favorite, still to be thought out. It
-borrows columns from niri and PaperWM, without scrolling off screen.
+The current favorite, still being thought out. It borrows columns from
+niri and PaperWM, without scrolling off screen.
 
 - **A Space is a workspace.** Each Space has a row of columns across
   the usable area.
@@ -1599,17 +1599,29 @@ borrows columns from niri and PaperWM, without scrolling off screen.
   two ways:
   - **Rows:** stacked top to bottom, sharing the height.
   - **One at a time:** one window fills the column and the others wait
-    behind it, perhaps with tabs.
+    behind it, at the same frame, so nothing goes off screen.
 - **Windows keep their size** where they can. A window that refuses a
   width or height keeps the size it takes, placed in its column; the
   layout doesn't try again.
-- **Not every window is in a column.** Dialogs, floating windows and
-  short-lived windows (a terminal for one command) stay out and float
-  above. When one closes, focus goes back to the window used before.
 - **When columns don't fit** (on the laptop, say), the extra windows go
   into a column shown one at a time, rather than shrinking or going off
   screen. So the same Space can be four columns on the wide display and
   two on the laptop.
+
+**Decided on 2026-11-27:**
+
+1. **New windows float.** A window opens where its app puts it and
+   isn't arranged. A short-lived window (a terminal for one command) is
+   used and closed, and focus goes back to the window used before. A
+   window that stays gets sent to a column with a key. This is the
+   reverse of a tiler, where every new window is arranged, and it's
+   what keeps the layout from fighting the OS. Dialogs always float.
+2. **No tabs. A column with more than one window shows a bar,** like a
+   scroll bar, along one edge, drawn by the app in a panel of its own.
+   It has one part for each window, and the part for the window in
+   front is marked. A column with one window has no bar. It works as a
+   small dock for the column: keys step forward and back through its
+   windows, and the bar shows where you are.
 
 **Prior art:** niri (Linux) puts windows in columns on a strip that
 scrolls, and new windows never resize the others; columns can show
@@ -1617,22 +1629,36 @@ their windows as tabs. PaperWM (GNOME) and Paneru (Mac) scroll the same
 way. i3 and sway have tabbed and stacked containers. yabai can stack
 windows in one tile, without tabs.
 
+**Ideas to weigh:**
+
+- **The bar in the gap.** With a gap of 8 points, a thin bar fits
+  between columns without covering any window.
+- **One model for rows and one at a time.** A column could show some of
+  its windows as rows, and the bar scrolls which ones are shown: one
+  row is one at a time, all rows is plain rows.
+- **The column's windows as a list.** A held [list](#lists) of the
+  windows in the focused column could stand in for a dock, with the
+  bar as the always-visible sign.
+
 **Not decided:**
 
-1. **Tabs.** No OS draws tabs over other apps' windows, so the app
-   would draw them in a panel of its own. Or the column shows one
-   window and a small sign of how many wait, with keys to step through
-   them.
-2. **Column widths:** picked from a list (a third, a half), set from the
+1. **Column widths:** picked from a list (a third, a half), set from the
    widest window, or kept from what you set last.
-3. **When it arranges:** only on a key, or also when a window opens or
-   closes.
-4. **Memory:** whether a Space keeps its columns after the app quits.
+2. **What the layout does on its own:** when a column's window closes,
+   the next one waiting comes forward, or the rows close up. When a
+   column empties, the others stay or close up.
+3. **Memory:** whether a Space keeps its columns after the app quits.
    The config is the only file the app keeps.
-5. **Keys:** moving a window to the next column, into a column's rows or
-   behind it, and changing how a column shows its windows.
+4. **Keys:** send a window to a column (by number, left, right, a new
+   one), take it out so it floats again, step through a column's
+   windows, and switch a column between rows and one at a time.
+5. **Windows behind:** a waiting window sits behind the front one. If
+   it refused the column's size it may show around the edges, and
+   clicking it brings it forward. Minimizing instead is slow, and the
+   Mac can only hide whole apps.
 6. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
    have different limits, and apps report smallest sizes differently.
+   The bar's panel has to follow its Space on both.
 
 ### Decided in spec v2
 
