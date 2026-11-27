@@ -1949,6 +1949,7 @@ this is the design as it stands, with what it replaced at the end.
 4. **The laptop's widths:** fractions of a narrow display are narrow,
    so the smallest widths of its windows mostly decide the columns
    there.
+
 **Ideas to weigh:**
 
 - **The bar in the gap.** With a gap of 8 points, a thin bar fits
