@@ -1906,7 +1906,11 @@ this is the design as it stands, with what it replaced at the end.
     **Combine** takes every floating window on the Space that isn't a
     dialog and whose app doesn't have `"arrange": false`, and puts them
     in one column. The name says what it does; "Arrange" no longer fits.
-    How it does it is not decided (5).
+    - **`maximum`,** optional: an integer, 1 or more. Combine takes at
+      most that many, the ones used last, and the rest keep floating.
+      Without it, it takes them all. A built-in such as
+      `combine-maximum-3` would make a column of the last 3 windows.
+    - The rest of how it works is not decided (5).
 
 **Not decided:**
 
@@ -1926,7 +1930,7 @@ this is the design as it stands, with what it replaced at the end.
 5. **Combine's details** (23). Leaning: a new column at the in side
    (18), as wide as its widest window rounded up to the grid (3), with
    the windows in the order they were last used, so the focused one is
-   shown first; the rest shown, then shelved (5). A key in the `CAG+W`
+   shown first (the same order `maximum` picks by); the rest shown, then shelved (5). A key in the `CAG+W`
    menu (1). Whether to combine only the windows you can see, or also
    minimized ones.
 
