@@ -1233,6 +1233,9 @@ when it's decided.
   (spec v22).
 - **Modifiers on step keys,** so `T` and `Shift+T` can be two entries in
   one menu. See below.
+- **Place on Grid,** a list that places the focused window in a grid you
+  pick as you go: how many columns, which one, how many rows, which one.
+  See below.
 
 ### Modifiers on step keys
 
@@ -1321,6 +1324,101 @@ an app on spec v23 or older.
 1. Does the Mac app's event tap see every modified step key? Option with
    a letter types a character on the Mac, but the tap consumes the key
    before any app sees it, so it should. Needs a test on the Mac.
+
+### Place on Grid
+
+A proposal for a later spec version. Presets and frames cover a few
+fixed parts of the screen. On a wide display you want many more: halves,
+thirds, quarters and sixths across, and halves or thirds down, which is
+close to a hundred frames. A binding for each is too many to learn.
+Place on Grid is a [list](#lists) of type `window.grid` that builds the
+frame from a few number keys instead.
+
+```json
+{ "keys": "CAG+W", "title": "Place on Grid", "list": { "type": "window.grid" } }
+```
+
+| Field | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `columns` | array of integers from 1 to 9, at least one | `[1, 2, 3, 4, 6]` | The numbers of columns you can pick. Order and duplicates don't matter. |
+| `rows` | array of integers from 1 to 9, at least one | `[1, 2, 3]` | The numbers of rows you can pick. |
+
+**Steps.** The list opens on the first of four steps. Each is a menu in
+the Guide, and Back goes to the step before.
+
+1. **How many columns:** one item for each number in `columns`. Its key
+   is the number itself, so `6` is Sixths, not the fifth item.
+2. **Which column:** keys `1` to the number of columns, left to right.
+3. **How many rows:** one item for each number in `rows`, keyed by the
+   number.
+4. **Which row:** keys `1` to the number of rows, top to bottom. This
+   key places the window.
+
+**Skipped steps.** A step with only one choice is skipped, so the key
+before it moves on to the next step, or places the window. With the
+defaults:
+
+| You press | The window goes to |
+| --- | --- |
+| `CAG+W 1 1` | The whole usable area |
+| `CAG+W 2 1 1` | The left half, full height |
+| `CAG+W 6 4 1` | The 4th sixth, full height |
+| `CAG+W 3 2 2 1` | The middle third, top half |
+| `CAG+W 4 1 3 3` | The first quarter, bottom third |
+
+A config can fix a count by giving one number. With `"rows": [1]` every
+placement is full height, and `CAG+W 6 4` places the 4th sixth. With
+`"columns": [3]` the first key picks a third.
+
+**Spans.** In a "which" step, `Shift` with a digit marks that column or
+row as one end of a span and stays on the step. The next digit without
+`Shift` is the other end, in either order, and ends the step. In Sixths,
+`Shift+2` then `4` covers columns 2 to 4, half the width. Another
+`Shift` digit moves the mark. Back clears the mark before it leaves the
+step.
+
+**The frame.** For `N` columns with the span from column `a` to column
+`b`, `x` is `(a - 1) / N` and `width` is `(b - a + 1) / N`. Rows do the
+same for `y` and `height`. The window is then placed as
+[Place Window](#windowplace) places a `frame`: on the display that holds
+most of it, with the gap, edges rounded, and the same rules for a window
+that won't take the size. With no focused window, the list doesn't
+open: it fails, as every window action does.
+
+**In the Guide,** each step draws the usable area in its shape, with the
+grid on it and the columns, or the cells, picked so far filled with the
+accent. Items are titled by their count (Full Width, Halves, Thirds,
+Quarters, Sixths, and "5 Columns" for counts without a name) or by
+their place (Column 2, Row 1).
+
+**How it differs from other lists:** its items come from the config,
+not from what's on screen; it has several steps; count steps key items
+by number, not in order; it never has More, since a step has at most 9
+items; and `Shift` with a digit is a key in it.
+
+**Compatibility.** A config that uses it is `unknown-list-type` in an
+app on an older spec.
+
+**Not decided:**
+
+1. **Held.** Should `"hold": true` work with Place on Grid, choosing the
+   highlighted cell when you let go? Each step would need its own
+   highlight. Until then it would be an error, with a new rule id.
+2. **Keep one axis.** Should `0` in a count step keep the window's
+   current columns or rows (its `x` and `width`, or `y` and `height`)?
+   `CAG+W 6 4 0` would change the width only, and `CAG+W 0 2 1` the
+   height only. That would place each axis on its own without a second
+   action type.
+3. **Rows first.** Should a `"first": "rows"` field let a config pick
+   rows before columns, for tall displays?
+4. **Spans and step-key modifiers.** The proposal for
+   [modifiers on step keys](#modifiers-on-step-keys) says modified
+   digits do nothing in a list. Place on Grid would be the exception, so
+   the two proposals have to agree.
+5. **An overlay instead.** A grid drawn over the display, moved with the
+   arrows, with `Shift` and the arrows to stretch it and Return to
+   place, handles spans better, but it's a new kind of interaction that
+   both apps would have to build. Not proposed for now.
 
 ### Decided in spec v2
 
