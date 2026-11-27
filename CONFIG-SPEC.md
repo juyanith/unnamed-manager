@@ -1880,10 +1880,13 @@ this is the design as it stands, with what it replaced at the end.
         place there (20).
     - **Windows that always float are never read into a column:**
       - **Dialogs** ([Dialogs](#dialogs)), which always float (1).
-      - **Apps with `"columns": false`** in [`windows.apps`](#windows), a
-        new rule like `arrange`, for apps such as Calculator. Their
-        windows never join a column: sending one, with a key or with
-        `CAG` and a drag, is an error, as other actions' errors are.
+      - **Apps with `"arrange": false`** in [`windows.apps`](#windows),
+        such as Calculator. The rule keeps its name, to match the other
+        rules, and now means the app's windows always float: no layout
+        moves them, and they never join a column. Sending one, with a key
+        or with `CAG` and a drag, is an error, as other actions' errors
+        are. A separate `columns` rule was considered and dropped: no app
+        was found that would want the two set differently.
     - **When:** each Space the first time you go to it after the app
       starts, so it never needs windows on other Spaces. Reading moves
       nothing; nothing moves until your next action (10).
@@ -1897,6 +1900,13 @@ this is the design as it stands, with what it replaced at the end.
       wouldn't survive restarts anyway: window ids change when windows
       open again, and matching by app and title breaks easily. It could
       come later if reading the screen proves weak.
+23. **Arrange Windows goes away; Combine takes its place.** Decided on
+    2026-11-27. With columns, nothing else lays windows out in a grid.
+    What's still useful is gathering windows into a column at once.
+    **Combine** takes every floating window on the Space that isn't a
+    dialog and whose app doesn't have `"arrange": false`, and puts them
+    in one column. The name says what it does; "Arrange" no longer fits.
+    How it does it is not decided (5).
 
 **Not decided:**
 
@@ -1913,6 +1923,12 @@ this is the design as it stands, with what it replaced at the end.
 4. **The laptop's widths:** fractions of a narrow display are narrow,
    so the smallest widths of its windows mostly decide the columns
    there.
+5. **Combine's details** (23). Leaning: a new column at the in side
+   (18), as wide as its widest window rounded up to the grid (3), with
+   the windows in the order they were last used, so the focused one is
+   shown first; the rest shown, then shelved (5). A key in the `CAG+W`
+   menu (1). Whether to combine only the windows you can see, or also
+   minimized ones.
 
 **Ideas to weigh:**
 
