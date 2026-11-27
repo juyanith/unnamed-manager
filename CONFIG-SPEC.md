@@ -1932,7 +1932,7 @@ this is the design as it stands, with what it replaced at the end.
       keep floating, as if `maximum` were what fits.
     - **Config:** a `window.combine` action with `maximum`, and the
       built-ins `combine` and `combine-maximum-` and a number. A key in
-      the `CAG+W` menu (not decided, 1).
+      the `CAG+W` menu (26).
 24. **The laptop's widths.** Decided on 2026-11-27. Fractions of a narrow
     display are narrow: an 8/24 column is 1280 points on the wide display
     and 504 on a 1512-point laptop. Apps' own smallest widths don't help,
@@ -1997,18 +1997,31 @@ this is the design as it stands, with what it replaced at the end.
       (walkthrough, 9), and until then a change of displays is taken as
       a restart, read again and nothing moved; whether a panel stays on
       its Space on the Mac and can be moved to a desktop on Windows;
-      whether the Mac's zoom can be told from a resize; and `CAG` and a
-      drag on Windows (not decided, 2).
+      whether the Mac's zoom can be told from a resize; whether holding
+      Win+Ctrl+Alt while dragging is safe on Windows (19), since Win
+      alone opens Start when let go; and whether the sizing keys (12)
+      clash with Magnifier on Windows (Win with Plus or Minus) when Ctrl
+      and Alt are added, or with Zoom on the Mac (⌥⌘ with Equal or Minus,
+      when its keys are on), which the event tap should catch first.
+26. **The `CAG+W` menu.** Decided on 2026-11-27. None of these letters
+    clash with today's config, except the ones kept or replaced on
+    purpose.
 
-**Not decided:**
+    | Keys | Item | Notes |
+    | --- | --- | --- |
+    | `CAG+W 1` to `9` | Send to Column 1 to 9 | Counted left to right among the shown columns; past the last one is an error (16). In at the shelf's edge. Today's grid menus on the digits go. |
+    | `CAG+W N` | Send to New Column | 18. |
+    | `CAG+W T` | Take Out | The window floats where it is. |
+    | `CAG+W B` | Put Back | 19. |
+    | `CAG+W R` | Remove Empty Columns | Every empty column in the workspace. You asked, so the shown columns close up away from the shelf, and the shelf gives back (10). |
+    | `CAG+W W` | Combine, a menu | `W` again combines all, `2` to `9` the last 2 to 9 (`combine-maximum-` and a number). It takes Auto Arrange's key, so the habit stays. |
+    | `CAG+W C`, `CAG+W F` | Center, Fill Toggle | Stay, for floating windows (14). |
 
-1. **Keys:** the letters in the `CAG+W` menu, sending to a column by
-   number, and which of today's other `CAG+W` entries stay. Whether
-   Windows takes Win+Ctrl+Alt with Minus or Equal for Magnifier, and
-   macOS Zoom takes ⌃⌥⌘ with them, needs a test on each.
-2. **`CAG` and a drag on Windows:** whether holding Win+Ctrl+Alt while
-   dragging is safe there (Win alone opens Start when let go). Needs a
-   test.
+    **Swap Window** on `Hyper+U`, `Hyper+P`, `Hyper+I` and `Hyper+O`
+    stays. In columns, two windows trade places: each takes the other's
+    column and place. Floating windows trade as they do today.
+
+**Not decided:** nothing, apart from the tests in 25.
 
 **Ideas to weigh:**
 
