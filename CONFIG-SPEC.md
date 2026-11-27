@@ -1841,6 +1841,27 @@ this is the design as it stands, with what it replaced at the end.
       (Show Desktop) minimizes everything, and bringing it all back puts
       each window in its place, which is a good test. Both OSes report
       minimizing and restoring; the Mac reports hiding and showing too.
+21. **A shelved window that gets focus** another way than a click.
+    Decided on 2026-11-27.
+    - **When it follows something you did,** it's shifted in, as a
+      click does (6, 9): ⌘Tab, the Dock or taskbar, clicking a
+      notification, the `windows.recent` list, or focus going back after
+      a window closes (17).
+    - **It shifts in step by step,** in order, as clicking on and on
+      would, so the same windows in the same order still look the same
+      (17). A window in a shelved column shifts the columns first, then
+      the windows in its column.
+    - **Only focus that follows your input counts.** An app that comes
+      forward on its own (at launch, or a background app taking focus)
+      is brought to the front where it is on the shelf by the OS, and
+      the layout doesn't move (10). A click or a shift brings it in
+      after. The event tap (a low-level hook on Windows) tells the two
+      apart: it saw a key or a click just before.
+    - **Focus Window counts a shelf as one target,** its front window,
+      the only one you can see (9). `CAG+L` past the last shown column
+      lands on it and shifts it in, like scrolling, as niri does. Among
+      what's shown, Focus Window never shifts anything.
+    - **During a drag,** nothing shifts until you let go (19).
 
 **Not decided:**
 
@@ -1859,11 +1880,6 @@ this is the design as it stands, with what it replaced at the end.
 5. **The laptop's widths:** fractions of a narrow display are narrow,
    so the smallest widths of its windows mostly decide the columns
    there.
-6. **A shelved window that gets focus** another way: ⌘Tab, the Dock or
-   taskbar, a notification, or Focus Window. The OS brings it to the
-   front where it is on the shelf, over the others there. Leaning toward
-   shifting it in, as a click does, but focus keys that shift the layout
-   could make Focus Window jumpy.
 
 **Ideas to weigh:**
 
