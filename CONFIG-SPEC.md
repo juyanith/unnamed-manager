@@ -1622,6 +1622,16 @@ niri and PaperWM, without scrolling off screen.
    front is marked. A column with one window has no bar. It works as a
    small dock for the column: keys step forward and back through its
    windows, and the bar shows where you are.
+3. **Column widths are in 24ths** of the usable width, which keys can
+   reach and which hold halves, thirds, quarters, sixths and eighths. A
+   new column takes its width from the first window sent to it, as the
+   smallest number of 24ths that holds it. After that, the column is
+   resized as a whole, and its windows with it. A column is never
+   narrower than the smallest number of 24ths that holds the largest
+   smallest width among its windows.
+4. **Nothing rearranges on its own.** When a column's last window
+   closes, the column stays, empty. Removing a column is something you
+   do, and other columns don't spread into its space unless you ask.
 
 **Prior art:** niri (Linux) puts windows in columns on a strip that
 scrolls, and new windows never resize the others; columns can show
@@ -1642,11 +1652,12 @@ windows in one tile, without tabs.
 
 **Not decided:**
 
-1. **Column widths:** picked from a list (a third, a half), set from the
-   widest window, or kept from what you set last.
-2. **What the layout does on its own:** when a column's window closes,
-   the next one waiting comes forward, or the rows close up. When a
-   column empties, the others stay or close up.
+1. **A window closing inside a column.** Shown one at a time, the next
+   window waiting comes forward; it's already at the column's frame, so
+   nothing is resized. Shown as rows, the other rows keep their size and
+   leave a hole until a key fills the column again, since growing them
+   would be arranging on its own. Proposed, not decided.
+2. **Columns that don't fit** (see the walkthrough below).
 3. **Memory:** whether a Space keeps its columns after the app quits.
    The config is the only file the app keeps.
 4. **Keys:** send a window to a column (by number, left, right, a new
@@ -1659,6 +1670,47 @@ windows in one tile, without tabs.
 6. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
    have different limits, and apps report smallest sizes differently.
    The bar's panel has to follow its Space on both.
+7. **Where a new column goes:** right of the focused column, at the
+   first free 24th from the left, or where the window already is.
+8. **A window dragged out of its column** with the mouse: it floats
+   again, or it goes back. Going back is fighting you.
+
+**Walkthrough.** A trace through the decisions above, to find where
+they break. The wide display is 3840 points across, so a 24th is 160
+points. The laptop is taken as 1512 points across (a 14-inch MacBook
+Pro's default), so a 24th is 63 points.
+
+1. On an empty Space, Zed opens 1200 points wide and floats. Sent to a
+   new column, the column is 8/24 (1280 points), and Zed widens to fit.
+2. Chrome opens 1600 points wide. Sent to a new column, that column is
+   10/24. Together, 18/24 is used and 6/24 is free.
+3. A terminal opens, floating, runs a command and closes. Focus goes
+   back to Chrome. Nothing moved.
+4. Another terminal is sent to Zed's column. It takes the column's
+   frame and comes forward, and Zed waits behind it. The bar appears.
+5. Zed's column grows to 10/24. Chrome's column moves right by 2/24.
+   It moves; it isn't resized. Now 20/24 is used.
+6. Zed's column grows to 16/24. With Chrome's 10/24, that's 26/24.
+   **Open:** refuse the change, or make the column on the right wait
+   behind another one, or narrow the others (which is tiling).
+7. The wide display is unplugged. On the laptop, the same fractions are
+   much narrower: Zed's 10/24 is 630 points, and Chrome at its 1600
+   points would need more than the whole width. With the rule that a
+   column holds its widest window's smallest width, the columns no
+   longer fit. **So on the laptop, columns that don't fit are the usual
+   case, not an edge case.** Either the layout needs a rule for them, or
+   each Space keeps one layout for each display shape (wide and laptop)
+   and switches when the display changes.
+8. Where macOS puts the windows of an unplugged display's Spaces needs a
+   test on the Mac. Windows does the same with virtual desktops in its
+   own way.
+9. A window that refuses the column's width (a fixed-size settings
+   window): wider than the column, it makes the column grow by the rule
+   in decision 3. Narrower, it keeps its size and sits at the column's
+   left edge, or in the middle.
+10. Zed goes full screen on the Mac. It gets a Space of its own and
+    leaves the column; on its way back, it floats, or it goes back to
+    its column.
 
 ### Decided in spec v2
 
