@@ -1740,7 +1740,7 @@ this is the design as it stands, with what it replaced at the end.
       (17).
 17. **A window closing in a column, or leaving it.** Decided on
     2026-11-27. Leaving is being sent to another column, taken out to
-    float, or dragged out (not decided, 3). The column closes up and lays
+    float, or dragged out (not decided, 2). The column closes up and lays
     itself out again. This isn't against 10: that keeps columns from
     spreading across, and laying out its own windows is a column's job
     (2).
@@ -1762,6 +1762,31 @@ this is the design as it stands, with what it replaced at the end.
     - **The last window:** the column stays, empty (10).
     - **Focus** isn't the layout's to pick. It goes back to the window
       used before, as in 1.
+18. **Where a new column goes.** Decided on 2026-11-27. It comes in at
+    the shelf's edge, as a sent window does (16).
+    - **After the last shown column,** on the shelf's side. If it doesn't
+      fit, what's shown shifts away from the shelf, first into any space
+      a removed column left, and the farthest column goes to the shelf
+      (6, 7). With no shelf, it's an error, and the window stays where it
+      was.
+    - **On an empty Space,** the first column sits at the edge away from
+      the shelf: on the left with a right shelf, as in the walkthrough.
+    - **Its width** is the window's, rounded up to the grid (3). The
+      window is shown and keeps focus (16).
+    - **Empty columns aren't reused.** Send to a new column always makes
+      one. `Hyper+J` and `Hyper+Semicolon` move a window into an empty
+      column, and the window takes its width.
+    - **A column's only window** sent to a new column moves its column to
+      the shelf's edge instead, rather than leaving an empty column
+      behind. You asked for it, so this isn't against 10.
+    - **The in side.** The setting for each display (8) also names the
+      side where sent windows and new columns come in. With one shelf,
+      it's that shelf's side. With two, it's right for columns and
+      bottom for windows unless set. This settles two shelves in 16 as
+      well.
+    - Not chosen: where the window already is (that's wherever its app
+      put it, 1), next to the focused column (the focused window is the
+      one being sent), and the first free place (a second way in).
 
 **Not decided:**
 
@@ -1769,19 +1794,17 @@ this is the design as it stands, with what it replaced at the end.
    number, and which of today's other `CAG+W` entries stay. Whether
    Windows takes Win+Ctrl+Alt with Minus or Equal for Magnifier, and
    macOS Zoom takes ⌃⌥⌘ with them, needs a test on each.
-2. **Where a new column goes:** next to the focused column, at the
-   first free place, or where the window already is.
-3. **A window dragged out of its column** with the mouse: it floats
+2. **A window dragged out of its column** with the mouse: it floats
    again, or it goes back. Going back is fighting you.
-4. **Memory:** whether a Space keeps its columns after the app quits.
+3. **Memory:** whether a Space keeps its columns after the app quits.
    The config is the only file the app keeps.
-5. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
+4. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
    have different limits, and apps report smallest sizes differently.
    The bar's panel has to follow its Space on both.
-6. **The laptop's widths:** fractions of a narrow display are narrow,
+5. **The laptop's widths:** fractions of a narrow display are narrow,
    so the smallest widths of its windows mostly decide the columns
    there.
-7. **Minimized windows and hidden apps** (⌘H on the Mac): leaning
+6. **Minimized windows and hidden apps** (⌘H on the Mac): leaning
    toward keeping their place in the order, laying out the column as if
    they were gone, and putting them back in that place when they return,
    as for full screen in the walkthrough (11).
