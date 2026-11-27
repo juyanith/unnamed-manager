@@ -1698,6 +1698,24 @@ this is the design as it stands, with what it replaced at the end.
     Focus Window (`CAG+J`, `CAG+K`, `CAG+L`, `CAG+Semicolon`) stays as
     it is: it already goes by window edges and counts floating windows.
     Fill and Center (`CAG+W F`, `CAG+W C`) stay for floating windows.
+15. **Heights.** Decided on 2026-11-27:
+    - **Each window in a column has a height:** either **Fill** or a
+      number of grid rows. A window sent to a column starts as Fill.
+    - **Fill windows share what the set heights leave,** equally. One
+      window alone fills the column; two Fill windows get halves.
+    - **No window goes below its smallest height.** When the shown
+      windows can't all keep theirs, the farthest one from the shelf
+      side goes to the shelf, and the rest are laid out again.
+    - **`CAG+Minus` and `CAG+Equal`** turn a Fill window into the rows it
+      has now, less or plus one, and step a set window by one row.
+      Growing to the whole column height makes it Fill again.
+    - **Rows divide the column's height** less the shelf when the column
+      has one. A shelf appears only when a window goes to it, which is a
+      change to the layout already.
+    - With 6 rows, a row is about 175 points on the wide display and 160
+      on a 14-inch laptop.
+    - **A window that fits only in part:** a set one goes to the shelf, and Fill windows shrink, down to their
+      smallest heights, before anything is shelved.
 
 **Not decided:**
 
@@ -1705,43 +1723,22 @@ this is the design as it stands, with what it replaced at the end.
    number, and which of today's other `CAG+W` entries stay. Whether Windows takes
    Win+Ctrl+Alt with Minus or Equal for Magnifier, and macOS Zoom
    takes ⌃⌥⌘ with them, needs a test on each.
-2. **Heights.** Proposed on 2026-11-27, not decided yet:
-   - **Each window in a column has a height:** either **Fill** or a
-     number of grid rows. A window sent to a column starts as Fill.
-   - **Fill windows share what the set heights leave,** equally. One
-     window alone fills the column; two Fill windows get halves.
-   - **No window goes below its smallest height.** When the shown
-     windows can't all keep theirs, the farthest one from the shelf
-     side goes to the shelf, and the rest are laid out again.
-   - **`CAG+Minus` and `CAG+Equal`** turn a Fill window into the rows it
-     has now, less or plus one, and step a set window by one row.
-     Growing to the whole column height makes it Fill again.
-   - **Rows divide the column's height** less the shelf when the column
-     has one. A shelf appears only when a window goes to it, which is a
-     change to the layout already.
-   - With 6 rows, a row is about 175 points on the wide display and 160
-     on a 14-inch laptop.
-   - This also answers the next question: a set window that fits only
-     in part goes to the shelf, and Fill windows shrink, down to their
-     smallest heights, before anything is shelved.
-3. **A window that fits only in part** above or below the shelf: see
-   the heights proposal in 2.
-4. **Where a sent window goes:** brought in at the shelf's edge, as a
+2. **Where a sent window goes:** brought in at the shelf's edge, as a
    click does, or at the far end.
-5. **A window closing in a column:** the windows after it move up, or
+3. **A window closing in a column:** the windows after it move up, or
    the space stays until you ask (as in 10).
-6. **Where a new column goes:** next to the focused column, at the
+4. **Where a new column goes:** next to the focused column, at the
    first free place, or where the window already is.
-7. **A window dragged out of its column** with the mouse: it floats
+5. **A window dragged out of its column** with the mouse: it floats
    again, or it goes back. Going back is fighting you.
-8. **Memory:** whether a Space keeps its columns after the app quits.
+6. **Memory:** whether a Space keeps its columns after the app quits.
    The config is the only file the app keeps.
-9. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
+7. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
    have different limits, and apps report smallest sizes differently.
    The bar's panel has to follow its Space on both.
-10. **The laptop's widths:** fractions of a narrow display are narrow,
-    so the smallest widths of its windows mostly decide the columns
-    there.
+8. **The laptop's widths:** fractions of a narrow display are narrow,
+   so the smallest widths of its windows mostly decide the columns
+   there.
 
 **Ideas to weigh:**
 
