@@ -1672,12 +1672,24 @@ this is the design as it stands, with what it replaced at the end.
     one part for each window, with the shown ones marked. A column with
     one window has no bar. Keys step forward and back through the
     column's windows, as clicking the shelf does.
+12. **Sizing is on direct bindings,** not in a menu, since you often
+    size several times in a row. Decided on 2026-11-27:
+    - `CAG+LeftBracket` and `CAG+RightBracket`: the focused window's
+      column one grid step narrower or wider.
+    - `CAG+Minus` and `CAG+Equal` (the key with Plus on it): the focused
+      window one grid step shorter or taller.
+    - Many of today's `CAG+W` placements go away with columns, or become
+      simpler ones.
+13. **Shifting with an empty shelf is an error,** as clicking nothing
+    would be: it flashes or sounds as other actions' errors do.
 
 **Not decided:**
 
 1. **Keys:** send a window to a column (by number, left, right, a new
-   one), take it out so it floats again, shift as a shelf click does,
-   and size a column on the grid.
+   one), take it out so it floats again, and shift as a shelf click
+   does. Which of today's `CAG+W` entries stay. Whether Windows takes
+   Win+Ctrl+Alt with Minus or Equal for Magnifier, and macOS Zoom
+   takes ⌃⌥⌘ with them, needs a test on each.
 2. **Heights:** a window's own height, a share of the column from the
    grid's rows, or the column's whole height less the shelf.
 3. **A window that fits only in part** above or below the shelf: it goes
