@@ -1235,7 +1235,8 @@ when it's decided.
   one menu. See below.
 - **Place on Grid,** a list that places the focused window in a grid you
   pick as you go: how many columns, which one, how many rows, which one.
-  See below.
+  See below, with an alternative, **Grid Moves**: one fixed grid, a size
+  in cells, and moves one cell at a time.
 
 ### Modifiers on step keys
 
@@ -1419,6 +1420,83 @@ app on an older spec.
    arrows, with `Shift` and the arrows to stretch it and Return to
    place, handles spans better, but it's a new kind of interaction that
    both apps would have to build. Not proposed for now.
+
+**Tried on 2026-11-27** on the Mac, with the steps written as plain
+menus and `window.place` frames (96 actions, no spans, no grid picture
+in the Guide). The keys are easy to type, since they are all digits.
+The cost is thinking: you see where the window should go, then have to
+turn that into a count (halves, thirds) and a place in it.
+
+### Grid Moves
+
+An alternative to Place on Grid, recorded to compare the two. Nothing
+is decided. Instead of picking a grid each time, a config sets one grid
+per display, and windows are sized and moved in its cells. Size and
+place are two separate steps: "make it 3 by 1, then push it right
+twice".
+
+**Prior art.** This model is well tried:
+
+| Tool | Platform | What it does |
+| --- | --- | --- |
+| [Hammerspoon `hs.grid`](https://hammerspoon.org/docs/hs.grid.html) | Mac | A grid per screen or resolution (`setGrid('12x3')`). Push a window one cell left, right, up or down, or onto the next screen at the edge. Make it one cell wider, thinner, taller or shorter. Snap a window onto the grid. |
+| [yabai `--grid`](https://github.com/koekeishiya/yabai/wiki/Commands) | Mac | One command with the grid, start cell and size in cells: `rows:cols:x:y:width:height`. |
+| [Moom](https://manytricks.com/moom/help/keyboard.html) | Mac | A keyboard grid: arrows pick the start cell, Shift and the arrows size it, Return places. |
+| [gTile](https://github.com/gTile/gTile) | Linux, GNOME | A grid over the screen: arrows pick one corner, Shift and the arrows the other. Space changes between grids. |
+| [FancyZones](https://learn.microsoft.com/windows/powertoys/fancyzones) | Windows | Zones you draw. Win and an arrow moves a window to the next zone. Win+Ctrl+Alt and an arrow stretches it across zones. |
+
+**Sketch.** Names and fields are placeholders.
+
+- **The grid:** a setting, `windows.grid`, such as
+  `{ "columns": 12, "rows": 3 }`. Cells split the usable area equally.
+  Edges round and the gap applies as for
+  [Place Window](#windowplace), so a window in cells looks the same as
+  one placed with a frame.
+- **Size:** set the window to a number of cells, such as 3 wide and 1
+  high. It keeps its top left cell, and moves left or up only if it
+  would pass the edge. Or grow or shrink by one cell on one side.
+- **Move:** push the window one cell in a direction. A second form moves
+  by its own width or height, so a quarter-wide window steps a quarter
+  at a time.
+- **Snap:** a window that isn't on the grid moves to the nearest cells
+  before it's sized or moved.
+- **Keys:** a size menu, `CAG+W <width> <height>`, and direct bindings
+  for the moves, a modifier with J, K, L and ;, as Focus Window and Swap
+  Window use. A held menu doesn't suit the moves: it chooses once, when
+  you let go, so it can't push a window several times.
+
+**Which grid.** The grid decides which sizes you can have:
+
+| Columns | Gives | Lacks |
+| --- | --- | --- |
+| 8 | halves, quarters, eighths, 3/8, 5/8 | thirds, sixths |
+| 12 | halves, thirds, quarters, sixths | eighths |
+| 24 | all of these | short moves: a quarter-wide window takes 6 single-cell pushes to move a quarter |
+
+**Compared with Place on Grid:**
+
+| | Place on Grid | Grid Moves |
+| --- | --- | --- |
+| Thinking | Where, as a count and a place in it | How big, then which way |
+| Keys to a given spot | 2 to 5 digits, always | A size, then a move for each cell or window width |
+| Grids | Any, picked each time | One per display, set in the config |
+| Small changes | Place it again | One push or one grow |
+| Windows not on a grid | Placed exactly | Snapped first |
+| Possible today | Yes, as plain menus and frames | Size only, with `window.resize` and `to`, without the gap and without snapping. A move by points fits one display only. |
+
+**Not decided:**
+
+1. One grid for every display, or one for each display or resolution,
+   as `hs.grid` does.
+2. Widths above 9 cells: a 12-column grid needs keys past `9` in the
+   size menu.
+3. What a push does at the edge: nothing, the alert sound, or the next
+   display.
+4. Whether both models could live together: Place on Grid for getting
+   to a spot, Grid Moves for small changes after.
+
+**Next:** try `hs.grid` with a 12x3 grid on a 57-inch 32:9 display before
+choosing between the two.
 
 ### Decided in spec v2
 
