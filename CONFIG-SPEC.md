@@ -1235,8 +1235,11 @@ when it's decided.
   one menu. See below.
 - **Place on Grid,** a list that places the focused window in a grid you
   pick as you go: how many columns, which one, how many rows, which one.
-  See below, with an alternative, **Grid Moves**: one fixed grid, a size
-  in cells, and moves one cell at a time.
+  See below, with three alternatives: **Grid Moves** (one fixed grid, a
+  size in cells, moves one cell at a time), **Arrange with Limits**
+  (arrange without shrinking past each app's smallest size) and
+  **Columns** (windows in columns, shown as rows or one at a time). The
+  section **Window Layout: What We Need** says what they're for.
 
 ### Modifiers on step keys
 
@@ -1325,6 +1328,35 @@ an app on spec v23 or older.
 1. Does the Mac app's event tap see every modified step key? Option with
    a letter types a character on the Mac, but the tap consumes the key
    before any app sees it, so it should. Needs a test on the Mac.
+
+### Window Layout: What We Need
+
+A record of what the window layout proposals below are for, kept while
+we compare them. Old options get cleaned out once a plan is chosen.
+
+- **Displays:** a 57-inch 32:9 display (7680 by 2160 pixels, 3840 by
+  1080 points, about 140 pixels per inch) and a laptop. One setup has to
+  work on both.
+- **Both platforms.** Whatever we choose has to work on the Mac and on
+  Windows. Nothing here is for the Mac only.
+- **Don't fight the OS.** Many Mac apps and dialogs handle being resized
+  badly. Paneru, a scrolling tiler for the Mac, failed mostly for that
+  reason. A window that refuses a size keeps the size it takes. The
+  layout never tries again and again.
+- **Tiling breaks past 2 to 4 windows.** A tiler divides the screen by
+  the number of windows, so each window shrinks as more open. But an
+  app's smallest useful size is fixed in points, whatever the display
+  or the number of windows. Most apps aren't useful below half of a
+  laptop screen. A few are.
+- **How the work goes:**
+  - Windows are set up in workspaces, one working group each, and the
+    work switches between workspaces. Spaces (virtual desktops on
+    Windows) should be the workspaces.
+  - Now and then a short-lived window, such as a terminal, opens, gets
+    used and closes. Focus should then go back to what was in use before.
+  - Floating windows and dialogs have to work with focus keys. In
+    Paneru, floating windows were left out of directional focus. Focus
+    Window already counts every window you can see.
 
 ### Place on Grid
 
@@ -1524,6 +1556,83 @@ a smallest size per app in cells, and arranging on its own.
 
 **Next:** try `hs.grid` with a 24x6 grid on a 57-inch 32:9 display before
 choosing between the two.
+
+**yabai with Unnamed Manager** was considered: yabai tiles, and Unnamed
+Manager does focus (which counts floating windows), Spaces and menus,
+calling yabai with Run Command. yabai's Space commands need System
+Integrity Protection partly off; its tiling doesn't. Set aside, since
+tiling shrinks windows past 2 to 4 (see What We Need), and yabai is Mac
+only.
+
+### Arrange with Limits
+
+Recorded to compare. An arranger that moves windows and resizes them
+only within limits, instead of dividing the screen among them.
+
+- **Sizes:** each window has a preferred size (its size now, or a
+  default for its app), and each app can have a smallest and a largest
+  size, perhaps in [`windows.apps`](#windows). Limits are in points, not
+  fractions, so one rule works on every display.
+- **Which windows get the screen:** the ones used last, from the focus
+  history, as for Arrange Windows today.
+- **Move as little as possible:** a window that already fits stays.
+- **When windows don't fit,** the choices are: shrink them (what tilers
+  do, which we're avoiding), scroll them off the edge (niri, PaperWM,
+  Paneru), stack them in one place, or send the oldest to another Space
+  or minimize them. Scrolling off the edge fights the OS: macOS keeps
+  windows on screen, and the spec says a window never ends off screen.
+- **When it runs:** when you press a key, at first. Arranging every
+  time a window opens is where tilers start to fight you.
+- **Where it lives:** Unnamed Manager already has the focus history,
+  Arrange Windows, rules per app and the Space actions, so this could
+  be a mode of Arrange Windows rather than a new app.
+
+### Columns
+
+Recorded to compare; the current favorite, still to be thought out. It
+borrows columns from niri and PaperWM, without scrolling off screen.
+
+- **A Space is a workspace.** Each Space has a row of columns across
+  the usable area.
+- **A column** has a width, kept within its windows' smallest and
+  largest sizes, and holds one or more windows. It shows them in one of
+  two ways:
+  - **Rows:** stacked top to bottom, sharing the height.
+  - **One at a time:** one window fills the column and the others wait
+    behind it, perhaps with tabs.
+- **Windows keep their size** where they can. A window that refuses a
+  width or height keeps the size it takes, placed in its column; the
+  layout doesn't try again.
+- **Not every window is in a column.** Dialogs, floating windows and
+  short-lived windows (a terminal for one command) stay out and float
+  above. When one closes, focus goes back to the window used before.
+- **When columns don't fit** (on the laptop, say), the extra windows go
+  into a column shown one at a time, rather than shrinking or going off
+  screen. So the same Space can be four columns on the wide display and
+  two on the laptop.
+
+**Prior art:** niri (Linux) puts windows in columns on a strip that
+scrolls, and new windows never resize the others; columns can show
+their windows as tabs. PaperWM (GNOME) and Paneru (Mac) scroll the same
+way. i3 and sway have tabbed and stacked containers. yabai can stack
+windows in one tile, without tabs.
+
+**Not decided:**
+
+1. **Tabs.** No OS draws tabs over other apps' windows, so the app
+   would draw them in a panel of its own. Or the column shows one
+   window and a small sign of how many wait, with keys to step through
+   them.
+2. **Column widths:** picked from a list (a third, a half), set from the
+   widest window, or kept from what you set last.
+3. **When it arranges:** only on a key, or also when a window opens or
+   closes.
+4. **Memory:** whether a Space keeps its columns after the app quits.
+   The config is the only file the app keeps.
+5. **Keys:** moving a window to the next column, into a column's rows or
+   behind it, and changing how a column shows its windows.
+6. **Both platforms:** Spaces on the Mac and virtual desktops on Windows
+   have different limits, and apps report smallest sizes differently.
 
 ### Decided in spec v2
 
