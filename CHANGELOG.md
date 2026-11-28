@@ -2,6 +2,55 @@
 
 Tags are `spec-v<N>`. Each app repo pins its `spec/` submodule to one.
 
+## spec-v24
+
+- **Tidy Windows** (`window.tidy`): you put windows roughly where you
+  want them, and it snaps them into the columns and rows their places
+  suggest, on the focused window's display. It finds the straight cuts
+  that split the windows, with a little overlap allowed, places each on
+  a step, joins neighbors at each cut, and snaps every other edge to a
+  step. Windows in front of both sides of a cut, and windows that would
+  end under half or over twice their size, float and don't move. It has
+  no fields.
+- **Undo Layout** (`window.undo`): puts back what the last Tidy Windows
+  or Arrange Windows moved on that display, and pressed again puts the
+  layout back. One level for each display, kept while the app runs.
+  Windows changed since are left alone. It has no fields.
+- **Steps** cut each display's usable area into equal parts: 12 on the
+  short side, and 12 on the long side for each whole time the short side
+  fits into it, so 12 by 12 on 16:9, 24 by 12 on 21:9 and 36 by 12 on
+  32:9.
+- **`windows.displays`**: settings for each display, keyed by its size
+  in points, such as `"3840x1080"`, with `steps` and `minCell`.
+- **`windows.minCell`** (default 6 by 6 steps) takes the place of
+  `windows.maxColumns` and `windows.maxRows`. Those still load, with the
+  new `retired-setting` warning, and do nothing. An app drops them when
+  it saves. `version` stays `1`.
+- **Arrange Windows** takes its limits from `minCell`, so
+  `"count": "all"` can go past 8, and its cells land on steps.
+- **`minWidth` and `minHeight`** in `windows.apps`: the smallest size, in
+  points, Arrange Windows and Tidy Windows give an app's windows.
+- Built-in names `window-tidy` and `window-undo`.
+- New rule `bad-display-key`. `bad-window-limit` also covers `across`
+  and `down`, from 1 to 96, and `negative-window-distance` covers
+  `minWidth` and `minHeight`.
+- `config.schema.json` adds the two actions and the new settings. The
+  title says spec v24.
+- 178 fixtures (30 valid, 148 invalid). `valid/window-arrange.json` uses
+  `minCell` in place of `maxColumns` and `maxRows`.
+  `valid/window-tidy.json`, `valid/window-retired-limits.json`,
+  `invalid/windows-display-key.json`,
+  `invalid/windows-display-steps-zero.json`,
+  `invalid/windows-display-unknown-field.json`,
+  `invalid/windows-min-cell-too-big.json`,
+  `invalid/windows-min-cell-type.json`,
+  `invalid/windows-min-cell-no-down.json`,
+  `invalid/windows-app-min-width.json`, `invalid/window-tidy-field.json`
+  and `invalid/builtin-window-tidy-2.json` are new.
+- Modifiers on step keys, proposed as spec v24, is now proposed as spec
+  v25.
+- Not yet supported by either app.
+
 ## spec-v23
 
 - **Follow to Space** (`space.follow`, Windows: Follow to Desktop): puts

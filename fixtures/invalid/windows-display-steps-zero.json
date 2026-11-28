@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "Meh+W",
+      "title": "Windows"
+    },
+    {
+      "keys": "Meh+W T",
+      "title": "Tidy",
+      "action": "window-tidy"
+    }
+  ],
+  "windows": {
+    "displays": {
+      "3840x1080": {
+        "steps": {
+          "across": 0,
+          "down": 12
+        }
+      }
+    }
+  }
+}

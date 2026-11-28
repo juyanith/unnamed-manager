@@ -1,6 +1,6 @@
 {
   "$comment": "Every fixture and what an app must do with it. See CONFIG-SPEC.md, Fixtures.",
-  "spec": "v23",
+  "spec": "v24",
   "fixtures": [
     {
       "file": "valid/minimal.json",
@@ -1513,6 +1513,106 @@
         {
           "rule": "undefined-action",
           "subject": "Meh+S A"
+        }
+      ]
+    },
+    {
+      "file": "valid/window-tidy.json",
+      "valid": true
+    },
+    {
+      "file": "valid/window-retired-limits.json",
+      "valid": true,
+      "warnings": [
+        {
+          "rule": "retired-setting",
+          "subject": "maxColumns"
+        },
+        {
+          "rule": "retired-setting",
+          "subject": "maxRows"
+        }
+      ]
+    },
+    {
+      "file": "invalid/windows-display-key.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-display-key"
+        }
+      ]
+    },
+    {
+      "file": "invalid/windows-display-steps-zero.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-limit"
+        }
+      ]
+    },
+    {
+      "file": "invalid/windows-min-cell-too-big.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "bad-window-limit"
+        }
+      ]
+    },
+    {
+      "file": "invalid/windows-min-cell-type.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "wrong-type"
+        }
+      ]
+    },
+    {
+      "file": "invalid/windows-min-cell-no-down.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "missing-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/windows-display-unknown-field.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "unknown-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/windows-app-min-width.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "negative-window-distance"
+        }
+      ]
+    },
+    {
+      "file": "invalid/window-tidy-field.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "unknown-field"
+        }
+      ]
+    },
+    {
+      "file": "invalid/builtin-window-tidy-2.json",
+      "valid": false,
+      "errors": [
+        {
+          "rule": "undefined-action",
+          "subject": "Meh+W T"
         }
       ]
     }
