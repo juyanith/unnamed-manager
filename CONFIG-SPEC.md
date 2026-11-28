@@ -1233,106 +1233,13 @@ when it's decided.
   (spec v22).
 - **Modifiers on step keys,** so `T` and `Shift+T` can be two entries in
   one menu. See below.
-- **Place on Grid,** a list that places the focused window in a grid you
-  pick as you go: how many columns, which one, how many rows, which one.
-  See below, with three alternatives: **Grid Moves** (one fixed grid, a
-  size in cells, moves one cell at a time), **Arrange with Limits**
-  (arrange without shrinking past each app's smallest size) and
-  **Columns** (windows sent to columns, with shelves for what doesn't fit). The
-  section **Window Layout: What We Need** says what they're for.
-
-### Modifiers on step keys
-
-A proposal for spec v24. Today only the first chord has modifiers, and a
-step key with modifiers is `step-modifiers`. This would let a step key
-be a chord too: `CAG+Space T` focuses Terminal and `CAG+Space Shift+T`
-opens a new one, with no extra level for the second.
-
-```json
-{ "keys": "CAG+Space", "title": "Leader" },
-{ "keys": "CAG+Space T", "title": "Terminal", "action": "terminal" },
-{ "keys": "CAG+Space Shift+T", "title": "New Terminal", "action": "terminal-new" }
-```
-
-**Matching.** A step key matches when its key is pressed and the extra
-modifiers held are exactly its modifiers. The extra modifiers are the
-ones held, less the leader's modifiers that have stayed down since the
-leader. Once a leader modifier is let go, it counts again, as the rule
-that held leader modifiers are ignored already says. With `CAG+Space`:
-
-| You do | Matches |
-| --- | --- |
-| Keep CAG down, press T | `T` |
-| Keep CAG down, add Shift, press T | `Shift+T` |
-| Let go, press T | `T` |
-| Let go, press Shift+T | `Shift+T` |
-| Let go, press Ctrl+T | `Ctrl+T` |
-
-So one entry works whether you hold the leader's modifiers or let go of
-them, and no leader has to choose a style.
-
-**What would change:**
-
-- **Keys:** the rule "Only the first chord has modifiers" goes, and
-  `step-modifiers` is removed. A step key is a key name or a chord, with
-  the same names and groups as the first chord. Apps write it the same
-  way: `Ctrl+Alt+Shift+T` as `Meh+T`.
-- **Duplicates:** paths are compared as chords, so `T` and `Shift+T` are
-  different paths, and `Shift+Alt+T` and `Alt+Shift+T` are the same one
-  (`duplicate-path`).
-- **A leader's own modifier:** a step key with a modifier its leader has
-  can only match after you let go of it. That's a warning,
-  `step-uses-leader-modifier`, not an error. Under a `Hyper` leader every
-  modified step key gets it.
-- **The reverse modifier** (`runtime.reverseModifier`): the modifier
-  that, with the repeat key, moves a held menu's highlight back. Today
-  that's always Shift. It becomes a setting, one modifier name (`Shift`,
-  `Ctrl`, `Alt` or `Cmd`, or one of their other names), default
-  `Shift`, so a config can use `Alt` (`Opt` on the Mac) for it. A group
-  or anything else is `bad-runtime-key`. When the leader has the reverse
-  modifier, it works as Shift does today in a leader that has Shift:
-  only the repeat key and Up and Down move the highlight.
-- **Held menus:** a step key in a held menu that is the reverse modifier
-  with its menu's repeat key is an error, `step-is-reverse-key`, unless
-  the leader has that modifier. Any other modified step key moves the
-  highlight to its item, as a bare one does.
-- **Cancel and Back** (`runtime.cancelKey`, `runtime.backKey`) work
-  whatever modifiers are held, so `Shift+Escape` still cancels. A step
-  key on either key, with or without modifiers, is still
-  `step-is-runtime-key`.
-- **Lists:** their items keep the bare keys `1` to `9` and More on `0`.
-  Modified digits do nothing in a list.
-- **Home:** works as any menu. Its entries are leaders and direct
-  bindings, which already have modifiers.
-- **Send Shortcut:** no change. Modifiers held for the step key are let
-  go before the shortcut is sent, as held leader modifiers already are.
-- **The Guide** shows each row's modifiers with its key, and puts `T` and
-  `Shift+T` next to each other.
-- **The apps' key recorders** take a chord, not a key, for a step.
-
-**Compatibility.** Every config that's valid today stays valid and works
-the same. A config that uses a modified step key is `step-modifiers` in
-an app on spec v23 or older.
-
-**Decided:**
-
-1. ~~Should a modified step key with no match fall back to the bare
-   key?~~ No. `Shift+X` with only `X` in the menu is an error flash, so
-   a stray modifier never runs the wrong action.
-2. ~~Should the reverse modifier be a setting?~~ Yes,
-   `runtime.reverseModifier`, default `Shift`. Configs are likely to use
-   `Alt` or `Opt` for it.
-
-**Not decided:**
-
-1. Does the Mac app's event tap see every modified step key? Option with
-   a letter types a character on the Mac, but the tap consumes the key
-   before any app sees it, so it should. Needs a test on the Mac.
+- **Columns,** a window layout: windows you send to a column are laid
+  out there, with shelves for what doesn't fit. See below, after
+  **Window Layout: What We Need**, which says what it's for.
 
 ### Window Layout: What We Need
 
-A record of what the window layout proposals below are for, kept while
-we compare them. Old options get cleaned out once a plan is chosen.
+What [Columns](#columns) is for.
 
 - **Displays:** a 57-inch 32:9 display (7680 by 2160 pixels, 3840 by
   1080 points, about 140 pixels per inch) and a laptop. One setup has to
@@ -1357,240 +1264,31 @@ we compare them. Old options get cleaned out once a plan is chosen.
   - Floating windows and dialogs have to work with focus keys. In
     Paneru, floating windows were left out of directional focus. Focus
     Window already counts every window you can see.
-
-### Place on Grid
-
-A proposal for a later spec version. Presets and frames cover a few
-fixed parts of the screen. On a wide display you want many more: halves,
-thirds, quarters and sixths across, and halves or thirds down, which is
-close to a hundred frames. A binding for each is too many to learn.
-Place on Grid is a [list](#lists) of type `window.grid` that builds the
-frame from a few number keys instead.
-
-```json
-{ "keys": "CAG+W", "title": "Place on Grid", "list": { "type": "window.grid" } }
-```
-
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `columns` | array of integers from 1 to 9, at least one | `[1, 2, 3, 4, 6]` | The numbers of columns you can pick. Order and duplicates don't matter. |
-| `rows` | array of integers from 1 to 9, at least one | `[1, 2, 3]` | The numbers of rows you can pick. |
-
-**Steps.** The list opens on the first of four steps. Each is a menu in
-the Guide, and Back goes to the step before.
-
-1. **How many columns:** one item for each number in `columns`. Its key
-   is the number itself, so `6` is Sixths, not the fifth item.
-2. **Which column:** keys `1` to the number of columns, left to right.
-3. **How many rows:** one item for each number in `rows`, keyed by the
-   number.
-4. **Which row:** keys `1` to the number of rows, top to bottom. This
-   key places the window.
-
-**Skipped steps.** A step with only one choice is skipped, so the key
-before it moves on to the next step, or places the window. With the
-defaults:
-
-| You press | The window goes to |
-| --- | --- |
-| `CAG+W 1 1` | The whole usable area |
-| `CAG+W 2 1 1` | The left half, full height |
-| `CAG+W 6 4 1` | The 4th sixth, full height |
-| `CAG+W 3 2 2 1` | The middle third, top half |
-| `CAG+W 4 1 3 3` | The first quarter, bottom third |
-
-A config can fix a count by giving one number. With `"rows": [1]` every
-placement is full height, and `CAG+W 6 4` places the 4th sixth. With
-`"columns": [3]` the first key picks a third.
-
-**Spans.** In a "which" step, `Shift` with a digit marks that column or
-row as one end of a span and stays on the step. The next digit without
-`Shift` is the other end, in either order, and ends the step. In Sixths,
-`Shift+2` then `4` covers columns 2 to 4, half the width. Another
-`Shift` digit moves the mark. Back clears the mark before it leaves the
-step.
-
-**The frame.** For `N` columns with the span from column `a` to column
-`b`, `x` is `(a - 1) / N` and `width` is `(b - a + 1) / N`. Rows do the
-same for `y` and `height`. The window is then placed as
-[Place Window](#windowplace) places a `frame`: on the display that holds
-most of it, with the gap, edges rounded, and the same rules for a window
-that won't take the size. With no focused window, the list doesn't
-open: it fails, as every window action does.
-
-**In the Guide,** each step draws the usable area in its shape, with the
-grid on it and the columns, or the cells, picked so far filled with the
-accent. Items are titled by their count (Full Width, Halves, Thirds,
-Quarters, Sixths, and "5 Columns" for counts without a name) or by
-their place (Column 2, Row 1).
-
-**How it differs from other lists:** its items come from the config,
-not from what's on screen; it has several steps; count steps key items
-by number, not in order; it never has More, since a step has at most 9
-items; and `Shift` with a digit is a key in it.
-
-**Compatibility.** A config that uses it is `unknown-list-type` in an
-app on an older spec.
-
-**Not decided:**
-
-1. **Held.** Should `"hold": true` work with Place on Grid, choosing the
-   highlighted cell when you let go? Each step would need its own
-   highlight. Until then it would be an error, with a new rule id.
-2. **Keep one axis.** Should `0` in a count step keep the window's
-   current columns or rows (its `x` and `width`, or `y` and `height`)?
-   `CAG+W 6 4 0` would change the width only, and `CAG+W 0 2 1` the
-   height only. That would place each axis on its own without a second
-   action type.
-3. **Rows first.** Should a `"first": "rows"` field let a config pick
-   rows before columns, for tall displays?
-4. **Spans and step-key modifiers.** The proposal for
-   [modifiers on step keys](#modifiers-on-step-keys) says modified
-   digits do nothing in a list. Place on Grid would be the exception, so
-   the two proposals have to agree.
-5. **An overlay instead.** A grid drawn over the display, moved with the
-   arrows, with `Shift` and the arrows to stretch it and Return to
-   place, handles spans better, but it's a new kind of interaction that
-   both apps would have to build. Not proposed for now.
-
-**Tried on 2026-11-27** on the Mac, with the steps written as plain
-menus and `window.place` frames (96 actions, no spans, no grid picture
-in the Guide). The keys are easy to type, since they are all digits.
-The cost is thinking: you see where the window should go, then have to
-turn that into a count (halves, thirds) and a place in it.
-
-### Grid Moves
-
-An alternative to Place on Grid, recorded to compare the two. Nothing
-is decided. Instead of picking a grid each time, a config sets one grid
-per display, and windows are sized and moved in its cells. Size and
-place are two separate steps: "make it 3 by 1, then push it right
-twice".
-
-**Prior art.** This model is well tried:
-
-| Tool | Platform | What it does |
-| --- | --- | --- |
-| [Hammerspoon `hs.grid`](https://hammerspoon.org/docs/hs.grid.html) | Mac | A grid per screen or resolution (`setGrid('12x3')`). Push a window one cell left, right, up or down, or onto the next screen at the edge. Make it one cell wider, thinner, taller or shorter. Snap a window onto the grid. |
-| [yabai `--grid`](https://github.com/koekeishiya/yabai/wiki/Commands) | Mac | One command with the grid, start cell and size in cells: `rows:cols:x:y:width:height`. |
-| [Moom](https://manytricks.com/moom/help/keyboard.html) | Mac | A keyboard grid: arrows pick the start cell, Shift and the arrows size it, Return places. |
-| [gTile](https://github.com/gTile/gTile) | Linux, GNOME | A grid over the screen: arrows pick one corner, Shift and the arrows the other. Space changes between grids. |
-| [FancyZones](https://learn.microsoft.com/windows/powertoys/fancyzones) | Windows | Zones you draw. Win and an arrow moves a window to the next zone. Win+Ctrl+Alt and an arrow stretches it across zones. |
-
-**Sketch.** Names and fields are placeholders.
-
-- **The grid:** a setting, `windows.grid`, such as
-  `{ "columns": 12, "rows": 3 }`. Cells split the usable area equally.
-  Edges round and the gap applies as for
-  [Place Window](#windowplace), so a window in cells looks the same as
-  one placed with a frame.
-- **Size:** set the window to a number of cells, such as 3 wide and 1
-  high. It keeps its top left cell, and moves left or up only if it
-  would pass the edge. Or grow or shrink by one cell on one side.
-- **Move:** push the window one cell in a direction. A second form moves
-  by its own width or height, so a quarter-wide window steps a quarter
-  at a time.
-- **Snap:** a window that isn't on the grid moves to the nearest cells
-  before it's sized or moved.
-- **Keys:** a size menu, `CAG+W <width> <height>`, and direct bindings
-  for the moves, a modifier with J, K, L and ;, as Focus Window and Swap
-  Window use. A held menu doesn't suit the moves: it chooses once, when
-  you let go, so it can't push a window several times.
-
-**Which grid.** The grid decides which sizes you can have:
-
-| Columns | Gives | Lacks |
-| --- | --- | --- |
-| 8 | halves, quarters, eighths, 3/8, 5/8 | thirds, sixths |
-| 12 | halves, thirds, quarters, sixths | eighths |
-| 24 | all of these | short moves: a quarter-wide window takes 6 single-cell pushes to move a quarter |
-
-A grid that holds several fractions needs the least common multiple of
-their parts. Across, 1/2, 1/3, 1/4, 1/6 and 1/8 need 24 columns. Down,
-halves and thirds need only 6 rows; 12 rows adds quarters. On a 57-inch
-32:9 display at 3840 by 1080 points, a 24 by 6 grid has cells of about
-160 by 175 points.
-
-**Smallest size.** A fine grid is easier with a smallest size per app,
-in cells, such as 3 by 2 (an eighth wide, a third high), perhaps in
-[`windows.apps`](#windows). Most apps aren't useful smaller than a
-half on a laptop, so the smallest size could depend on the display.
-Moves by the window's own size matter more on a fine grid.
-
-**Compared with Place on Grid:**
-
-| | Place on Grid | Grid Moves |
-| --- | --- | --- |
-| Thinking | Where, as a count and a place in it | How big, then which way |
-| Keys to a given spot | 2 to 5 digits, always | A size, then a move for each cell or window width |
-| Grids | Any, picked each time | One per display, set in the config |
-| Small changes | Place it again | One push or one grow |
-| Windows not on a grid | Placed exactly | Snapped first |
-| Possible today | Yes, as plain menus and frames | Size only, with `window.resize` and `to`, without the gap and without snapping. A move by points fits one display only. |
-
-**Not decided:**
-
-1. One grid for every display, or one for each display or resolution,
-   as `hs.grid` does.
-2. Widths above 9 cells: a 12-column grid needs keys past `9` in the
-   size menu.
-3. What a push does at the edge: nothing, the alert sound, or the next
-   display.
-4. Whether both models could live together: Place on Grid for getting
-   to a spot, Grid Moves for small changes after.
-
-**Arranging automatically.** What the tools above do, as of 2026-11-27:
-
-| Tool | Arranges on its own |
-| --- | --- |
-| yabai | Yes. A tiling manager: the `bsp` layout tiles each new window, with `stack` and `float` as other layouts, set per Space. Rules per app can float an app (`manage=off`). Directional focus doesn't appear to cover floating windows. Some features need System Integrity Protection partly off. |
-| Hammerspoon | With scripts. `hs.window.layout` keeps rules in force, and its `tile` and `fit` rules spread windows over an area. `hs.layout.apply` places apps once. Not tied to `hs.grid` cells. |
-| FancyZones | Partly. Puts an app back in its zone when it opens, and keeps zone numbers when the layout changes. Doesn't fill zones. |
-| Moom | Saved snapshots of a whole arrangement, applied by click or shortcut. |
-| AeroSpace, komorebi, GlazeWM, i3 | Fully tiling. You never pick sizes. |
-
-Arrange Windows already lays out the windows used last in equal columns
-or rows. Grid Moves could extend it: arrange in cells, and keep each
-app's smallest size. No tool above was found to combine a fixed grid,
-a smallest size per app in cells, and arranging on its own.
-
-**Next:** try `hs.grid` with a 24x6 grid on a 57-inch 32:9 display before
-choosing between the two.
-
-**yabai with Unnamed Manager** was considered: yabai tiles, and Unnamed
-Manager does focus (which counts floating windows), Spaces and menus,
-calling yabai with Run Command. yabai's Space commands need System
-Integrity Protection partly off; its tiling doesn't. Set aside, since
-tiling shrinks windows past 2 to 4 (see What We Need), and yabai is Mac
-only.
-
-### Arrange with Limits
-
-Recorded to compare. An arranger that moves windows and resizes them
-only within limits, instead of dividing the screen among them.
-
-- **Sizes:** each window has a preferred size (its size now, or a
-  default for its app), and each app can have a smallest and a largest
-  size, perhaps in [`windows.apps`](#windows). Limits are in points, not
-  fractions, so one rule works on every display.
-- **Which windows get the screen:** the ones used last, from the focus
-  history, as for Arrange Windows today.
-- **Move as little as possible:** a window that already fits stays.
-- **When windows don't fit,** the choices are: shrink them (what tilers
-  do, which we're avoiding), scroll them off the edge (niri, PaperWM,
-  Paneru), stack them in one place, or send the oldest to another Space
-  or minimize them. Scrolling off the edge fights the OS: macOS keeps
-  windows on screen, and the spec says a window never ends off screen.
-- **When it runs:** when you press a key, at first. Arranging every
-  time a window opens is where tilers start to fight you.
-- **Where it lives:** Unnamed Manager already has the focus history,
-  Arrange Windows, rules per app and the Space actions, so this could
-  be a mode of Arrange Windows rather than a new app.
+- **Compared and dropped,** on 2026-11-27. The full write-ups are in the
+  spec repo's history.
+  - **Place on Grid:** a list that picked a count of columns, one of
+    them, a count of rows and one of them, with number keys. Tried as
+    plain menus: easy to type, but you have to turn a place into a count
+    and an index.
+  - **Grid Moves:** one fixed grid for each display (24 by 6 holds
+    halves, thirds, quarters, sixths and eighths across), sized in cells
+    and pushed a cell at a time, as Hammerspoon's `hs.grid` does. Still
+    a frame for each window, chosen by hand.
+  - **Arrange with Limits:** arrange windows, resizing only within each
+    app's limits. It still has to choose what to do with windows that
+    don't fit.
+  - **Tilers** such as yabai, AeroSpace and Paneru arrange every window
+    and shrink them as more open.
+  - **In Columns itself:** rows or one at a time (replaced by shown, then
+    shelved), tabs (no OS draws them on other apps' windows), columns
+    that scroll off screen (a title bar can't go above the screen, and no
+    OS hides one window of an app), and a layout for each display shape
+    (shelves make one layout fit both).
 
 ### Columns
 
-The current favorite, still being thought out. Tidied on 2026-11-27:
-this is the design as it stands, with what it replaced at the end.
+The window layout chosen on 2026-11-27. Everything below is decided,
+apart from the tests in 25.
 
 **The parts.**
 
@@ -2066,23 +1764,6 @@ points across (a 14-inch MacBook Pro's default).
 11. Zed goes full screen on the Mac. It gets a Space of its own and is
     away from the column; on its way back it goes back to its place
     (20).
-
-**Considered and replaced:**
-
-- **Rows or one at a time, with the others behind the front window.**
-  Replaced by shown-then-shelved (5), which needs no second mode.
-- **Tabs.** No OS draws tabs on other apps' windows. Replaced by the
-  bar (11).
-- **Columns that scroll up and down, hiding what's outside.** A title
-  bar can't go above the screen, and no OS hides one window of an app
-  (the Mac hides whole apps; Windows hides the window and its taskbar
-  button; minimizing animates and fills the Dock or taskbar). Replaced
-  by shelves, which hide nothing. AeroSpace's way, leaving windows in a
-  corner of the screen, is the same idea as a shelf.
-- **The clicked window goes to the top of its column.** Replaced by one
-  rule for shifting (7).
-- **A layout for each display shape.** Not needed: shelves let one
-  layout work on the laptop and the wide display.
 
 **Prior art:** niri (Linux) puts windows in columns on a strip that
 scrolls, and new windows never resize the others; columns can show
