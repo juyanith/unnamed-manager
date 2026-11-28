@@ -1356,6 +1356,12 @@ nothing but an undo.
      and however large, no more than one step. A sliver over a
      neighbor, from rough placing, still splits. A window put on top of
      another doesn't, so the two share an area.
+   - **Windows in front float out of a cut.** A window the line crosses
+     further than that doesn't stop it when it's in front of windows on
+     both sides. The cuts are found without it, and it snaps its own
+     edges where it is and stays in front. A window behind others on
+     either side still stops the line. Of the lines that work, the one
+     that sets aside the fewest windows wins.
    - **More cleanly:** of the lines that work, the one that crosses the
      least wins. A vertical and a horizontal line that tie: the
      vertical one on a display at least as wide as it is tall, the
@@ -1537,8 +1543,16 @@ Arrange Windows moved. It's the one thing either action remembers.
    `windows.apps`, in points, rounded up to steps. The paused Columns
    proposal used the same names.
 
+9. ~~A window across the middle?~~ It floats out of the cut, when it's in
+   front of windows on both sides. The first preview, on a 43" 16:9
+   display, had Chrome in the left half, three windows in the right
+   half, and Claude in front across the middle: with no way past it, no
+   line split anything, and the halves under it went unseen.
+
 **Not decided:** nothing is left open. Before it moves into a spec
-version: try finding the cuts on real layouts, then write the rule ids,
+version: try finding the cuts on more real layouts, with
+`tools/tidy-preview.sh` on the Mac repo's branch
+`prototype/tidy-preview`, then write the rule ids,
 the schema and the fixtures.
 
 ### Decided in spec v2
