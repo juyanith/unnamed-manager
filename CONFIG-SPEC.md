@@ -1585,6 +1585,27 @@ several times in a row.
   width, Fill heights of a half and a third, a spot on each shelf, and
   back, and note what it took, how long it took to settle, and whether
   it moved or resized itself after.
+  **First run, 2026-11-27,** on the Mac and the wide display (3840 by
+  2130 points usable), with a survey tool on the Mac repo's
+  `prototype/column-survey` branch: 8 windows of Ghostty, Claude,
+  Safari, Chrome, Rex, Calculator and System Settings, all but one in
+  the background.
+  - Every window that can be resized took every width, height and
+    shelf spot asked, in the background too, and settled within 160
+    ms (mostly under 50). Six resizes in a row, 150 ms apart, ended
+    where asked. No window moved or resized itself in the second after.
+  - Fixed sizes kept theirs: Calculator, and one small untitled Ghostty
+    window. System Settings keeps its width of 740 and takes any
+    height. These are the refused sizes the layout already allows for.
+  - **At the bottom, some apps keep 52 points on screen,** not 40:
+    Safari, Calculator and System Settings ended 12 points higher than
+    asked. Chrome, Ghostty, Claude and Rex took 40.
+  - **At the left,** a window that kept its width was placed so that 40
+    points of it stayed on screen, so a left shelf has to place a window
+    by the width it took, not the width asked.
+  - Still to try: Zed, Obsidian, Messages, Signal and Finder; a window
+    with a sheet open; the laptop; and a second display next to the
+    first.
 - Whether a window put mostly over a neighboring display, as a side
   shelf would, moves to that display on the Mac.
 - Where each OS puts windows when a display is unplugged. Until then, a
