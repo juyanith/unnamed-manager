@@ -1363,10 +1363,11 @@ nothing but an undo.
      behind others on
      either side still stops the line. Of the lines that work, the one
      that sets aside the fewest windows wins.
-   - **Squeezed windows float.** A window whose area would be less than
-     half its own width or height floats too, and the cuts are found
-     again without it. A small window wedged between two others keeps
-     about its size instead of taking a thin strip.
+   - **Windows that don't fit their area float.** A window whose area
+     would be less than half, or more than twice, its own width or
+     height floats too, and the cuts are found again without it. A small
+     window wedged between two others doesn't take a thin strip, and one
+     left in empty space isn't blown up to fill it.
    - **More cleanly:** of the lines that work, the one that crosses the
      least wins. A vertical and a horizontal line that tie: the
      vertical one on a display at least as wide as it is tall, the
@@ -1570,6 +1571,11 @@ Arrange Windows moved. It's the one thing either action remembers.
     Snapping to steps of 320 by 177 points turned Calculator's 230 by
     408 into 312 by 347, a big change for a small window, and one an
     app may refuse. It's also what you'd expect of a window left out.
+13. ~~A small window left in empty space?~~ It floats when its area
+    would be more than twice its width or height, the other half of 11.
+    The fourth preview had Calculator in the space between Chrome and
+    Safari, and it would have grown to 952 by 524 points. Windows that
+    are part of the layout changed by about 1.2 times at most.
 
 **Not decided:** nothing is left open. Before it moves into a spec
 version: try finding the cuts on more real layouts, with
