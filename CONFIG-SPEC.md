@@ -1372,11 +1372,13 @@ nothing but an undo.
    window about a third wide ends exactly a third wide, so sizes follow
    what you did, instead of all being equal.
 4. **Join neighbors, snap the rest.** Windows on the two sides of a cut
-   meet at it, so the space between them closes. Every other edge moves
-   to the nearest step, and the window fills the region its edges make,
-   with the gap. A margin at the display's edge stays only when it's
-   more than half a step, so a lone window in the left half stays
-   there.
+   meet at it, so the space between them closes. Once the layout has a
+   cut, the windows that reach furthest toward an edge of the display
+   go to it too, so no column or row keeps an empty strip. Every other
+   edge moves to the nearest step, and the window fills the region its
+   edges make, with the gap. With no cut, nothing reaches the edges: a
+   lone window in the left half stays there, and keeps a margin of more
+   than half a step. A window floating out of a cut keeps its margins.
 5. **Overlapping windows.** Windows that no line splits share an area.
    Each snaps its own edges: every edge moves to the nearest step, and
    the window fills the region they make. The area's borders are steps
@@ -1510,7 +1512,7 @@ Arrange Windows moved. It's the one thing either action remembers.
    the display would make windows far bigger than you made them, which
    Fill Toggle and Arrange Windows already do. Snapping only would leave
    gaps between neighbors. This is one rule for every window, the same
-   as for overlapping ones.
+   as for overlapping ones. Margins at the display's edges: see 10.
 3. ~~How much overlap still counts as split?~~ A quarter of the
    window, at least half a step and at most one step. A quarter alone
    would allow too much on a large window and too little on a small
@@ -1548,6 +1550,11 @@ Arrange Windows moved. It's the one thing either action remembers.
    display, had Chrome in the left half, three windows in the right
    half, and Claude in front across the middle: with no way past it, no
    line split anything, and the halves under it went unseen.
+10. ~~A margin at the display's edge, in a layout with cuts?~~ It
+    closes. The second preview had three rough columns, and the right
+    one started 161 pt below the top: the margin was more than half a
+    step, so it stayed, an empty strip the other columns didn't have.
+    Without a cut, a lone window still keeps its margin.
 
 **Not decided:** nothing is left open. Before it moves into a spec
 version: try finding the cuts on more real layouts, with
