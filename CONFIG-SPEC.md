@@ -1358,8 +1358,11 @@ display:
    covers is taken by its neighbors, so the layout fills the usable
    area.
 5. **Overlapping windows.** Windows that no line splits share an area.
-   Each is sized for it, and they keep their order front to back. A
-   window can end hidden behind another; that's fine.
+   Each snaps its own edges: an edge moves to the nearest step, and an
+   edge within one step of the area's border goes to the border. So a
+   window that nearly fills the area fills it, and a small one stays
+   small, lined up on the steps. They keep their order front to back. A
+   window can end hidden behind a bigger one; that's fine.
 6. **Repeatable.** A layout that's already tidy doesn't move. A window
    that won't take its size ends as with Place Window.
 7. Focus doesn't change.
@@ -1381,25 +1384,30 @@ never more than 8.
 Arrange Windows moved, on that display. It's the one thing either
 action would remember.
 
+**Decided:**
+
+1. ~~Overlapping windows: does each fill the area they share, or snap
+   its own edges?~~ Each snaps its own edges. Filling would make a small
+   window on top, such as notes over a browser, cover the whole area.
+   Snapping keeps it small, keeps the action repeatable, and needs no
+   rule for which window is the main one.
+
 **Not decided:**
 
 1. Names: `window.tidy` and Tidy Windows, and the undo's action and
    name, such as `window.undo` and Undo Layout. Their built-in names,
    such as `window-tidy`.
-2. Overlapping windows: does each fill the area they share, or snap its
-   own edges to the steps inside it, so a small window over a large one
-   stays small?
-3. How much overlap still counts as split: a share of the smaller
+2. How much overlap still counts as split: a share of the smaller
    window, or one step.
-4. Steps: one number for both directions, or one across and one down.
+3. Steps: one number for both directions, or one across and one down.
    How a display is named in the file on both platforms, and whether the
    default comes from the display's shape.
-5. Fill or snap only: should a single window in the left half fill the
+4. Fill or snap only: should a single window in the left half fill the
    display, or stay in the left half? Filling uses the space; snapping
    only is less of a surprise.
-6. Undo: one level or more. What happens to a window moved by hand or
+5. Undo: one level or more. What happens to a window moved by hand or
    closed since. Whether undo survives the app quitting.
-7. Arrange Windows on a cluttered screen: whether `"count": "all"`
+6. Arrange Windows on a cluttered screen: whether `"count": "all"`
    should go past 8.
 
 ### Decided in spec v2
