@@ -1350,6 +1350,9 @@ windows down.
    - **Two shelves:** the items after the last shown are on the shelf at
      the in side, and those before the first shown are on the other.
      Each shelf's front is the one nearest what's shown.
+   - **An empty column** that would go onto a shelf is removed instead,
+     since there's nothing on it to show or click. A column whose
+     windows are all away stays, and comes back with them.
 4. **How a shelf looks.** A shelf is a strip at an edge: columns at the
    left or right of the screen, windows at the top or bottom of a
    column. What's on it stays a normal window, overlapping the others
@@ -1357,7 +1360,16 @@ windows down.
    title bar on screen. Nothing is hidden, and the spec's rule for title
    bars holds. A top shelf keeps title bars at the top of the column,
    with its windows behind the shown ones, since a title bar can't go
-   above the screen.
+   above the screen. A shelved window the OS brings forward without
+   your input covers the column there until your next click or shift.
+   - **A clear panel** of the app's covers each shelf strip and takes
+     its clicks and drops. The windows show through it, but a click
+     always shifts and never lands on a window's buttons (the Mac's are
+     at the left of the title bar, Windows' at the right). A shelved
+     window is closed once it's shifted in.
+   - **A shelved column** puts its first shown window on the column
+     shelf, with its other windows behind it in the same spot. The front
+     column's window is in front.
 5. **Widths.** A window in a column takes the column's width, unless
    that's past its largest width; then it doesn't grow. A column's width
    on a display is the largest of:
@@ -1369,8 +1381,10 @@ windows down.
    Only a key step rounds the fraction itself.
 6. **A window that refuses a size** keeps the size it takes. Wider than
    asked, it makes its column grow to hold it. Narrower, it keeps its
-   size, at the column's left edge or in the middle. The layout never
-   tries again.
+   size, in the middle of its column. The layout never tries again. A
+   window that takes a little less than it was given, such as a
+   terminal sizing by characters, isn't refusing, and that size isn't
+   learned as its smallest.
 7. **The bar.** A column with more than one window has a bar along one
    edge, drawn by the app in a panel of its own, like a scroll bar: one
    part for each window, with the shown ones marked. A column with one
@@ -1379,20 +1393,23 @@ windows down.
 
 #### What changes it
 
-Only these change the lists or lay them out again. An app opening or
-moving its own windows doesn't, and neither does starting the app.
+Only these change the lists or lay them out again. An app opening its
+own windows doesn't, and neither does starting the app. An app resizing
+a window in a column is taken as a refused size (6): the window keeps
+it, and the others are laid out around it. An app moving one is left
+alone until the next change, which puts it back in its place once.
 
 | Change | What happens to the lists |
 | --- | --- |
-| **Shift** toward a shelf: click its front window, or press a shift key | That shelf's front becomes the item you acted on. With one shelf, turning on and on goes through all of them and back to where you started. Shifting toward an empty shelf, or a side with no shelf, is an error. Shifting changes no width and no height setting. |
+| **Shift** toward a shelf: click the shelf, or press a shift key | That shelf's front becomes the item you acted on. With one shelf, turning on and on goes through all of them and back to where you started. Shifting toward an empty shelf, or a side with no shelf, is an error. Shifting changes no width and no height setting. |
 | **Send** a window to a column: `Hyper+J`, `Hyper+Semicolon`, `CAG+W` and a digit | It goes right after the last shown window, as Fill, and is the window you acted on. It keeps focus. It doesn't keep its place up or down. A floating window joins the nearest column that way. Past the last shown column is an error: these move only among shown columns. |
 | **Drop** a window with `CAG` held as you let go | It joins the column under the pointer at the place nearest it, or is reordered in its own column. Dropped on a column's shelf, it's sent. Dropped where there's no column, it floats. |
-| **Move** it up or down: `Hyper+L`, `Hyper+K` | It trades places with the next window in its list. |
+| **Move** it up or down: `Hyper+L`, `Hyper+K` | It trades places with the next window in its list. Past the first or last shown window is an error. |
 | **New column**: `CAG+W N` | A new column right after the last shown one, as wide as the window, rounded up to the grid. The column is the one you acted on. Empty columns aren't reused. A column's only window moves its column there instead. |
 | **Combine**: `CAG+W W` | See [Combine](#combine). |
-| **Leave**: close, Take Out, a plain drag, snapping by the OS, or a move to another column | The window is taken out of its list. The first shown item stays, so the column closes up and the shelf gives back. Its width doesn't change, even if that window made it wide. A column whose last window goes stays, empty. A dragged or snapped window floats where it lands. Focus goes back to the window used before; the layout doesn't pick it. |
+| **Leave**: close, Take Out, a plain drag, snapping by the OS, or a move to another column | The window is taken out of its list. The first shown item stays, so the column closes up and the shelf gives back. Its width doesn't change, even if that window made it wide. A column whose last window goes stays, empty. A dragged or snapped window floats where it lands. If it had focus, the app focuses the window used before it, from its focus history (spec v13), on both OSes; the Mac would otherwise pick another window of the same app, or none. That follows your input, so a shelved window is shifted in. |
 | **Put Back**: `CAG+W B` | The window goes back to the column and place it left. If that column is gone, it's an error. |
-| **Away** and **back** | Away, it's skipped. Back, it's the window you acted on, so it's shown and focused. A column whose windows are all away keeps its width and its place. Quitting an app is leaving, not away. |
+| **Away** and **back** | Away, it's skipped. Back, it's the window you acted on, so it's shown and focused. A column whose windows are all away keeps its width and its place. When several come back at once (an app shown again, or after Win+D), each goes back to its place; the one that gets focus is the one you acted on, and the rest show if they fit. Quitting an app is leaving, not away. |
 | **Focus** a shelved window, right after a key or click of yours (⌘Tab, the Dock or taskbar, a notification, the `windows.recent` list, or focus going back after a close) | It's the window you acted on. A window in a shelved column makes its column the one you acted on first. Focus that doesn't follow your input (an app coming forward at launch) changes nothing; the OS brings it to the front where it is. |
 | **Resize** (`window.resize`), and the sizing keys `CAG+LeftBracket`, `CAG+RightBracket`, `CAG+Minus`, `CAG+Equal`, which are built-in Resize actions | Width sets the column's fraction, starting from the width you see; `step` goes one grid step narrower or wider and rounds the fraction, never below the display's smallest column width (an error). Height sets the window's: `step` goes one row shorter or taller. Fill becomes the rows it has now, less or plus one, and a set height steps and snaps to a whole row. Growing to the whole column keeps it set, at full height, and the others go to the shelf; `CAG+Equal` once more makes it Fill. The column or window is the one you acted on. On a floating window, Resize works as it does today. |
 | **Fill Toggle** (`window.fill`) | The column takes the whole usable width less the shelf strips, and the window the whole column height, set; the others go to the shelves. Again, the column's width, the window's height and the first shown items come back as they were. What to bring back is kept until the app quits, as Put Back's memory is. On a floating window, it works as it does today. |
@@ -1400,7 +1417,7 @@ moving its own windows doesn't, and neither does starting the app.
 | **Send to Space**, **Follow to Space** | The window leaves its column and floats on the other Space. |
 | **Size with the mouse** | Width: the column's fraction, as you left it. With no shelf, it takes the widest that fits, since the OS already sized the window. Height: set, at that size. |
 | **Remove Empty Columns**: `CAG+W R` | Every empty column in the workspace is taken out, and what's shown closes up. |
-| **Swap**: `Hyper+U`, `Hyper+P`, `Hyper+I`, `Hyper+O` | Two windows trade places in their lists. Floating windows trade as they do today. |
+| **Swap**: `Hyper+U`, `Hyper+P`, `Hyper+I`, `Hyper+O` | Two windows trade places in their lists. Only shown and floating windows take part; a shelved window is never a target. Floating windows trade as they do today. |
 
 **The mouse.** Only your own drags count: Windows reports where a drag
 starts and ends, and the Mac app checks with its event tap whether the
@@ -1415,6 +1432,13 @@ does today, by window edges and counting floating windows. A shelf
 counts as one target, its front window, the only one you can see. Going
 past the last shown column or window lands on it, and so shifts it in,
 like scrolling. Among what's shown, it never shifts anything.
+
+**With no window in a column.** On a floating window, `Hyper+L`,
+`Hyper+K`, `CAG+N` and `CAG+M` are errors, and the sizing keys resize it
+as Resize does. `CAG+Comma` and `CAG+Period` shift the focused window's
+workspace, or the one on the display under the pointer when nothing is
+focused. The other keys need a focused window, and fail without one, as
+every window action does.
 
 #### Combine
 
@@ -1479,7 +1503,7 @@ left for later.
 | Grid | Columns and rows, such as 24 by 6 on the wide display and 6 by 6 on the laptop. Keys size by its steps; rows count heights. With 6 rows, a row is about 175 points on the wide display and 160 on a 14-inch laptop. |
 | Shelf for columns | None, left, right, or both. Two displays next to each other can have theirs on the far sides. |
 | Shelf for windows | None, top, bottom, or both. |
-| In side, for columns and for windows | Where sent windows and new columns come in. With one shelf, its side. With two, right and bottom unless set. |
+| In side, for columns and for windows | Where sent windows and new columns come in. With one shelf, its side. With two or none, right and bottom unless set. |
 | Smallest column width | In grid steps, such as 3 of 6 (a half) on the laptop, where fractions of a narrow display are too narrow: an 8/24 column is 504 points on a 1512-point laptop. No default. |
 
 **For each app**, in [`windows.apps`](#windows):
@@ -1489,9 +1513,10 @@ left for later.
 | `arrange` | `false`: the app's windows always float. Nothing lays them out, and they never join a column. |
 | `minWidth`, `minHeight` | In points: the size where the app is useful, such as 800 for Chrome. Apps' own smallest widths are often about 500 points, where they still draw, not where they're useful. |
 
-Smallest sizes are also learned: when a window refuses a size, what it
-took is its smallest, kept for each app until the app quits. Neither OS
-lets one app read another's reliably.
+Smallest sizes are also learned: when a window ends up larger than it
+was given, that size is its smallest, kept for that window until it
+closes. `minWidth` and `minHeight` cover its app's other windows.
+Neither OS lets one app read another's reliably.
 
 #### Column keys
 
@@ -1541,6 +1566,9 @@ several times in a row.
   move its own windows to a desktop. The bar never counts as a window
   for Focus or any other window action, as the app's own windows already
   don't.
+- **On the Mac only:** a group of native tabs is one window, and
+  switching tabs changes nothing. While Stage Manager is on, column
+  actions are errors. A full screen app's Space holds no columns.
 - **Your input,** for drags and for focus, comes from the event tap on
   the Mac and a low-level hook on Windows: a key or a click just before.
 - Each platform has its own config file (spec v2), so display names
