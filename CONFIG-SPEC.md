@@ -1577,11 +1577,21 @@ Arrange Windows moved. It's the one thing either action remembers.
     Safari, and it would have grown to 952 by 524 points. Windows that
     are part of the layout changed by about 1.2 times at most.
 
+**Preview results,** 2026-11-27, on a 43" 16:9 display (3840 by 2160
+points, 12 by 12 steps), with `tools/tidy-preview.sh` on the Mac repo's
+branch `prototype/tidy-preview`:
+
+- Six real runs: a tidy layout under floating windows, three rough
+  columns with stacks, the same with a small window wedged in or left in
+  empty space, and two rows. After the fixes in 9 to 13, each came out
+  as expected. A layout that's already tidy doesn't move.
+- Applied for real, every window took the frame it was asked for:
+  Ghostty, Claude, Rex and two Chrome windows.
+- Not tried yet: a 32:9 display with 36 steps across, and the laptop.
+
 **Not decided:** nothing is left open. Before it moves into a spec
-version: try finding the cuts on more real layouts, with
-`tools/tidy-preview.sh` on the Mac repo's branch
-`prototype/tidy-preview`, then write the rule ids,
-the schema and the fixtures.
+version: try it on the 57" display and the laptop, then write the rule
+ids, the schema and the fixtures.
 
 ### Decided in spec v2
 
