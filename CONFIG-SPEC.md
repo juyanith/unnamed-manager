@@ -1394,7 +1394,10 @@ moving its own windows doesn't, and neither does starting the app.
 | **Put Back**: `CAG+W B` | The window goes back to the column and place it left. If that column is gone, it's an error. |
 | **Away** and **back** | Away, it's skipped. Back, it's the window you acted on, so it's shown and focused. A column whose windows are all away keeps its width and its place. Quitting an app is leaving, not away. |
 | **Focus** a shelved window, right after a key or click of yours (⌘Tab, the Dock or taskbar, a notification, the `windows.recent` list, or focus going back after a close) | It's the window you acted on. A window in a shelved column makes its column the one you acted on first. Focus that doesn't follow your input (an app coming forward at launch) changes nothing; the OS brings it to the front where it is. |
-| **Size with keys**: `CAG+LeftBracket`, `CAG+RightBracket`, `CAG+Minus`, `CAG+Equal` | Starting from the width you see: the column one grid step narrower or wider, which rounds its fraction, never below the display's smallest column width (an error). The window one row shorter or taller: Fill becomes the rows it has now, less or plus one, and a set height steps and snaps to a whole row. Growing to the whole column makes it Fill. The column or window is the one you acted on. |
+| **Resize** (`window.resize`), and the sizing keys `CAG+LeftBracket`, `CAG+RightBracket`, `CAG+Minus`, `CAG+Equal`, which are built-in Resize actions | Width sets the column's fraction, starting from the width you see; `step` goes one grid step narrower or wider and rounds the fraction, never below the display's smallest column width (an error). Height sets the window's: `step` goes one row shorter or taller. Fill becomes the rows it has now, less or plus one, and a set height steps and snaps to a whole row. Growing to the whole column keeps it set, at full height, and the others go to the shelf; `CAG+Equal` once more makes it Fill. The column or window is the one you acted on. On a floating window, Resize works as it does today. |
+| **Fill Toggle** (`window.fill`) | The column takes the whole usable width less the shelf strips, and the window the whole column height, set; the others go to the shelves. Again, the column's width, the window's height and the first shown items come back as they were. What to bring back is kept until the app quits, as Put Back's memory is. On a floating window, it works as it does today. |
+| **Place** (`window.place`, Center among its presets) and **Move** (`window.move`) | An error on a window in a column, since the column decides where it goes. Take it out first. On a floating window, they work as they do today. |
+| **Send to Space**, **Follow to Space** | The window leaves its column and floats on the other Space. |
 | **Size with the mouse** | Width: the column's fraction, as you left it. With no shelf, it takes the widest that fits, since the OS already sized the window. Height: set, at that size. |
 | **Remove Empty Columns**: `CAG+W R` | Every empty column in the workspace is taken out, and what's shown closes up. |
 | **Swap**: `Hyper+U`, `Hyper+P`, `Hyper+I`, `Hyper+O` | Two windows trade places in their lists. Floating windows trade as they do today. |
@@ -1503,7 +1506,7 @@ several times in a row.
 | `CAG+Comma`, `CAG+Period` | Shift the columns toward the left or right shelf. |
 | `CAG+N`, `CAG+M` | Shift the windows in the focused column. |
 | `CAG+LeftBracket`, `CAG+RightBracket` | The column one grid step narrower or wider. |
-| `CAG+Minus`, `CAG+Equal` | The window one row shorter or taller. |
+| `CAG+Minus`, `CAG+Equal` | The window one row shorter or taller. With the bracket keys, built-in Resize actions, so on a floating window they resize it as Resize does. |
 | `CAG+J`, `CAG+K`, `CAG+L`, `CAG+Semicolon` | Focus Window, as today. |
 | `Hyper+U`, `Hyper+P`, `Hyper+I`, `Hyper+O` | Swap Window, as today: trading places. |
 | `CAG+W 1` to `9` | Send to Column 1 to 9, counted left to right among the shown columns. Today's grid menus on the digits go. |
@@ -1512,7 +1515,7 @@ several times in a row.
 | `CAG+W B` | Put Back. |
 | `CAG+W R` | Remove Empty Columns. |
 | `CAG+W W` | Combine, a menu: `W` again combines all, `2` to `9` the last 2 to 9. It takes Auto Arrange's key, so the habit stays. |
-| `CAG+W C`, `CAG+W F` | Center and Fill Toggle, for floating windows. |
+| `CAG+W C`, `CAG+W F` | Center (an error on a column window) and Fill Toggle. |
 | `CAG` and a drag | Drop into a column. |
 
 #### Columns on both platforms
