@@ -1419,8 +1419,25 @@ sort out by hand: it lays everything out with no hints from you. Today
 never more than 8.
 
 **Undo,** an action that puts back the windows the last Tidy Windows or
-Arrange Windows moved, on that display. It's the one thing either
-action would remember.
+Arrange Windows moved. It's the one thing either action remembers.
+
+- **One level, as a toggle.** Undo puts back the frames from before the
+  last Tidy Windows or Arrange Windows. Pressing it again puts the tidy
+  layout back, as Fill Toggle does.
+- **One for each display.** Undo acts on the focused window's display.
+  A new Tidy Windows or Arrange Windows there replaces that display's
+  undo. It isn't kept for each Space or desktop, which have no ids both
+  platforms can read. It only moves windows on the current one.
+- **Windows that changed since.** A window moved or resized since stays
+  where it is: your later choice wins. A closed window is skipped, and
+  a new one isn't touched. With nothing to put back, undo fails with
+  the alert sound ("Nothing to undo."), as Focus Window does.
+- **Not kept when the app quits.** The app keeps no state but the
+  config file.
+- **Only for Tidy Windows and Arrange Windows.** Fill Toggle restores
+  on its own, and Place Window and Move Window are single moves. They
+  could join it later.
+- Focus doesn't change.
 
 **Decided:**
 
@@ -1451,15 +1468,17 @@ action would remember.
    platforms and two monitors of a model share one, and ids change with
    the port; the size in points is known on both platforms and stays
    put.
+5. ~~Undo: how many levels, windows changed since, and after quitting?~~
+   One level for each display, as a toggle; windows moved by hand or
+   closed since are left alone; forgotten when the app quits. An undo is
+   mostly used right away, so a history would add rules for little gain.
 
 **Not decided:**
 
 1. Names: `window.tidy` and Tidy Windows, and the undo's action and
    name, such as `window.undo` and Undo Layout. Their built-in names,
    such as `window-tidy`.
-2. Undo: one level or more. What happens to a window moved by hand or
-   closed since. Whether undo survives the app quitting.
-3. Arrange Windows on a cluttered screen: whether `"count": "all"`
+2. Arrange Windows on a cluttered screen: whether `"count": "all"`
    should go past 8.
 
 ### Decided in spec v2
