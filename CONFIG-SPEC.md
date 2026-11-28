@@ -1435,6 +1435,34 @@ changes in three ways:
   left over spread among the groups. So Tidy Windows right after
   Arrange Windows changes nothing.
 
+**A minimum size for each app:** `minWidth` and `minHeight`, in
+points, as rules in `windows.apps`, for an app that needs room, such as
+a video editor. Points, because a step is a different size on each
+display, and an app needs about the same room everywhere. A minimum
+rounds up to the next step on each display, so cells still land on
+steps.
+
+- **Arrange Windows** gives the app's window a cell at least that big,
+  taking the room from the other cells in its column or row. The others
+  stay equal to each other and keep at least `minCell`. When they no
+  longer fit, it makes fewer groups. On a display smaller than the
+  minimum, the app's window gets the whole width or height.
+- **Tidy Windows** moves a cut that would make the app's window smaller
+  than its minimum away from it, as long as the neighbor keeps at least
+  `minCell`. Otherwise the cut stays where it fell. Overlapping windows
+  keep their own sizes anyway.
+- It's a preference above the app's own minimum, which the app keeps
+  whatever this says: the layout makes room, so the window doesn't
+  spill over its neighbor.
+
+```json
+"windows": {
+  "apps": {
+    "com.blackmagic-design.DaVinciResolve": { "minWidth": 1600, "minHeight": 900 }
+  }
+}
+```
+
 `maxColumns` and `maxRows` in a file still load, with a warning that
 they're no longer used, and an app drops them when it saves the file,
 as with `window.maximize`. An older app reading a newer file finds
@@ -1505,12 +1533,13 @@ Arrange Windows moved. It's the one thing either action remembers.
    Snap on Windows, Clean Up is Mac wording, and Align Windows sounds
    like edges only. "Layout" covers both actions it undoes, and
    `window.undo` leaves room for Place Window and Move Window to join.
+8. ~~A minimum size for each app?~~ Yes, `minWidth` and `minHeight` in
+   `windows.apps`, in points, rounded up to steps. The paused Columns
+   proposal used the same names.
 
-**Not decided:**
-
-1. A minimum size for each app, in `windows.apps`, so an app that
-   needs room, such as a video editor, gets a bigger cell from Arrange
-   Windows and Tidy Windows.
+**Not decided:** nothing is left open. Before it moves into a spec
+version: try finding the cuts on real layouts, then write the rule ids,
+the schema and the fixtures.
 
 ### Decided in spec v2
 
