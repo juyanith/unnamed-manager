@@ -1384,10 +1384,34 @@ display:
 Cutting a space into parts with straight lines works the same on every
 platform, so this is the same on the Mac and Windows.
 
-**Steps.** How finely cuts snap, set for each display. Twelfths suit a
-16:9 display. A 32:9 display such as 3840 by 1080 points needs 24 or
-more, so a step stays about the same size on screen. A setting would
-give a default and let each display have its own.
+**Steps.** How finely cuts and edges snap. Steps split the usable
+area, without the menu bar and the Dock or the taskbar, into equal
+parts: some across and some down.
+
+- **The guess:** the short side gets 12 steps. The long side gets 12
+  for each whole time the short side fits into it. So 3:2, 16:10 and
+  16:9 displays get 12 by 12, a 21:9 display 24 by 12, and a 32:9
+  display such as 3840 by 1080 points 36 by 12. A display turned on its
+  side gets the same, the other way round. Every count is a multiple of
+  12, so halves, thirds and quarters land on steps.
+- **Overrides:** `windows.displays`, keyed by a display's size in
+  points, as `"3840x1080"`, gives that display its own `steps`, with
+  `across` and `down`. Points are the size after scaling: the Mac's
+  "looks like" size, and the size Windows scales to. A 7680 by 2160
+  pixel display at 2x is `"3840x1080"`. Two displays of the same size
+  share an entry. A display whose scaling changes no longer matches,
+  and goes back to the guess.
+
+```json
+"windows": {
+  "displays": {
+    "3840x1080": { "steps": { "across": 24, "down": 12 } }
+  }
+}
+```
+
+The paused Columns proposal had settings for each display too, so
+`displays` leaves room for more of them.
 
 **Arrange Windows stays,** for a cluttered screen you don't want to
 sort out by hand: it lays everything out with no hints from you. Today
@@ -1416,21 +1440,26 @@ action would remember.
 3. ~~How much overlap still counts as split?~~ A quarter of the
    window, at least half a step and at most one step. A quarter alone
    would allow too much on a large window and too little on a small
-   one; one step alone would ignore the window's size. On a 57" display with 160 pt steps, a terminal with 100 pt
-   over a browser still splits from it, and a 700 pt notes window with
-   400 pt over a browser shares its area.
+   one; one step alone would ignore the window's size. On a 57" display
+   with 36 steps of about 107 pt, a terminal with 100 pt over a browser
+   still splits from it, and a 700 pt notes window with 400 pt over a
+   browser shares its area.
+4. ~~Steps: one number or two, and how a display is named?~~ Two,
+   across and down, guessed from the display's shape, with overrides
+   keyed by the display's size in points. A step that suits the width
+   can be far too small for the height. Names differ between the
+   platforms and two monitors of a model share one, and ids change with
+   the port; the size in points is known on both platforms and stays
+   put.
 
 **Not decided:**
 
 1. Names: `window.tidy` and Tidy Windows, and the undo's action and
    name, such as `window.undo` and Undo Layout. Their built-in names,
    such as `window-tidy`.
-2. Steps: one number for both directions, or one across and one down.
-   How a display is named in the file on both platforms, and whether the
-   default comes from the display's shape.
-3. Undo: one level or more. What happens to a window moved by hand or
+2. Undo: one level or more. What happens to a window moved by hand or
    closed since. Whether undo survives the app quitting.
-4. Arrange Windows on a cluttered screen: whether `"count": "all"`
+3. Arrange Windows on a cluttered screen: whether `"count": "all"`
    should go past 8.
 
 ### Decided in spec v2
