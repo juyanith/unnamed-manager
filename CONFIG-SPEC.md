@@ -1623,8 +1623,10 @@ several times in a row.
     soon after being sized, not only refuse a size.
     So a window that changes again within half a second is asked once
     more (Laying out, 6).
-  - Still to try: a window with a sheet open, the laptop, and a second
-    display next to the first.
+  - Still to try: a window with a sheet open (a dialog attached under
+    its title bar, such as TextEdit's Save panel), and the laptop's own
+    display alone. A second display next to the first waits for someone
+    with that setup.
 - Whether a window put mostly over a neighboring display, as a side
   shelf would, moves to that display on the Mac.
 - Where each OS puts windows when a display is unplugged. Until then, a
