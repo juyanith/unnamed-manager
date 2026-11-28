@@ -1576,6 +1576,17 @@ several times in a row.
 
 #### Column tests
 
+- **How apps take the layout's sizes,** first and before the layout is
+  built, since that's where Paneru failed. Place Window already works
+  because it does only what you could do with the mouse, once, to the
+  window in front. Columns also size windows that aren't in front, size
+  them again when the windows around them change, and put them mostly
+  off screen on a shelf. For each app used every day, try a column
+  width, Fill heights of a half and a third, a spot on each shelf, and
+  back, and note what it took, how long it took to settle, and whether
+  it moved or resized itself after.
+- Whether a window put mostly over a neighboring display, as a side
+  shelf would, moves to that display on the Mac.
 - Where each OS puts windows when a display is unplugged. Until then, a
   change of displays is read again, as after a restart, and nothing
   moves.
