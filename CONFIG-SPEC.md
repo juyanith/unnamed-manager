@@ -1358,11 +1358,11 @@ display:
    covers is taken by its neighbors, so the layout fills the usable
    area.
 5. **Overlapping windows.** Windows that no line splits share an area.
-   Each snaps its own edges: an edge moves to the nearest step, and an
-   edge within one step of the area's border goes to the border. So a
-   window that nearly fills the area fills it, and a small one stays
-   small, lined up on the steps. They keep their order front to back. A
-   window can end hidden behind a bigger one; that's fine.
+   Each snaps its own edges: every edge moves to the nearest step, and
+   the window fills the region they make. The area's borders are steps
+   too, so a window that nearly fills the area fills it, and a small one
+   stays small, lined up on the steps. They keep their order front to
+   back. A window can end hidden behind a bigger one; that's fine.
 6. **Repeatable.** A layout that's already tidy doesn't move. A window
    that won't take its size ends as with Place Window.
 7. Focus doesn't change.
@@ -1391,6 +1391,8 @@ action would remember.
    window on top, such as notes over a browser, cover the whole area.
    Snapping keeps it small, keeps the action repeatable, and needs no
    rule for which window is the main one.
+   There's no special rule for edges near the area's border: plain
+   snapping is simpler and easier to predict.
 
 **Not decided:**
 
