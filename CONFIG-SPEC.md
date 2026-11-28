@@ -1317,7 +1317,7 @@ apart from the tests in 25.
    column decides its frame:
    - **Width:** the column's, unless that's past the window's largest
      width; then the window just doesn't grow.
-   - **Height:** from the column's settings.
+   - **Height:** its own, Fill or set (15).
    - **Place:** from what the column shows now.
    - A window that refuses a size keeps the size it takes. The layout
      doesn't try again.
@@ -1328,12 +1328,17 @@ apart from the tests in 25.
    Widths are kept as fractions of the usable width, so a column keeps
    its share when the display changes, and snaps to that display's grid
    the next time it's sized with a key.
-4. **The grid is set for each display.** It's only for sizing with keys.
+4. **The grid is set for each display.** Its steps are what the keys
+   size by (12). It also rounds a new column's width (3) and the
+   smallest widths (24), and rows count heights (15).
 5. **Shown, then shelved.** Windows in a column are shown top to bottom
    while they fit; one window gets the column's whole height. When all
    fit, there's no shelf. When they don't, the rest go to the column's
    shelf, each at the column's width. Columns in a Space work the same
-   way, across.
+   way, across. Shown columns sit side by side, with the gap between
+   them, from the edge away from the in side (18). Shown windows sit
+   from the top of the column down, below a top shelf when there is
+   one (8).
 6. **Three kinds of shelf,** for columns and for windows alike:
    - **No shelf.** Everything must fit on the display. Sending a window
      or a column that won't fit is an error, and so is resizing a
@@ -1353,8 +1358,9 @@ apart from the tests in 25.
 7. **One rule for shifting.** What's already shown stays, pushed away
    from the shelf, while there's room. What no longer fits, the
    farthest first, goes onto the shelf in order. There's no "current"
-   window or column to keep, only what is shown. Stepping moves windows
-   and doesn't resize them, since a window keeps its height.
+   window or column to keep, only what is shown. Shifting never changes
+   a column's width or a window's height setting; Fill windows' heights
+   follow from what's shown (15).
 8. **The kind of shelf is set for each display,** so two displays next
    to each other can have their shelves on the far sides. A top shelf
    keeps title bars at the top of the column, with the windows behind
@@ -1402,8 +1408,10 @@ apart from the tests in 25.
     - **Fill windows share what the set heights leave,** equally. One
       window alone fills the column; two Fill windows get halves.
     - **No window goes below its smallest height.** When the shown
-      windows can't all keep theirs, the farthest one from the shelf
-      side goes to the shelf, and the rest are laid out again.
+      windows can't all keep theirs, the window you acted on stays
+      shown. The others go to the shelf as in 7, the farthest from the
+      in side first. If none is left on that side, the next ones toward
+      the shelf go to its front. The rest are laid out again.
     - **`CAG+Minus` and `CAG+Equal`** turn a Fill window into the rows it
       has now, less or plus one, and step a set window by one row.
       Growing to the whole column height makes it Fill again.
@@ -1463,10 +1471,9 @@ apart from the tests in 25.
 18. **Where a new column goes.** Decided on 2026-11-27. It comes in at
     the shelf's edge, as a sent window does (16).
     - **After the last shown column,** on the shelf's side. If it doesn't
-      fit, what's shown shifts away from the shelf, first into any space
-      a removed column left, and the farthest column goes to the shelf
-      (6, 7). With no shelf, it's an error, and the window stays where it
-      was.
+      fit, what's shown shifts away from the shelf, and the farthest
+      column goes to the shelf (6, 7). With no shelf, it's an error, and
+      the window stays where it was.
     - **On an empty Space,** the first column sits at the edge away from
       the shelf: on the left with a right shelf, as in the walkthrough.
     - **Its width** is the window's, rounded up to the grid (3). The
@@ -1640,8 +1647,9 @@ apart from the tests in 25.
       with its grid and shelf (4, 8). For the laptop, 3 of 6: a half. No
       default; a display without one is unchanged.
     - **A column's width on a display** is the largest of its kept
-      fraction, the display's smallest column width, and the largest
-      smallest width among its windows, rounded up to the grid (3).
+      fraction of that display, as it is, the display's smallest column
+      width, and the largest smallest width among its windows rounded up
+      to the grid. Only a key step rounds the fraction itself (3, 19).
     - **The fraction doesn't change,** so plugging the wide display back
       in gives every column its share there again.
     - **Sizing with keys** works from the width you see. Narrower than the
