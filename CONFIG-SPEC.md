@@ -1623,10 +1623,17 @@ several times in a row.
     soon after being sized, not only refuse a size.
     So a window that changes again within half a second is asked once
     more (Laying out, 6).
-  - Still to try: a window with a sheet open (a dialog attached under
-    its title bar, such as TextEdit's Save panel), and the laptop's own
-    display alone. A second display next to the first waits for someone
-    with that setup.
+  **Third run, 2026-11-27,** on the wide display: 16 windows, adding
+  TextEdit's Untitled document and its Open panel.
+  - Every resizable window took every size again, settling within 90
+    ms. Rex held every size this time.
+  - **TextEdit's Open panel is a standard window,** not a dialog, so the
+    rule for dialogs doesn't keep it floating. It took every size. It
+    only joins a column if you send it.
+  - Whether the Untitled window had its Save sheet open, and how the
+    sheet looked while the window was sized, the survey can't see.
+  - Still to try: the laptop's own display alone. A second display next
+    to the first waits for someone with that setup.
 - Whether a window put mostly over a neighboring display, as a side
   shelf would, moves to that display on the Mac.
 - Where each OS puts windows when a display is unplugged. Until then, a
