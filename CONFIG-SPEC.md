@@ -1350,6 +1350,16 @@ display:
    a group. This finds columns of stacked windows, rows of windows side
    by side, and mixes such as a tall column on the left with two
    windows stacked on the right.
+   - **A little overlap:** a line may cross a window when no more than
+     a quarter of its width (or height, for a horizontal line) is on
+     the far side, and no more than one step. A sliver over a
+     neighbor, from rough placing, still splits. A window put on top of
+     another doesn't, so the two share an area.
+   - **More cleanly:** of the lines that work, the one that crosses the
+     least wins. A vertical and a horizontal line that tie: the
+     vertical one on a display at least as wide as it is tall, the
+     horizontal one on a taller display, as with Arrange Windows'
+     `auto`.
 3. **Place the cuts.** A line goes halfway between the two groups'
    edges, then moves to the nearest step of the display (see Steps). A
    window about a third wide ends exactly a third wide, so sizes follow
@@ -1402,20 +1412,24 @@ action would remember.
    Fill Toggle and Arrange Windows already do. Snapping only would leave
    gaps between neighbors. This is one rule for every window, the same
    as for overlapping ones.
+3. ~~How much overlap still counts as split?~~ A quarter of the
+   window, and no more than one step. A quarter alone would allow too
+   much on a large window; one step alone would ignore the window's
+   size. On a 57" display with 160 pt steps, a terminal with 100 pt
+   over a browser still splits from it, and a 700 pt notes window with
+   400 pt over a browser shares its area.
 
 **Not decided:**
 
 1. Names: `window.tidy` and Tidy Windows, and the undo's action and
    name, such as `window.undo` and Undo Layout. Their built-in names,
    such as `window-tidy`.
-2. How much overlap still counts as split: a share of the smaller
-   window, or one step.
-3. Steps: one number for both directions, or one across and one down.
+2. Steps: one number for both directions, or one across and one down.
    How a display is named in the file on both platforms, and whether the
    default comes from the display's shape.
-4. Undo: one level or more. What happens to a window moved by hand or
+3. Undo: one level or more. What happens to a window moved by hand or
    closed since. Whether undo survives the app quitting.
-5. Arrange Windows on a cluttered screen: whether `"count": "all"`
+4. Arrange Windows on a cluttered screen: whether `"count": "all"`
    should go past 8.
 
 ### Decided in spec v2
