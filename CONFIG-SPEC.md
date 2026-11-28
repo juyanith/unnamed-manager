@@ -1384,7 +1384,10 @@ windows down.
    Only a key step rounds the fraction itself.
 6. **A window that refuses a size** keeps the size it takes. Wider than
    asked, it makes its column grow to hold it. Narrower, it keeps its
-   size, in the middle of its column. The layout never tries again. A
+   size, in the middle of its column. A window that changes again
+   within half a second of being sized, as Rex did (column tests), is
+   asked once more a moment later; if it changes again, that's a
+   refusal. Beyond that one retry, the layout never tries again. A
    window that takes a little less than it was given, such as a
    terminal sizing by characters, isn't refusing, and that size isn't
    learned as its smallest.
@@ -1618,6 +1621,8 @@ several times in a row.
     survey. From the fourth step on it held every size. In the first run
     it held them all. So an app can undo the layout once in a while,
     soon after being sized, not only refuse a size.
+    So a window that changes again within half a second is asked once
+    more (Laying out, 6).
   - Still to try: a window with a sheet open, the laptop, and a second
     display next to the first.
 - Whether a window put mostly over a neighboring display, as a side
