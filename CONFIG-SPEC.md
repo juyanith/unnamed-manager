@@ -1356,9 +1356,12 @@ windows down.
 4. **How a shelf looks.** A shelf is a strip at an edge: columns at the
    left or right of the screen, windows at the top or bottom of a
    column. What's on it stays a normal window, overlapping the others
-   there, with the front one in front and at least 40 points of its
-   title bar on screen. Nothing is hidden, and the spec's rule for title
-   bars holds. A top shelf keeps title bars at the top of the column,
+   there, with the front one in front. A side shelf leaves 40 points of
+   each window on screen, placed by the width the window took. A bottom
+   shelf leaves 52, since some Mac apps keep that much on screen at the
+   bottom whatever they're asked (column tests), so every window there
+   lines up. Nothing is hidden, and the spec's rule for title bars
+   holds. A top shelf keeps title bars at the top of the column,
    with its windows behind the shown ones, since a title bar can't go
    above the screen. A shelved window the OS brings forward without
    your input covers the column there until your next click or shift.
@@ -1599,7 +1602,8 @@ several times in a row.
     height. These are the refused sizes the layout already allows for.
   - **At the bottom, some apps keep 52 points on screen,** not 40:
     Safari, Calculator and System Settings ended 12 points higher than
-    asked. Chrome, Ghostty, Claude and Rex took 40.
+    asked. Chrome, Ghostty, Claude and Rex took 40. So a bottom shelf
+    leaves 52 for every window.
   - **At the left,** a window that kept its width was placed so that 40
     points of it stayed on screen, so a left shelf has to place a window
     by the width it took, not the width asked.
