@@ -1358,8 +1358,9 @@ nothing but an undo.
      another doesn't, so the two share an area.
    - **Windows in front float out of a cut.** A window the line crosses
      further than that doesn't stop it when it's in front of windows on
-     both sides. The cuts are found without it, and it snaps its own
-     edges where it is and stays in front. A window behind others on
+     both sides. The cuts are found without it, and it stays exactly
+     where it is, in front, as a left-out app's window does. A window
+     behind others on
      either side still stops the line. Of the lines that work, the one
      that sets aside the fewest windows wins.
    - **Squeezed windows float.** A window whose area would be less than
@@ -1382,7 +1383,7 @@ nothing but an undo.
    edge moves to the nearest step, and the window fills the region its
    edges make, with the gap. With no cut, nothing reaches the edges: a
    lone window in the left half stays there, and keeps a margin of more
-   than half a step. A window floating out of a cut keeps its margins.
+   than half a step. A floating window doesn't move at all.
 5. **Overlapping windows.** Windows that no line splits share an area.
    Each snaps its own edges: every edge moves to the nearest step, and
    the window fills the region they make. The area's borders are steps
@@ -1565,6 +1566,10 @@ Arrange Windows moved. It's the one thing either action remembers.
     out: it got a strip one step tall across the whole column. A setting
     isn't needed for it; `"arrange": false` still leaves an app out
     altogether.
+12. ~~Does a floating window snap?~~ No, it stays exactly where it is.
+    Snapping to steps of 320 by 177 points turned Calculator's 230 by
+    408 into 312 by 347, a big change for a small window, and one an
+    app may refuse. It's also what you'd expect of a window left out.
 
 **Not decided:** nothing is left open. Before it moves into a spec
 version: try finding the cuts on more real layouts, with
