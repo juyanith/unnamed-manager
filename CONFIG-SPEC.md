@@ -1362,6 +1362,10 @@ nothing but an undo.
      edges where it is and stays in front. A window behind others on
      either side still stops the line. Of the lines that work, the one
      that sets aside the fewest windows wins.
+   - **Squeezed windows float.** A window whose area would be less than
+     half its own width or height floats too, and the cuts are found
+     again without it. A small window wedged between two others keeps
+     about its size instead of taking a thin strip.
    - **More cleanly:** of the lines that work, the one that crosses the
      least wins. A vertical and a horizontal line that tie: the
      vertical one on a display at least as wide as it is tall, the
@@ -1555,6 +1559,12 @@ Arrange Windows moved. It's the one thing either action remembers.
     one started 161 pt below the top: the margin was more than half a
     step, so it stayed, an empty strip the other columns didn't have.
     Without a cut, a lone window still keeps its margin.
+11. ~~A small window wedged between two others?~~ It floats when its
+    area would be less than half its width or height. The third preview
+    had Calculator between Chrome and Safari, with no rule leaving it
+    out: it got a strip one step tall across the whole column. A setting
+    isn't needed for it; `"arrange": false` still leaves an app out
+    altogether.
 
 **Not decided:** nothing is left open. Before it moves into a spec
 version: try finding the cuts on more real layouts, with
