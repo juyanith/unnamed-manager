@@ -1607,9 +1607,19 @@ several times in a row.
   - **At the left,** a window that kept its width was placed so that 40
     points of it stayed on screen, so a left shelf has to place a window
     by the width it took, not the width asked.
-  - Still to try: Zed, Obsidian, Messages, Signal and Finder; a window
-    with a sheet open; the laptop; and a second display next to the
-    first.
+  **Second run, 2026-11-27,** with the bottom shelf at 52: 14 windows
+  of Ghostty, Claude, Finder, Obsidian, Messages, Parallels Desktop (a
+  Windows 11 window), Zed, Chrome, Signal, Rex, Safari, Calculator and
+  System Settings, all but Ghostty in the background.
+  - Every resizable window took every size again, settling within 100
+    ms, and every window took the bottom shelf at 52.
+  - **Rex put itself back** three times: it took the first three sizes,
+    then about 200 ms later went back to the frame it had before the
+    survey. From the fourth step on it held every size. In the first run
+    it held them all. So an app can undo the layout once in a while,
+    soon after being sized, not only refuse a size.
+  - Still to try: a window with a sheet open, the laptop, and a second
+    display next to the first.
 - Whether a window put mostly over a neighboring display, as a side
   shelf would, moves to that display on the Mac.
 - Where each OS puts windows when a display is unplugged. Until then, a
