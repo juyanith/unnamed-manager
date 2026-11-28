@@ -1336,8 +1336,8 @@ want them, and it works out the layout you meant and snaps it into
 place. It does once, when asked, what you could do by hand, and keeps
 nothing but an undo.
 
-**The action,** `window.tidy` (Tidy Windows), on the focused window's
-display:
+**The action,** Tidy Windows (`window.tidy`, built-in name
+`window-tidy`), on the focused window's display:
 
 1. **The windows** are Arrange Windows' candidates on that display:
    every one, not only the ones used last. Focus and recency don't
@@ -1440,7 +1440,8 @@ they're no longer used, and an app drops them when it saves the file,
 as with `window.maximize`. An older app reading a newer file finds
 neither and uses 2 by 2.
 
-**Undo,** an action that puts back the windows the last Tidy Windows or
+**Undo Layout** (`window.undo`, built-in name `window-undo`), an
+action that puts back the windows the last Tidy Windows or
 Arrange Windows moved. It's the one thing either action remembers.
 
 - **One level, as a toggle.** Undo puts back the frames from before the
@@ -1498,12 +1499,18 @@ Arrange Windows moved. It's the one thing either action remembers.
    the steps instead: `minCell` takes the place of `maxColumns` and
    `maxRows`, so the limits follow the display's shape, and Arrange
    Windows' cells land on steps, so it and Tidy Windows agree.
+7. ~~Names?~~ Tidy Windows, `window.tidy`, built-in name `window-tidy`.
+   Undo Layout, `window.undo`, built-in name `window-undo`; the Guide
+   and Help say "press again to redo". Snap Windows would clash with
+   Snap on Windows, Clean Up is Mac wording, and Align Windows sounds
+   like edges only. "Layout" covers both actions it undoes, and
+   `window.undo` leaves room for Place Window and Move Window to join.
 
 **Not decided:**
 
-1. Names: `window.tidy` and Tidy Windows, and the undo's action and
-   name, such as `window.undo` and Undo Layout. Their built-in names,
-   such as `window-tidy`.
+1. A minimum size for each app, in `windows.apps`, so an app that
+   needs room, such as a video editor, gets a bigger cell from Arrange
+   Windows and Tidy Windows.
 
 ### Decided in spec v2
 
