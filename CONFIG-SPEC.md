@@ -1630,8 +1630,11 @@ several times in a row.
   - **TextEdit's Open panel is a standard window,** not a dialog, so the
     rule for dialogs doesn't keep it floating. It took every size. It
     only joins a column if you send it.
-  - Whether the Untitled window had its Save sheet open, and how the
-    sheet looked while the window was sized, the survey can't see.
+  - **A sheet moves with its window.** In a fourth run of TextEdit
+    alone, with the Save sheet open, the sheet looked right through
+    every size and shelf spot, and stayed centered under the title bar
+    as the window resized. The survey can't see sheets, so this was
+    watched.
   - Still to try: the laptop's own display alone. A second display next
     to the first waits for someone with that setup.
 - Whether a window put mostly over a neighboring display, as a side
