@@ -1234,7 +1234,8 @@ when it's decided.
 - **Modifiers on step keys,** so `T` and `Shift+T` can be two entries in
   one menu. See below.
 - **Columns,** a window layout: windows you send to a column are laid
-  out there, with shelves for what doesn't fit. See below, after
+  out there, with shelves for what doesn't fit. Paused on 2026-11-27,
+  to look at a smarter Arrange Windows first. See below, after
   **Window Layout: What We Need**, which says what it's for.
 
 ### Window Layout: What We Need
@@ -1291,6 +1292,25 @@ The window layout chosen on 2026-11-27, written as one model: a few
 lists, one way to lay them out, and the things that change them.
 Everything here is decided, apart from the [tests](#column-tests). How
 each rule was reached is in the spec repo's history.
+
+**Paused, 2026-11-27.** Set aside, not dropped, to look first at making
+Arrange Windows smarter about how it lays windows out.
+
+- **Why:** it has grown complex. With shelves, a model of lists and a
+  table of changes, it's close to Paneru with one difference, that new
+  windows float. That may be a real simplification, or it may be the
+  same thing again: making macOS behave in a way it doesn't want to.
+  Plenty of people are productive on the Mac without tricks like these.
+- **What the tests showed:** the worry isn't the apps. In four runs of
+  a sizing survey on the wide display, every resizable window of the
+  apps used every day took every column size and shelf spot, in the
+  background too, within about 100 ms, and almost never moved itself
+  after (see [Column tests](#column-tests)). What's left in doubt is the
+  amount of machinery, not whether apps put up with it.
+- **To pick it up again:** the model, the rules and the keys below are
+  complete; the only test left for the Mac is the laptop's own display.
+  The survey tool is on the Mac repo's `prototype/column-survey` branch
+  (`tools/survey.sh`), not merged.
 
 #### The model
 
@@ -1582,61 +1602,42 @@ several times in a row.
 
 #### Column tests
 
-- **How apps take the layout's sizes,** first and before the layout is
-  built, since that's where Paneru failed. Place Window already works
-  because it does only what you could do with the mouse, once, to the
-  window in front. Columns also size windows that aren't in front, size
-  them again when the windows around them change, and put them mostly
-  off screen on a shelf. For each app used every day, try a column
-  width, Fill heights of a half and a third, a spot on each shelf, and
-  back, and note what it took, how long it took to settle, and whether
-  it moved or resized itself after.
-  **First run, 2026-11-27,** on the Mac and the wide display (3840 by
-  2130 points usable), with a survey tool on the Mac repo's
-  `prototype/column-survey` branch: 8 windows of Ghostty, Claude,
-  Safari, Chrome, Rex, Calculator and System Settings, all but one in
-  the background.
-  - Every window that can be resized took every width, height and
-    shelf spot asked, in the background too, and settled within 160
-    ms (mostly under 50). Six resizes in a row, 150 ms apart, ended
-    where asked. No window moved or resized itself in the second after.
-  - Fixed sizes kept theirs: Calculator, and one small untitled Ghostty
-    window. System Settings keeps its width of 740 and takes any
-    height. These are the refused sizes the layout already allows for.
-  - **At the bottom, some apps keep 52 points on screen,** not 40:
-    Safari, Calculator and System Settings ended 12 points higher than
-    asked. Chrome, Ghostty, Claude and Rex took 40. So a bottom shelf
-    leaves 52 for every window.
-  - **At the left,** a window that kept its width was placed so that 40
-    points of it stayed on screen, so a left shelf has to place a window
-    by the width it took, not the width asked.
-  **Second run, 2026-11-27,** with the bottom shelf at 52: 14 windows
-  of Ghostty, Claude, Finder, Obsidian, Messages, Parallels Desktop (a
-  Windows 11 window), Zed, Chrome, Signal, Rex, Safari, Calculator and
-  System Settings, all but Ghostty in the background.
-  - Every resizable window took every size again, settling within 100
-    ms, and every window took the bottom shelf at 52.
-  - **Rex put itself back** three times: it took the first three sizes,
-    then about 200 ms later went back to the frame it had before the
-    survey. From the fourth step on it held every size. In the first run
-    it held them all. So an app can undo the layout once in a while,
-    soon after being sized, not only refuse a size.
-    So a window that changes again within half a second is asked once
-    more (Laying out, 6).
-  **Third run, 2026-11-27,** on the wide display: 16 windows, adding
-  TextEdit's Untitled document and its Open panel.
-  - Every resizable window took every size again, settling within 90
-    ms. Rex held every size this time.
+- **How apps take the layout's sizes,** since that's where Paneru
+  failed. Place Window works because it does only what you could do
+  with the mouse, once, to the window in front. Columns also sizes
+  windows in the background, sizes them again when the windows around
+  them change, and puts them mostly off screen on a shelf. **Done on the
+  Mac's wide display**, 2026-11-27, with `tools/survey.sh` on the Mac
+  repo's `prototype/column-survey` branch: each window was given a
+  column a quarter and a third wide, Fill heights of a half and a
+  third, six resizes 150 ms apart, a spot on each shelf, and its old
+  frame back. Four runs, up to 16 windows of Ghostty, Claude, Safari,
+  Chrome, Rex, Zed, Obsidian, Messages, Signal, Finder, TextEdit,
+  Parallels Desktop, Calculator and System Settings, all but one in the
+  background.
+  - **Resizable windows took every size and spot,** in the background
+    too, settling within 160 ms (mostly under 50), and didn't move
+    themselves in the second after. Repeated resizes ended where asked.
+  - **Fixed sizes kept theirs** (Calculator, a small Ghostty window),
+    and System Settings keeps its width of 740 but takes any height:
+    the refused sizes the layout already allows for.
+  - **Some apps keep 52 points on screen at the bottom,** not 40
+    (Safari, Calculator, System Settings), so a bottom shelf leaves 52
+    for every window, which all of them took.
+  - **At the left,** a window that kept its width was placed so 40
+    points of it stayed on screen, so a side shelf places a window by
+    the width it took.
+  - **Rex put itself back** about 200 ms after three of its sizes in one
+    run, and held every size in the others. So a window that changes
+    again within half a second is asked once more (Laying out, 6).
   - **TextEdit's Open panel is a standard window,** not a dialog, so the
-    rule for dialogs doesn't keep it floating. It took every size. It
-    only joins a column if you send it.
-  - **A sheet moves with its window.** In a fourth run of TextEdit
-    alone, with the Save sheet open, the sheet looked right through
-    every size and shelf spot, and stayed centered under the title bar
-    as the window resized. The survey can't see sheets, so this was
-    watched.
-  - Still to try: the laptop's own display alone. A second display next
-    to the first waits for someone with that setup.
+    rule for dialogs doesn't keep it floating; it only joins a column if
+    sent.
+  - **A sheet moves with its window:** TextEdit's Save sheet stayed
+    centered under the title bar through every size and spot (watched,
+    since the survey can't see sheets).
+  - **Still to try:** the laptop's own display. A second display next to
+    the first waits for someone with that setup.
 - Whether a window put mostly over a neighboring display, as a side
   shelf would, moves to that display on the Mac.
 - Where each OS puts windows when a display is unplugged. Until then, a
