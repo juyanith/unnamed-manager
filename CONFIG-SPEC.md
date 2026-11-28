@@ -1352,7 +1352,8 @@ display:
    windows stacked on the right.
    - **A little overlap:** a line may cross a window when no more than
      a quarter of its width (or height, for a horizontal line) is on
-     the far side, and no more than one step. A sliver over a
+     the far side. However small the window, half a step is allowed,
+     and however large, no more than one step. A sliver over a
      neighbor, from rough placing, still splits. A window put on top of
      another doesn't, so the two share an area.
    - **More cleanly:** of the lines that work, the one that crosses the
@@ -1413,9 +1414,9 @@ action would remember.
    gaps between neighbors. This is one rule for every window, the same
    as for overlapping ones.
 3. ~~How much overlap still counts as split?~~ A quarter of the
-   window, and no more than one step. A quarter alone would allow too
-   much on a large window; one step alone would ignore the window's
-   size. On a 57" display with 160 pt steps, a terminal with 100 pt
+   window, at least half a step and at most one step. A quarter alone
+   would allow too much on a large window and too little on a small
+   one; one step alone would ignore the window's size. On a 57" display with 160 pt steps, a terminal with 100 pt
    over a browser still splits from it, and a 700 pt notes window with
    400 pt over a browser shares its area.
 
