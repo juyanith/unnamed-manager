@@ -11,7 +11,7 @@ one, for the rule the manifest names.
 Spec v1 was the config format of Unnamed Launcher 0.2.0, written down for
 both platforms. Spec v2 adds window actions, the new file location, and
 what happens to an action a platform can't do. Spec v3 adds the gap that
-Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps. Spec v15 adds `windows.apps`, rules for each app that leave its windows out of Focus Window, Swap Window or Arrange Windows, in place of `windows.exclude` from spec v13 and v14, which no released app read. Spec v16 adds Quit on close, for the Mac only: `windows.quitOnClose`, its wait, and a `quit` rule in `windows.apps`. Spec v17 adds Switch Space (`space.switch`), which goes to the Space or virtual desktop to the left or right, as quickly as the platform allows. Spec v18 adds held menus (`hold`), which work while the leader's modifiers are held and choose when you let go, as the platforms' app switchers do, and lists (`list`), menus the app fills when they open, starting with Recent Windows. Spec v19 lets a list swap with the chosen window instead of focusing it (`choose`). Spec v20 adds Send to Space (`space.send`), which puts the focused window on another Space or virtual desktop, and can go with it (`follow`). Spec v21 makes dialogs candidates for Focus Window and Recent Windows, and never for Swap Window or Arrange Windows. Spec v22 lets Switch Space go to a Space or desktop by number. Spec v23 makes going with a sent window its own action, Follow to Space (`space.follow`), in place of Send to Space's `follow`. What's still open
+Place Window leaves around windows. Spec v4 settles the Windows app: how it names apps, which chords Windows reserves, and what `icon` names. Spec v5 lets Focus Window start with no focused window. Spec v6 adds its `first` and `last`, and orders windows left to right. Spec v7 renames Maximize to Fill (`window.fill`), which now leaves the gap; `window.maximize` still loads. Spec v8 adds Arrange Windows (`window.arrange`) and the two settings that limit its grid. Spec v9 lets its focused window stay where it is and take the spare cells there. Spec v10 adds Swap Window (`window.swap`), a `scope` for Focus Window, and the alert sound when either finds no window. Spec v11 adds built-in actions, which a binding names without defining them, and renames Focus Window's `direction` to `target`, which also takes a number. Spec v12 makes Focus Window and Swap Window skip windows you can't see, find directions by edges, and order windows in rows, with three settings for the distances. Spec v13 adds the `recent` target, the window used before, from a history of focused windows the app keeps. Spec v15 adds `windows.apps`, rules for each app that leave its windows out of Focus Window, Swap Window or Arrange Windows, in place of `windows.exclude` from spec v13 and v14, which no released app read. Spec v16 adds Quit on close, for the Mac only: `windows.quitOnClose`, its wait, and a `quit` rule in `windows.apps`. Spec v17 adds Switch Space (`space.switch`), which goes to the Space or virtual desktop to the left or right, as quickly as the platform allows. Spec v18 adds held menus (`hold`), which work while the leader's modifiers are held and choose when you let go, as the platforms' app switchers do, and lists (`list`), menus the app fills when they open, starting with Recent Windows. Spec v19 lets a list swap with the chosen window instead of focusing it (`choose`). Spec v20 adds Send to Space (`space.send`), which puts the focused window on another Space or virtual desktop, and can go with it (`follow`). Spec v21 makes dialogs candidates for Focus Window and Recent Windows, and never for Swap Window or Arrange Windows. Spec v22 lets Switch Space go to a Space or desktop by number. Spec v23 makes going with a sent window its own action, Follow to Space (`space.follow`), in place of Send to Space's `follow`. Spec v24 adds Tidy Windows (`window.tidy`), which snaps the windows into the layout their places suggest, and Undo Layout (`window.undo`); steps, which cut each display into equal parts; settings for each display (`windows.displays`); the smallest cell (`windows.minCell`) in place of `maxColumns` and `maxRows`; and a smallest size for each app. What's still open
 is in [Planned](#planned) until it's settled and moved
 up into the spec.
 
@@ -103,8 +103,9 @@ Spec v3.
 | Field | Type | Default | Meaning |
 | --- | --- | --- | --- |
 | `gap` | number ≥ 0 | `8` | Points that [Place Window](#windowplace) and [Fill](#windowfill) leave between a window and the usable area's edges, and between windows placed side by side. `0` places windows edge to edge. |
-| `maxColumns` | integer from 1 to 8 | `2` | The most columns [Arrange Windows](#windowarrange) picks when its action doesn't give `groups` (spec v8). |
-| `maxRows` | integer from 1 to 8 | `2` | The most rows it picks. With `"count": "all"`, it arranges at most `maxColumns` times `maxRows` windows. |
+| `minCell` | object | `{ "across": 6, "down": 6 }` | Spec v24. The smallest cell [Arrange Windows](#windowarrange) makes, in [steps](#steps): `across` and `down`, each an integer from 1 to 96. It sets the most columns and rows it picks. |
+| `displays` | object | `{}` | Spec v24. Settings for each display, keyed by its size in points: see [Steps](#steps). |
+| `maxColumns`, `maxRows` | integer from 1 to 8 | | Spec v8 to v23: the most columns and rows Arrange Windows picked. From spec v24 they still load, with the `retired-setting` warning, and do nothing: `minCell` takes their place. An app drops them when it saves the file. |
 | `minVisible` | number ≥ 0 | `20` | Spec v12. Points on a side of the square a window's visible part must hold for [Focus Window](#windowfocus) and [Swap Window](#windowswap) to count it, and points it must share with the focused window to be in line. `0` counts any window with some part showing. |
 | `rowTolerance` | number ≥ 0 | `20` | Spec v12. Windows whose tops are within this many points share a row in Focus Window's order. |
 | `tieTolerance` | number ≥ 0 | `2` | Spec v12. Gaps within this many points count as the same when Focus Window picks a window in a direction. |
@@ -120,6 +121,7 @@ Each app in `windows.apps` takes these rules, all optional:
 | `swap` | boolean | `true` | `false`: [Swap Window](#windowswap) never moves the app's windows, as the window swapped with or as the focused one. |
 | `arrange` | boolean | `true` | `false`: [Arrange Windows](#windowarrange) never counts or moves the app's windows. |
 | `quit` | boolean | `true` | Spec v16, Mac only. `false`: [Quit on close](#quit-on-close) never quits the app. |
+| `minWidth`, `minHeight` | number ≥ 0 | `0` | Spec v24. The smallest width and height, in points, that [Arrange Windows](#windowarrange) and [Tidy Windows](#windowtidy) give the app's windows, rounded up to whole steps. For an app that needs room, such as a video editor. `0` sets none. |
 
 - The rules are separate: an app left out of one still takes part in
   the others.
@@ -128,7 +130,8 @@ Each app in `windows.apps` takes these rules, all optional:
   isn't `true` or `false` is `wrong-type`.
 - When an app saves the file, it writes every rule its platform has for
   each app listed (four on the Mac, three on Windows), so an app with
-  every rule `true` stays listed.
+  every rule `true` stays listed. It writes `minWidth` and `minHeight`
+  only when they aren't `0`.
 
 ```json
 "windows": {
@@ -543,6 +546,8 @@ default. Names are case-sensitive, like ids.
 | `window.place` | `preset` | `window-place-` and a preset | `window-place-left-half`, `window-place-top-right` |
 | `window.resize` | `step` | `window-resize-grow`, `window-resize-shrink` | the default widths, as `step` uses them |
 | `window.arrange` | `count` | `window-arrange`, and `window-arrange-` and a count from 2 to 8 or `all` | `window-arrange-3`, `window-arrange-all` |
+| `window.tidy` | none | `window-tidy` (spec v24) | Tidy Windows |
+| `window.undo` | none | `window-undo` (spec v24) | Undo Layout |
 | `window.focus` | `target` | `window-focus-` and a target: a word, or a number from 1 | `window-focus-left`, `window-focus-next`, `window-focus-recent`, `window-focus-2` |
 | `window.swap` | `target` | `window-swap-` and a target | `window-swap-left`, `window-swap-first`, `window-swap-recent`, `window-swap-3` |
 | `space.switch` | `target` | `space-switch-left`, `space-switch-right` (spec v17), and `space-switch-` and a number from 1 (spec v22) | `space-switch-1` |
@@ -605,6 +610,8 @@ the last few windows, but at least 10. Focus Window's and Swap Window's
 | `window.move` | Move Window | `to` or `by` | Moves the window. Its size stays the same. |
 | `window.resize` | Resize Window | `to`, `by` or `step`; `anchor`; `widths` | Resizes the window. |
 | `window.arrange` | Arrange Windows | `count`, `groups`, `layout` | Lays out the windows used last, on the focused window's display, in a grid (spec v8). |
+| `window.tidy` | Tidy Windows | none | Snaps the windows on the focused window's display into the columns and rows their places suggest (spec v24). |
+| `window.undo` | Undo Layout | none | Puts back the windows the last Tidy Windows or Arrange Windows moved on the focused window's display, and puts the layout back when pressed again (spec v24). |
 | `window.focus` | Focus Window | `target` (required; `direction` before spec v11), `scope` | Focuses the nearest window in a direction, the next or previous one, the first or last one, one by number, or the window used before (spec v13). |
 | `window.swap` | Swap Window | `target` (required), `scope` | Trades place and size with the window in a direction, the next or previous one, the first or last one, one by number (spec v10), or the window used before (spec v13). |
 
@@ -629,8 +636,8 @@ families follow the same shape, such as `space.switch` (spec v17),
   `round((x + width) × W)`. So the left half and the right half share an
   edge, with no gap and no overlap.
 - **The gap** (spec v3, `windows.gap`, rounded to whole points) applies
-  to Place Window and, from spec v7, to Fill, and to each cell of Arrange
-  Windows (spec v8). Fill's frame is the whole usable area. After rounding a frame's edges, each edge on
+  to Place Window and, from spec v7, to Fill, to each cell of Arrange
+  Windows (spec v8), and to each window Tidy Windows moves (spec v24). Fill's frame is the whole usable area. After rounding a frame's edges, each edge on
   the usable area's edge moves in by the whole gap, and each edge inside
   it moves in by half: a left or top edge by the larger half, a right or
   bottom edge by the smaller, so neighbours end exactly one gap apart.
@@ -643,6 +650,52 @@ families follow the same shape, such as `space.switch` (spec v17),
   one gap in from it), or its center for a centered frame.
 - **A window never ends off screen.** After a move or a resize, at least
   40 points of its title bar stay on the screen it's on.
+
+#### Steps
+
+Spec v24. **Steps** cut a display's usable area into equal parts, some
+across and some down. Arrange Windows' cells and every edge Tidy Windows
+sets land on them. Step `i` across is at `round(i × W / across)` from
+the usable area's left, and step `j` down at `round(j × H / down)` from
+its top, as for fractions.
+
+- **The guess:** the short side of the display gets 12 steps. The long
+  side gets 12 for each whole time the short side fits into it. So 3:2,
+  16:10 and 16:9 displays get 12 across and 12 down, a 21:9 display 24
+  by 12, a 32:9 display 36 by 12, and a display turned on its side 12
+  across and 12 down. Every count is a multiple of 12, so halves, thirds
+  and quarters land on steps. The shape is the display's whole frame,
+  not its usable area.
+- **`windows.displays`** gives a display its own settings. A key is the
+  display's size in points, its width, a lowercase `x` and its height,
+  such as `"3840x1080"`: the size after scaling, as the Mac's "looks
+  like" size, and the size Windows scales to. A 7680 by 2160 pixel
+  display at 2x is `"3840x1080"`. Two displays of the same size share an
+  entry. A display whose scaling changes no longer matches, and goes
+  back to the guess and the defaults. Each value is an object with these
+  fields, both optional:
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `steps` | object | `across` and `down`, each an integer from 1 to 96, both required. In place of the guess. |
+| `minCell` | object | `across` and `down`, each an integer from 1 to 96, both required. In place of `windows.minCell` on this display. |
+
+```json
+"windows": {
+  "minCell": { "across": 6, "down": 6 },
+  "displays": {
+    "3840x1080": {
+      "steps": { "across": 36, "down": 12 },
+      "minCell": { "across": 4, "down": 6 }
+    }
+  }
+}
+```
+
+- A key that isn't a width, an `x` and a height, each a whole number
+  from 1, is `bad-display-key`, such as `"3840×1080"` or `"wide"`. An
+  `across` or `down` that isn't from 1 to 96 is `bad-window-limit`. A
+  `minCell` larger than the steps counts as all of them.
 
 #### `window.fill`
 
@@ -755,19 +808,39 @@ doesn't change.
   change what Arrange Windows does. When the focused window's app is
   left out, its display is still the one arranged, and the candidate in
   front of the others there counts as the focused one.
+- **The limits** (spec v24): the most columns is the display's steps
+  across divided by its `minCell.across`, rounded down, and the most rows
+  its steps down divided by `minCell.down`, at least 1 each. With the
+  defaults, a 16:9 display gets at most 2 by 2, a 21:9 display 4 by 2,
+  and a 32:9 display 6 by 2. Before spec v24, `windows.maxColumns` and
+  `windows.maxRows` set them.
 - **How many cells:** `count`. With `"all"`, the number of windows on the
-  display, at most `windows.maxColumns` times `windows.maxRows`, and never
-  more than 8. Windows past that stay as they are.
+  display, at most the most columns times the most rows (before spec
+  v24, never more than 8). Windows past that stay as they are.
 - **How many groups:** `groups`. Without it, as many groups as cells, at
-  most `windows.maxColumns` for columns or `windows.maxRows` for rows.
-  There are never more groups than cells. A `groups` in the action may be
-  more than the setting, which only limits what the app picks.
+  most the most columns, or rows. There are never more groups than
+  cells. A `groups` in the action may be more than the limit, which only
+  limits what the app picks.
 - **The grid:** the groups split the usable area equally, by width for
   columns and by height for rows. Every group splits into the same
   number of equal parts: the cells divided by the groups, rounded up. A
   cell is one part, or several in a row for the focused window. Edges
   round as for every frame, and each cell gets the gap, as with Place
   Window.
+- **On steps** (spec v24): each split counts in steps. The groups share
+  the steps across, for columns, or down, for rows: each gets the steps
+  divided by the groups, rounded down, and the steps left over go one
+  each to the groups from the left, or from the top. A group's parts
+  share its steps the other way in the same way. When there are fewer
+  steps than groups or parts, they split equally instead, as before
+  spec v24. So Tidy Windows right after Arrange Windows moves nothing.
+- **A smallest size for an app** (spec v24): a window of an app with
+  `minWidth` or `minHeight` in `windows.apps` gets a cell at least that
+  big, rounded up to whole steps. The room comes from the other cells in
+  its group, and from the other groups, which stay equal to each other
+  and keep at least `minCell`. When they no longer fit, there are fewer
+  groups. On a display smaller than the size, the window gets the whole
+  width or height.
 - **Spare parts:** when the cells don't divide evenly, the grid has more
   parts than cells. The parts left over are the spare parts, and the
   focused window's cell gets them (spec v9; before, the focused window
@@ -806,12 +879,120 @@ doesn't change.
 With the default settings, on a wide display: `{ "type": "window.arrange" }`
 puts the two windows used last in halves. `"count": 3` gives the
 focused window the half it's in, and the two others stack in the other
-half. With `windows.maxColumns` at 3, `"count": 5` makes three columns:
+half. With `windows.minCell.across` at 4 on a 16:9 display, so at most
+three columns, `"count": 5` makes three columns:
 the focused window fills the column it's in, and the others stand two
 to a column. `"count": 8, "groups": 3` gives the focused window two
 thirds of its column, with one window in the other third.
 `"count": 3, "groups": 3` gives three equal columns. `"layout": "rows"`
-stacks the two. `"count": "all"` arranges up to four windows.
+stacks the two. `"count": "all"` arranges up to four windows on a 16:9
+display, and up to 12 on a 32:9 one.
+
+#### `window.tidy`
+
+Spec v24. Tidy Windows has no fields. You put windows roughly where you
+want them, and it works out the columns and rows you meant and snaps
+them into place, on the [steps](#steps) of the focused window's
+display. It does once what you could do by hand, and keeps nothing but
+an [undo](#windowundo). Focus doesn't change.
+
+- **The windows** are Arrange Windows' candidates on that display: every
+  one, not only the ones used last. Dialogs and the windows of an app
+  with `"arrange": false` are never counted or moved. With no candidate,
+  the action fails ("No window to tidy."). Only the part of a window on
+  the usable area counts.
+- **Find the cuts.** Look for a vertical line that splits the windows
+  into a left group and a right group, and a horizontal line that splits
+  them into a group above and a group below. Take the line that crosses
+  the least, then do the same inside each side, until no line splits a
+  group. This finds columns of stacked windows, rows of windows side by
+  side, and mixes such as a tall column on the left with two windows
+  stacked on the right. A line may go anywhere, not only along a
+  window's edge.
+  - **How far a line may cross a window:** a quarter of its width (or
+    height, for a horizontal line), at least half a step and at most one
+    step. A sliver over a neighbor, from rough placing, still splits. A
+    window put on top of another doesn't, so the two share an area.
+  - **The line that crosses the least** wins: the points of windows it
+    crosses, added up, in steps of its own axis. A vertical and a
+    horizontal line that tie: the vertical one on a usable area at least
+    as wide as it is tall, the horizontal one on a taller one. Of lines
+    that split the windows the same way, the one that crosses the least
+    counts.
+  - **Windows in front float out of a cut.** A window a line crosses
+    further than that doesn't stop it when it's in front of a window on
+    each side of the line that it overlaps. The cuts are found without
+    it. A window behind others on either side still stops the line. Of
+    the lines that work, the one that sets aside the fewest windows
+    wins, then the one that crosses the least.
+- **Place the cuts.** A line goes halfway between the facing edges of
+  the two groups, then to the nearest step inside the area, never on
+  its border.
+- **Join neighbors, snap the rest.** Windows on the two sides of a cut
+  meet at it. Once the layout has a cut, the windows that reach furthest
+  toward an edge of the display go to that edge too, so no column or row
+  keeps an empty strip. A window reaches furthest when its edge is within
+  half a step of the furthest one in its area. Every other edge moves to
+  the nearest step, and the window fills the region its edges make, at
+  least one step each way, with the gap. With no cut, nothing goes to the
+  edges: a lone window in the left half stays there, and keeps a margin
+  of more than half a step.
+- **Overlapping windows.** Windows that no line splits share an area.
+  Each snaps its own edges as above, so a window that nearly fills the
+  area fills it, and a small one stays small, lined up on the steps.
+  They keep their order front to back. A window can end hidden behind a
+  bigger one.
+- **Windows that don't fit their area float.** A window whose area would
+  make it less than half, or more than twice, its own width or height
+  floats, and the cuts are found again without it, until no more float.
+  A small window wedged between two others doesn't take a thin strip,
+  and one left in empty space isn't blown up to fill it. When every
+  window would float, none does.
+- **A floating window** doesn't move, and stays in front, as a left-out
+  app's window does.
+- **A smallest size for an app:** a cut that would make the window of an
+  app with `minWidth` or `minHeight` smaller than that, rounded up to
+  whole steps, moves away from it, as long as the window on the other
+  side keeps at least `minCell`. Otherwise the cut stays where it fell.
+- **Repeatable.** A layout that's already tidy doesn't move: a window
+  already at its frame, with the gap, is left untouched. A window that
+  won't take its frame ends as with Place Window.
+
+Cutting an area into parts with straight lines works the same on every
+platform. Examples on a 32:9 display, 3840 by 1080 points, with 36 steps
+of about 107 points across:
+
+- A terminal from 0 to 1300 points and a browser from 1200 to 2600:
+  the line crosses each by 50 points, so they split, and meet at the
+  step nearest 1250, at 1280.
+- A 700 point notes window with 400 points over a browser: the line
+  would cross it by more than a step, and it's in front of the browser
+  only, so the two share an area. The browser fills it, and the notes
+  window snaps its own edges and stays on top.
+- Three windows roughly in thirds, the left one 300 points from the
+  display's left edge: they meet at two cuts, and the left one goes to
+  the edge.
+
+#### `window.undo`
+
+Spec v24. Undo Layout has no fields. It puts back the frames the
+windows had before the last Tidy Windows or Arrange Windows on the
+focused window's display. Focus doesn't change.
+
+- **One level, as a toggle.** Pressed again, it puts back the frames
+  the tidy or arranged layout gave them, as Fill does.
+- **One for each display.** A new Tidy Windows or Arrange Windows there
+  replaces that display's undo. It isn't kept for each Space or
+  desktop, and it only moves windows on the current one.
+- **Windows that changed since** stay where they are: a window moved or
+  resized since the layout, or since the last undo. A closed window is
+  skipped, and a new one isn't touched. With nothing to put back, the
+  action fails with the alert sound ("Nothing to undo."), as Focus
+  Window does.
+- **Not kept when the app quits.** The app keeps no state but the
+  config file.
+- Only Tidy Windows and Arrange Windows set it. Fill restores on its
+  own.
 
 #### `window.focus`
 
@@ -1131,8 +1312,9 @@ stop a config from loading.
 | `same-cancel-back` | The cancel and back keys are the same. |
 | `negative-delay` | `hudDelayMs`, `timeoutMs` or `windows.quitOnCloseDelayMs` (spec v16) is negative. |
 | `negative-gap` | `windows.gap` is negative. |
-| `bad-window-limit` | `windows.maxColumns` or `windows.maxRows` isn't from 1 to 8. |
-| `negative-window-distance` | `windows.minVisible`, `windows.rowTolerance` or `windows.tieTolerance` is negative (spec v12). |
+| `bad-window-limit` | `windows.maxColumns` or `windows.maxRows` isn't from 1 to 8. Or, from spec v24, an `across` or `down` in `windows.minCell` or in a display's `steps` or `minCell` isn't from 1 to 96. |
+| `bad-display-key` | Spec v24. A key in `windows.displays` isn't a width, a lowercase `x` and a height, each a whole number from 1, such as `"3840x1080"`. |
+| `negative-window-distance` | `windows.minVisible`, `windows.rowTolerance` or `windows.tieTolerance` is negative (spec v12), or an app's `minWidth` or `minHeight` in `windows.apps` is (spec v24). |
 | `bad-ui-value` | `theme` or `position` isn't one of its values. |
 | `reserved-chord` | A leader or direct binding uses a chord this platform reserves. |
 | `undefined-action` | A binding names an action that isn't in `actions` and isn't a [built-in action](#built-in-actions). |
@@ -1157,6 +1339,7 @@ stop a config from loading.
 | `unused-context` | No action uses a context. |
 | `key-not-on-platform` | An entry uses a key this platform's keyboards don't have. |
 | `office-shortcut` | Windows only: a leader or direct binding uses one of the [Office shortcuts](#reserved-chords), such as `Hyper+W`. |
+| `retired-setting` | Spec v24. `windows` has `maxColumns` or `maxRows`, which do nothing from spec v24. The subject is the setting's name. |
 
 ## Fixtures
 
@@ -1189,8 +1372,8 @@ checks valid against invalid, and subjects where it can.
 
 ## Versions
 
-`version` stays `1` in spec v2 to v23. They only add: new action types, new fields,
-the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), a history of focused windows that the app keeps (spec v13), a family for Spaces (spec v17), held menus and lists, two new entry fields (spec v18), a list field (spec v19), Send to Space (spec v20), numbers for Switch Space (spec v22), and Follow to Space (spec v23). Spec v15 drops `windows.exclude`, from spec v13 and v14, which no released app read; a file with it is `unknown-field`. Spec v23 drops Send to Space's `follow` the same way, while the format is still young: a file with it is `unknown-field`. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
+`version` stays `1` in spec v2 to v24. They only add: new action types, new fields,
+the optional `windows` object and its settings, new rules, new values for `direction`, what Focus Window does with no focused window, when the alert sound plays, built-in action names, a new name for a type or a field whose old name still loads, which windows Focus Window and Swap Window see and their order (spec v6 and v12), a history of focused windows that the app keeps (spec v13), a family for Spaces (spec v17), held menus and lists, two new entry fields (spec v18), a list field (spec v19), Send to Space (spec v20), numbers for Switch Space (spec v22), Follow to Space (spec v23), and Tidy Windows, Undo Layout, steps, settings for each display and a smallest size for each app (spec v24). Spec v15 drops `windows.exclude`, from spec v13 and v14, which no released app read; a file with it is `unknown-field`. Spec v23 drops Send to Space's `follow` the same way, while the format is still young: a file with it is `unknown-field`. Spec v24 stops using `windows.maxColumns` and `windows.maxRows`: they still load, with a warning, and an older app that finds neither uses its defaults. Spec v24 also puts Arrange Windows' cells on steps and lets `"count": "all"` go past 8: no field changes meaning. Spec v7 also makes `window.maximize` leave the gap: no field changed meaning, and an old app still reads the file. An app that doesn't know a type rejects the config with
 `unknown-action-type`, which says what's wrong. `version` changes only
 when an existing field changes meaning, so an old app never reads a new
 file the wrong way.
@@ -1233,13 +1416,10 @@ when it's decided.
   (spec v22).
 - **Modifiers on step keys,** so `T` and `Shift+T` can be two entries in
   one menu. See below.
-- **Tidy Windows** (`window.tidy`), which snaps windows into the layout
-  their places suggest, and an undo for it and Arrange Windows. See
-  below.
 
 ### Modifiers on step keys
 
-A proposal for spec v24. Today only the first chord has modifiers, and a
+A proposal for spec v25. Today only the first chord has modifiers, and a
 step key with modifiers is `step-modifiers`. This would let a step key
 be a chord too: `CAG+Space T` focuses Terminal and `CAG+Space Shift+T`
 opens a new one, with no extra level for the second.
@@ -1325,186 +1505,12 @@ an app on spec v23 or older.
    a letter types a character on the Mac, but the tap consumes the key
    before any app sees it, so it should. Needs a test on the Mac.
 
-### Tidy Windows
+### Decided in spec v24
 
-A proposal, started 2026-11-27. It came out of the Columns proposal,
-which was paused for being too complex. Arrange Windows decides the
-layout itself: the windows used last, in equal cells, with the focused
-window taking any spare room. Where you put a window only decides its
-order. Tidy Windows turns that around. You put windows roughly where you
-want them, and it works out the layout you meant and snaps it into
-place. It does once, when asked, what you could do by hand, and keeps
-nothing but an undo.
-
-**The action,** Tidy Windows (`window.tidy`, built-in name
-`window-tidy`), on the focused window's display:
-
-1. **The windows** are Arrange Windows' candidates on that display:
-   every one, not only the ones used last. Focus and recency don't
-   matter. Dialogs and the windows of an app with `"arrange": false`
-   are never moved, as with Arrange Windows.
-2. **Find the cuts.** Look for a vertical line that splits the windows
-   into a left group and a right group, allowing a little overlap. Look
-   for a horizontal line the same way. Take the one that splits them
-   more cleanly, then do the same inside each side, until no line splits
-   a group. This finds columns of stacked windows, rows of windows side
-   by side, and mixes such as a tall column on the left with two
-   windows stacked on the right.
-   - **A little overlap:** a line may cross a window when no more than
-     a quarter of its width (or height, for a horizontal line) is on
-     the far side. However small the window, half a step is allowed,
-     and however large, no more than one step. A sliver over a
-     neighbor, from rough placing, still splits. A window put on top of
-     another doesn't, so the two share an area.
-   - **Windows in front float out of a cut.** A window the line crosses
-     further than that doesn't stop it when it's in front of windows on
-     both sides. The cuts are found without it, and it stays exactly
-     where it is, in front, as a left-out app's window does. A window
-     behind others on
-     either side still stops the line. Of the lines that work, the one
-     that sets aside the fewest windows wins.
-   - **Windows that don't fit their area float.** A window whose area
-     would be less than half, or more than twice, its own width or
-     height floats too, and the cuts are found again without it. A small
-     window wedged between two others doesn't take a thin strip, and one
-     left in empty space isn't blown up to fill it.
-   - **More cleanly:** of the lines that work, the one that crosses the
-     least wins. A vertical and a horizontal line that tie: the
-     vertical one on a display at least as wide as it is tall, the
-     horizontal one on a taller display, as with Arrange Windows'
-     `auto`.
-3. **Place the cuts.** A line goes halfway between the two groups'
-   edges, then moves to the nearest step of the display (see Steps). A
-   window about a third wide ends exactly a third wide, so sizes follow
-   what you did, instead of all being equal.
-4. **Join neighbors, snap the rest.** Windows on the two sides of a cut
-   meet at it, so the space between them closes. Once the layout has a
-   cut, the windows that reach furthest toward an edge of the display
-   go to it too, so no column or row keeps an empty strip. Every other
-   edge moves to the nearest step, and the window fills the region its
-   edges make, with the gap. With no cut, nothing reaches the edges: a
-   lone window in the left half stays there, and keeps a margin of more
-   than half a step. A floating window doesn't move at all.
-5. **Overlapping windows.** Windows that no line splits share an area.
-   Each snaps its own edges: every edge moves to the nearest step, and
-   the window fills the region they make. The area's borders are steps
-   too, so a window that nearly fills the area fills it, and a small one
-   stays small, lined up on the steps. They keep their order front to
-   back. A window can end hidden behind a bigger one; that's fine.
-6. **Repeatable.** A layout that's already tidy doesn't move. A window
-   that won't take its size ends as with Place Window.
-7. Focus doesn't change.
-
-Cutting a space into parts with straight lines works the same on every
-platform, so this is the same on the Mac and Windows.
-
-**Steps.** How finely cuts and edges snap. Steps split the usable
-area, without the menu bar and the Dock or the taskbar, into equal
-parts: some across and some down.
-
-- **The guess:** the short side gets 12 steps. The long side gets 12
-  for each whole time the short side fits into it. So 3:2, 16:10 and
-  16:9 displays get 12 by 12, a 21:9 display 24 by 12, and a 32:9
-  display such as 3840 by 1080 points 36 by 12. A display turned on its
-  side gets the same, the other way round. Every count is a multiple of
-  12, so halves, thirds and quarters land on steps.
-- **Overrides:** `windows.displays`, keyed by a display's size in
-  points, as `"3840x1080"`, gives that display its own `steps` and
-  `minCell` (see below), each with `across` and `down`. Points are
-  the size after scaling: the Mac's "looks like" size, and the size
-  Windows scales to. A 7680 by 2160 pixel display at 2x is
-  `"3840x1080"`. Two displays of the same size
-  share an entry. A display whose scaling changes no longer matches,
-  and goes back to the guess.
-
-```json
-"windows": {
-  "displays": {
-    "3840x1080": {
-      "steps": { "across": 36, "down": 12 },
-      "minCell": { "across": 4, "down": 6 }
-    }
-  }
-}
-```
-
-The paused Columns proposal had settings for each display too, so
-`displays` leaves room for more of them.
-
-**Arrange Windows stays,** for a cluttered screen you don't want to
-sort out by hand: it lays everything out with no hints from you. It
-changes in three ways:
-
-- **`windows.minCell` in place of `maxColumns` and `maxRows`:** the
-  smallest cell, in steps, with `across` and `down`, default 6 by 6,
-  and an override for each display in `windows.displays`. The most
-  columns is the steps across divided by `minCell.across`, rounded
-  down, and the same for rows. So a laptop gets at most 2 by 2, a 21:9
-  display 4 by 2, and a 32:9 display with 36 steps across 6 by 2.
-- **No fixed 8:** `"count": "all"` lays out as many windows as those
-  limits allow, so 12 on a 32:9 display. A `count` that's a number,
-  and `groups`, stay from 2 to 8 and from 1 to 8. Windows past the
-  limit stay where they are, behind the others, as today.
-- **Cells on steps:** the grid's edges round to steps, with the steps
-  left over spread among the groups. So Tidy Windows right after
-  Arrange Windows changes nothing.
-
-**A minimum size for each app:** `minWidth` and `minHeight`, in
-points, as rules in `windows.apps`, for an app that needs room, such as
-a video editor. Points, because a step is a different size on each
-display, and an app needs about the same room everywhere. A minimum
-rounds up to the next step on each display, so cells still land on
-steps.
-
-- **Arrange Windows** gives the app's window a cell at least that big,
-  taking the room from the other cells in its column or row. The others
-  stay equal to each other and keep at least `minCell`. When they no
-  longer fit, it makes fewer groups. On a display smaller than the
-  minimum, the app's window gets the whole width or height.
-- **Tidy Windows** moves a cut that would make the app's window smaller
-  than its minimum away from it, as long as the neighbor keeps at least
-  `minCell`. Otherwise the cut stays where it fell. Overlapping windows
-  keep their own sizes anyway.
-- It's a preference above the app's own minimum, which the app keeps
-  whatever this says: the layout makes room, so the window doesn't
-  spill over its neighbor.
-
-```json
-"windows": {
-  "apps": {
-    "com.blackmagic-design.DaVinciResolve": { "minWidth": 1600, "minHeight": 900 }
-  }
-}
-```
-
-`maxColumns` and `maxRows` in a file still load, with a warning that
-they're no longer used, and an app drops them when it saves the file,
-as with `window.maximize`. An older app reading a newer file finds
-neither and uses 2 by 2.
-
-**Undo Layout** (`window.undo`, built-in name `window-undo`), an
-action that puts back the windows the last Tidy Windows or
-Arrange Windows moved. It's the one thing either action remembers.
-
-- **One level, as a toggle.** Undo puts back the frames from before the
-  last Tidy Windows or Arrange Windows. Pressing it again puts the tidy
-  layout back, as Fill Toggle does.
-- **One for each display.** Undo acts on the focused window's display.
-  A new Tidy Windows or Arrange Windows there replaces that display's
-  undo. It isn't kept for each Space or desktop, which have no ids both
-  platforms can read. It only moves windows on the current one.
-- **Windows that changed since.** A window moved or resized since stays
-  where it is: your later choice wins. A closed window is skipped, and
-  a new one isn't touched. With nothing to put back, undo fails with
-  the alert sound ("Nothing to undo."), as Focus Window does.
-- **Not kept when the app quits.** The app keeps no state but the
-  config file.
-- **Only for Tidy Windows and Arrange Windows.** Fill Toggle restores
-  on its own, and Place Window and Move Window are single moves. They
-  could join it later.
-- Focus doesn't change.
-
-**Decided:**
+Tidy Windows, Undo Layout, steps and the settings for each display
+started as a proposal on 2026-11-27, after the Columns proposal was
+paused for being too complex. Arrange Windows decides the layout
+itself; Tidy Windows takes it from where you put the windows.
 
 1. ~~Overlapping windows: does each fill the area they share, or snap
    its own edges?~~ Each snaps its own edges. Filling would make a small
@@ -1588,10 +1594,6 @@ branch `prototype/tidy-preview`:
 - Applied for real, every window took the frame it was asked for:
   Ghostty, Claude, Rex and two Chrome windows.
 - Not tried yet: a 32:9 display with 36 steps across, and the laptop.
-
-**Not decided:** nothing is left open. Before it moves into a spec
-version: try it on the 57" display and the laptop, then write the rule
-ids, the schema and the fixtures.
 
 ### Decided in spec v2
 
