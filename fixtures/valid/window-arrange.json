@@ -1,8 +1,10 @@
 {
   "version": 1,
   "windows": {
-    "maxColumns": 3,
-    "maxRows": 2
+    "minCell": {
+      "across": 4,
+      "down": 6
+    }
   },
   "entries": [
     {

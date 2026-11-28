@@ -56,6 +56,10 @@ The UI names below are settled in the spec. The words in each app's forms get th
 | Term | Means | Not |
 | --- | --- | --- |
 | Arrange Windows | The `window.arrange` action: lay out the windows used last, on one display, in a grid of columns or rows. | tile, pair, snap |
+| Tidy Windows | The `window.tidy` action (spec v24): snap the windows on one display into the columns and rows their places suggest. | clean up, snap, align, auto arrange |
+| Undo Layout | The `window.undo` action (spec v24): put back what the last Tidy Windows or Arrange Windows moved, and press again to redo. | revert, restore layout |
+| Step | One of the equal parts steps cut a display's usable area into (spec v24), such as 36 across and 12 down on a 32:9 display. Cells and tidied edges land on steps. | grid unit, column, notch |
+| Floating window | A window Tidy Windows leaves where it is, in front, because it's in front of windows on both sides of a cut or doesn't fit its area (spec v24). | loose, free, unmanaged |
 | Cell | One part of the grid Arrange Windows makes, for one window. | slot, tile, pane |
 | Group | A column or a row of cells in that grid. | stack, split |
 | Fill | The `window.fill` action: fill the screen's usable area, less the gap, and press again to restore. Not full screen. `window.maximize` is its old name. | maximize, zoom, full screen |

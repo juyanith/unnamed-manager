@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "keys": "Meh+W",
+      "title": "Windows"
+    },
+    {
+      "keys": "Meh+W T",
+      "title": "Tidy",
+      "action": "window-tidy"
+    }
+  ],
+  "windows": {
+    "minCell": {
+      "across": "6",
+      "down": 6
+    }
+  }
+}
