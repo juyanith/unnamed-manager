@@ -1233,6 +1233,9 @@ when it's decided.
   (spec v22).
 - **Modifiers on step keys,** so `T` and `Shift+T` can be two entries in
   one menu. See below.
+- **Tidy Windows** (`window.tidy`), which snaps windows into the layout
+  their places suggest, and an undo for it and Arrange Windows. See
+  below.
 
 ### Modifiers on step keys
 
@@ -1321,6 +1324,83 @@ an app on spec v23 or older.
 1. Does the Mac app's event tap see every modified step key? Option with
    a letter types a character on the Mac, but the tap consumes the key
    before any app sees it, so it should. Needs a test on the Mac.
+
+### Tidy Windows
+
+A proposal, started 2026-11-27. It came out of the Columns proposal,
+which was paused for being too complex. Arrange Windows decides the
+layout itself: the windows used last, in equal cells, with the focused
+window taking any spare room. Where you put a window only decides its
+order. Tidy Windows turns that around. You put windows roughly where you
+want them, and it works out the layout you meant and snaps it into
+place. It does once, when asked, what you could do by hand, and keeps
+nothing but an undo.
+
+**The action,** `window.tidy` (Tidy Windows), on the focused window's
+display:
+
+1. **The windows** are Arrange Windows' candidates on that display:
+   every one, not only the ones used last. Focus and recency don't
+   matter. Dialogs and the windows of an app with `"arrange": false`
+   are never moved, as with Arrange Windows.
+2. **Find the cuts.** Look for a vertical line that splits the windows
+   into a left group and a right group, allowing a little overlap. Look
+   for a horizontal line the same way. Take the one that splits them
+   more cleanly, then do the same inside each side, until no line splits
+   a group. This finds columns of stacked windows, rows of windows side
+   by side, and mixes such as a tall column on the left with two
+   windows stacked on the right.
+3. **Place the cuts.** A line goes halfway between the two groups'
+   edges, then moves to the nearest step of the display (see Steps). A
+   window about a third wide ends exactly a third wide, so sizes follow
+   what you did, instead of all being equal.
+4. **Fill.** Each window fills its area, with the gap. Space no window
+   covers is taken by its neighbors, so the layout fills the usable
+   area.
+5. **Overlapping windows.** Windows that no line splits share an area.
+   Each is sized for it, and they keep their order front to back. A
+   window can end hidden behind another; that's fine.
+6. **Repeatable.** A layout that's already tidy doesn't move. A window
+   that won't take its size ends as with Place Window.
+7. Focus doesn't change.
+
+Cutting a space into parts with straight lines works the same on every
+platform, so this is the same on the Mac and Windows.
+
+**Steps.** How finely cuts snap, set for each display. Twelfths suit a
+16:9 display. A 32:9 display such as 3840 by 1080 points needs 24 or
+more, so a step stays about the same size on screen. A setting would
+give a default and let each display have its own.
+
+**Arrange Windows stays,** for a cluttered screen you don't want to
+sort out by hand: it lays everything out with no hints from you. Today
+`"count": "all"` stops at `maxColumns` times `maxRows` windows, and
+never more than 8.
+
+**Undo,** an action that puts back the windows the last Tidy Windows or
+Arrange Windows moved, on that display. It's the one thing either
+action would remember.
+
+**Not decided:**
+
+1. Names: `window.tidy` and Tidy Windows, and the undo's action and
+   name, such as `window.undo` and Undo Layout. Their built-in names,
+   such as `window-tidy`.
+2. Overlapping windows: does each fill the area they share, or snap its
+   own edges to the steps inside it, so a small window over a large one
+   stays small?
+3. How much overlap still counts as split: a share of the smaller
+   window, or one step.
+4. Steps: one number for both directions, or one across and one down.
+   How a display is named in the file on both platforms, and whether the
+   default comes from the display's shape.
+5. Fill or snap only: should a single window in the left half fill the
+   display, or stay in the left half? Filling uses the space; snapping
+   only is less of a surprise.
+6. Undo: one level or more. What happens to a window moved by hand or
+   closed since. Whether undo survives the app quitting.
+7. Arrange Windows on a cluttered screen: whether `"count": "all"`
+   should go past 8.
 
 ### Decided in spec v2
 
