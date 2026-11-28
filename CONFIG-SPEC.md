@@ -1354,9 +1354,12 @@ display:
    edges, then moves to the nearest step of the display (see Steps). A
    window about a third wide ends exactly a third wide, so sizes follow
    what you did, instead of all being equal.
-4. **Fill.** Each window fills its area, with the gap. Space no window
-   covers is taken by its neighbors, so the layout fills the usable
-   area.
+4. **Join neighbors, snap the rest.** Windows on the two sides of a cut
+   meet at it, so the space between them closes. Every other edge moves
+   to the nearest step, and the window fills the region its edges make,
+   with the gap. A margin at the display's edge stays only when it's
+   more than half a step, so a lone window in the left half stays
+   there.
 5. **Overlapping windows.** Windows that no line splits share an area.
    Each snaps its own edges: every edge moves to the nearest step, and
    the window fills the region they make. The area's borders are steps
@@ -1393,6 +1396,12 @@ action would remember.
    rule for which window is the main one.
    There's no special rule for edges near the area's border: plain
    snapping is simpler and easier to predict.
+2. ~~Fill or snap only?~~ Neither: windows on the two sides of a cut
+   meet at it, and every other edge snaps to the nearest step. Filling
+   the display would make windows far bigger than you made them, which
+   Fill Toggle and Arrange Windows already do. Snapping only would leave
+   gaps between neighbors. This is one rule for every window, the same
+   as for overlapping ones.
 
 **Not decided:**
 
@@ -1404,12 +1413,9 @@ action would remember.
 3. Steps: one number for both directions, or one across and one down.
    How a display is named in the file on both platforms, and whether the
    default comes from the display's shape.
-4. Fill or snap only: should a single window in the left half fill the
-   display, or stay in the left half? Filling uses the space; snapping
-   only is less of a surprise.
-5. Undo: one level or more. What happens to a window moved by hand or
+4. Undo: one level or more. What happens to a window moved by hand or
    closed since. Whether undo survives the app quitting.
-6. Arrange Windows on a cluttered screen: whether `"count": "all"`
+5. Arrange Windows on a cluttered screen: whether `"count": "all"`
    should go past 8.
 
 ### Decided in spec v2
