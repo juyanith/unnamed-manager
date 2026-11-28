@@ -1395,17 +1395,21 @@ parts: some across and some down.
   side gets the same, the other way round. Every count is a multiple of
   12, so halves, thirds and quarters land on steps.
 - **Overrides:** `windows.displays`, keyed by a display's size in
-  points, as `"3840x1080"`, gives that display its own `steps`, with
-  `across` and `down`. Points are the size after scaling: the Mac's
-  "looks like" size, and the size Windows scales to. A 7680 by 2160
-  pixel display at 2x is `"3840x1080"`. Two displays of the same size
+  points, as `"3840x1080"`, gives that display its own `steps` and
+  `minCell` (see below), each with `across` and `down`. Points are
+  the size after scaling: the Mac's "looks like" size, and the size
+  Windows scales to. A 7680 by 2160 pixel display at 2x is
+  `"3840x1080"`. Two displays of the same size
   share an entry. A display whose scaling changes no longer matches,
   and goes back to the guess.
 
 ```json
 "windows": {
   "displays": {
-    "3840x1080": { "steps": { "across": 24, "down": 12 } }
+    "3840x1080": {
+      "steps": { "across": 36, "down": 12 },
+      "minCell": { "across": 4, "down": 6 }
+    }
   }
 }
 ```
@@ -1414,9 +1418,27 @@ The paused Columns proposal had settings for each display too, so
 `displays` leaves room for more of them.
 
 **Arrange Windows stays,** for a cluttered screen you don't want to
-sort out by hand: it lays everything out with no hints from you. Today
-`"count": "all"` stops at `maxColumns` times `maxRows` windows, and
-never more than 8.
+sort out by hand: it lays everything out with no hints from you. It
+changes in three ways:
+
+- **`windows.minCell` in place of `maxColumns` and `maxRows`:** the
+  smallest cell, in steps, with `across` and `down`, default 6 by 6,
+  and an override for each display in `windows.displays`. The most
+  columns is the steps across divided by `minCell.across`, rounded
+  down, and the same for rows. So a laptop gets at most 2 by 2, a 21:9
+  display 4 by 2, and a 32:9 display with 36 steps across 6 by 2.
+- **No fixed 8:** `"count": "all"` lays out as many windows as those
+  limits allow, so 12 on a 32:9 display. A `count` that's a number,
+  and `groups`, stay from 2 to 8 and from 1 to 8. Windows past the
+  limit stay where they are, behind the others, as today.
+- **Cells on steps:** the grid's edges round to steps, with the steps
+  left over spread among the groups. So Tidy Windows right after
+  Arrange Windows changes nothing.
+
+`maxColumns` and `maxRows` in a file still load, with a warning that
+they're no longer used, and an app drops them when it saves the file,
+as with `window.maximize`. An older app reading a newer file finds
+neither and uses 2 by 2.
 
 **Undo,** an action that puts back the windows the last Tidy Windows or
 Arrange Windows moved. It's the one thing either action remembers.
@@ -1472,14 +1494,16 @@ Arrange Windows moved. It's the one thing either action remembers.
    One level for each display, as a toggle; windows moved by hand or
    closed since are left alone; forgotten when the app quits. An undo is
    mostly used right away, so a history would add rules for little gain.
+6. ~~Arrange Windows on a cluttered screen: past 8?~~ Yes, limited by
+   the steps instead: `minCell` takes the place of `maxColumns` and
+   `maxRows`, so the limits follow the display's shape, and Arrange
+   Windows' cells land on steps, so it and Tidy Windows agree.
 
 **Not decided:**
 
 1. Names: `window.tidy` and Tidy Windows, and the undo's action and
    name, such as `window.undo` and Undo Layout. Their built-in names,
    such as `window-tidy`.
-2. Arrange Windows on a cluttered screen: whether `"count": "all"`
-   should go past 8.
 
 ### Decided in spec v2
 
